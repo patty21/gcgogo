@@ -1,0 +1,28 @@
+<div id="corner"></div>
+<div class="palm-page-header multi-line">
+	<div class="palm-page-header-wrapper">
+		<div class="icon precaching" id="icon"></div>
+		<div class="title truncating-text" id="title">Post log</div>
+	</div>
+</div>
+<div class="palm-row single">
+	<div class="palm-row-wrapper">
+		<div id="logtype" name="logtype" x-mojo-element="ListSelector"></div>
+	</div>
+</div>
+<div class="palm-row single">
+	<div class="palm-row-wrapper textfield-group" x-mojo-focus-highlight="true">
+		<div id="body" name="body" x-mojo-element="TextField"></div>
+	</div>
+</div>
+<div class="palm-row single">
+	<div class="palm-row-wrapper textfield-group" x-mojo-focus-highlight="true">
+		<div class="title">
+			<div x-mojo-element="CheckBox" id="posttweet" name="posttweet"></div> Share on Twitter
+		</div>
+	</div>
+</div>
+<div id="trackables" style="display:none">
+	<div id="trackables-list" x-mojo-element="List"></div>
+</div>
+<div id="send-button" x-mojo-element="Button"></div>

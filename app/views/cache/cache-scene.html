@@ -1,0 +1,148 @@
+<div id="corner"></div>
+<div class="palm-page-header multi-line">
+	<div class="palm-page-header-wrapper">
+		<div class="icon precaching" id="cache-icon"></div>
+		<div class="title truncating-text" id="cache-title">Loading...</div>
+	</div>
+</div>
+<div x-mojo-element="Spinner" class="big-spinner" id="loading-spinner"></div>
+<div class="palm-list gc-basic" id="cache-detail" style="display:none">
+	<div class="palm-row first">
+		<div class="palm-row-wrapper">
+			<div class="title">
+				<div class="label">name</div>
+				<div id="cache-name">&nbsp;</div>
+			</div>
+		</div>
+	</div>
+	<div class="palm-row gc-basic" id="cache-date-row" style="display:none">
+		<div class="palm-row-wrapper">
+			<div class="title">
+				<div class="label">date</div>
+				<div id="cache-date">&nbsp;</div>
+			</div>
+		</div>
+	</div>
+	<div class="palm-row gc-extended">
+		<div class="palm-row-wrapper">
+			<div class="title">
+				<div class="label">type</div>
+				<div id="cache-type">&nbsp;</div>
+			</div>
+		</div>
+	</div>
+	<div class="palm-row gc-extended">
+		<div class="palm-row-wrapper">
+			<div class="title">
+				<div class="label">availability</div>
+				<div id="cache-availability">&nbsp;</div>
+			</div>
+		</div>
+	</div>
+	<div class="palm-row gc-extended">
+		<div class="palm-row-wrapper">
+			<div class="title">
+				<div class="label">downloaded</div>
+				<div id="cache-updated">&nbsp;</div>
+			</div>
+		</div>
+	</div>
+	<div class="palm-row gc-extended" id="cache-owner-row" x-mojo-tap-highlight="momentary">
+		<div class="palm-row-wrapper">
+			<div class="title">
+				<div class="label">owner</div>
+				<div class="truncating-text" id="cache-owner">&nbsp;</div>
+			</div>
+		</div>
+	</div>
+	<div class="palm-row">
+		<div class="palm-row-wrapper">
+			<div class="title">
+				<div class="label">size</div>
+				<div class="truncating-text"><img src="images/other.gif" id="cache-size" />&nbsp;<span id="cache-size-label">Other</span></div>
+			</div>
+		</div>
+	</div>
+	<div class="palm-row">
+		<div class="palm-row-wrapper">
+			<div class="title">
+				<div class="label">difficulty</div>
+				<div class="truncating-text"><img src="images/stars0.gif" id="cache-difficulty" />&nbsp;<span id="cache-difficulty-label">0</span>/5</div>
+			</div>
+		</div>
+	</div>
+	<div class="palm-row">
+		<div class="palm-row-wrapper">
+			<div class="title">
+				<div class="label">terrain</div>
+				<div class="truncating-text"><img src="images/stars0.gif" id="cache-terrain" />&nbsp;<span id="cache-terrain-label">0</span>/5</div>
+			</div>
+		</div>
+	</div>
+	<div class="palm-row" id="cache-location-row" x-mojo-tap-highlight="momentary">
+		<div class="palm-row-wrapper">
+			<div class="title">
+				<div class="label">location</div>
+				<div id="cache-latlon">&nbsp;</div>
+				<div class="small gc-extended" id="cache-location">&nbsp;</div>
+			</div>
+			<div class="cachemap" id="cachemap"></div>
+		</div>
+	</div>
+	<div class="palm-row" id="cache-description-row" x-mojo-tap-highlight="momentary">
+		<div class="palm-row-wrapper">
+			<div class="title">
+				<div class="label">description</div>
+				<div id="cache-description" class="palm-body-text gc-description">&nbsp;</div>
+			</div>
+		</div>
+	</div>
+	<div class="palm-row" id="cache-hint-row" x-mojo-tap-highlight="momentary">
+		<div class="palm-row-wrapper">
+			<div class="title">
+				<div class="label">hint</div>
+				<div id="cache-hint">&nbsp;</div>
+			</div>
+		</div>
+	</div>
+	<div class="palm-row" id="cache-spoilerimages-row" x-mojo-tap-highlight="momentary">
+		<div class="palm-row-wrapper">
+			<div class="title">
+				<div class="label">spoiler</div>
+				<div id="cache-spoilerimages">&nbsp;</div>
+			</div>
+		</div>
+	</div>
+	<div class="palm-row" id="cache-galleryimages-row" x-mojo-tap-highlight="momentary">
+		<div class="palm-row-wrapper">
+			<div class="title">
+				<div class="label">gallery</div>
+				<div id="cache-galleryimages">&nbsp;</div>
+			</div>
+		</div>
+	</div>
+	<div class="palm-row" id="cache-waypoints-row" x-mojo-tap-highlight="momentary">
+		<div class="palm-row-wrapper">
+			<div class="title">
+				<div class="label">waypoints</div>
+				<div id="cache-waypoints">&nbsp;</div>
+			</div>
+		</div>
+	</div>
+	<div class="palm-row" id="cache-trackables-row" x-mojo-tap-highlight="momentary">
+		<div class="palm-row-wrapper">
+			<div class="title">
+				<div class="label">trackables</div>
+				<div id="cache-trackables">&nbsp;</div>
+			</div>
+		</div>
+	</div>
+	<div class="palm-row last" id="cache-attributes-row" x-mojo-tap-highlight="momentary">
+		<div class="palm-row-wrapper">
+			<div class="title">
+				<div class="label">attributes</div>
+				<div id="cache-attributes">&nbsp;</div>
+			</div>
+		</div>
+	</div>
+</div>

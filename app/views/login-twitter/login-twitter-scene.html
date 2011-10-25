@@ -1,0 +1,55 @@
+<div id="corner"></div>
+<div class="palm-page-header multi-line">
+	<div class="palm-page-header-wrapper">
+		<div class="icon precaching" id="icon"></div>
+		<div class="title truncating-text no-text-transform" id="title">Twitter</div>
+	</div>
+</div>
+<div id="logged" style="display:none">
+	<div class="palm-group">
+		<div class="palm-group-title" x-mojo-loc=''>Twitter account</div>
+		<div class="palm-list">
+			<div class="palm-row single">
+				<div class="palm-row-wrapper">
+					<div class="title" id="username">
+						
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div x-mojo-element="Button" id="unlink-button"></div>
+</div>
+<div id="linking" style="display:none">
+	<div id="loginform" style="display:none">
+		<div class="palm-group">
+			<div class="palm-group-title" x-mojo-loc=''>PIN</div>
+			<div class="palm-list">
+				<div class="palm-row first">
+					<div class="palm-row-wrapper textfield-group" x-mojo-focus-highlight="true">
+						<div class="title">
+							<div id="inputPIN" name="inputPIN"  x-mojo-element="TextField"></div>
+						</div>
+					</div>
+				</div>
+				<div class="palm-row last">
+					<div class="palm-row-wrapper textfield-group" x-mojo-focus-highlight="true">
+						<div class="title">
+							<div x-mojo-element="CheckBox" id="posttweet" name="posttweet"></div> Tell friends about app
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="palm-info-text">
+		For posting short messages to Twitter, authorize your account.
+	</div>
+	<div id="loginbuttons">
+		<div x-mojo-element="Button" id="authorize-button"></div>
+		<div x-mojo-element="Button" id="register-button"></div>
+	</div>
+	<div id="authorizebuttons" style="display:none">
+		<div x-mojo-element="Button" id="pin-button"></div>
+	</div>
+</div>

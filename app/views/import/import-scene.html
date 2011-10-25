@@ -1,0 +1,33 @@
+<div id="corner"></div>
+<div class="palm-page-header multi-line">
+	<div class="palm-page-header-wrapper">
+		<div class="icon precaching" id="icon"></div>
+		<div class="title truncating-text" id="title">Import</div>
+	</div>
+</div>
+<div id="picker">
+	<div class="palm-body-text">
+		<p><strong>Import</strong> allows you to add geocaches and waypoints to <strong>Favourite</strong> list.<br />Supported file formats:</p>
+		<ul>
+			<li><strong>GPX</strong> exchange file</li>
+			<li><strong>LOC</strong> waypoint file</li>
+		</ul>
+	</div>
+	<div class="palm-info-text">
+		Import can correctly import PocketQuery and GSAK GPX export. If you have problems with import, contact developer on support email.
+	</div>
+	<div id="action-pickfile" x-mojo-element="Button"></div>
+</div>
+<div id="list" style="display:none">
+	<div class="palm-list">
+		<div class="palm-row first last">
+			<div class="palm-row-wrapper">
+				<p>This is <strong>preview</strong> of caches from selected file. You can also remove caches by swipe.</p>
+				<div id="action-import" x-mojo-element="Button"></div>
+				<div id="action-cancel" x-mojo-element="Button"></div>
+				<div id="action-importtype" x-mojo-element="ListSelector" style="display:none"></div>
+			</div>
+		</div>
+	</div>
+	<div id="cache-list" x-mojo-element="List"></div>
+</div>

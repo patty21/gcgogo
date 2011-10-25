@@ -1,0 +1,114 @@
+[
+    {"source": "app/assistants/prototype.js"},
+    {"source": "plugins/geocaching.com.js"},
+    {"source": "plugins/sha1.js"},
+    {"source": "plugins/md5.js"},
+    {"source": "plugins/oauth.js"},
+    {"source": "plugins/twitter.js"},
+    {"source": "plugins/go4cache.js"},
+    {"source": "app/assistants/geocaching.js"},
+    {"source": "app/assistants/app-assistant.js"},
+    {"source": "app/assistants/stage-assistant.js"},
+    {"source": "app/assistants/main-addresses-assistant.js"},
+    {
+        "scenes": "main",
+        "source": "app/assistants/main-assistant.js"
+    },
+    {
+        "scenes": "cache",
+        "source": "app/assistants/cache-assistant.js"
+    },
+    {
+        "scenes": "settings",
+        "source": "app/assistants/settings-assistant.js"
+    },
+    {
+        "scenes": "list",
+        "source": "app/assistants/list-assistant.js"
+    },
+    {"source": "app/assistants/compass-tutorial-assistant.js"},
+    {"source": "app/assistants/usercoords-assistant.js"},
+    {
+        "scenes": "compass",
+        "source": "app/assistants/compass-assistant.js"
+    },
+    {
+        "scenes": "description",
+        "source": "app/assistants/description-assistant.js"
+    },
+    {
+        "scenes": "login",
+        "source": "app/assistants/login-assistant.js"
+    },
+    {
+        "scenes": "about",
+        "source": "app/assistants/about-assistant.js"
+    },
+    {
+        "scenes": "waypoints",
+        "source": "app/assistants/waypoints-assistant.js"
+    },
+    {
+        "scenes": "cachelogs",
+        "source": "app/assistants/cachelogs-assistant.js"
+    },
+    {
+        "scenes": "spoilerimages",
+        "source": "app/assistants/spoilerimages-assistant.js"
+    },
+    {
+        "scenes": "galleryimages",
+        "source": "app/assistants/galleryimages-assistant.js"
+    },
+    {
+        "scenes": "import",
+        "source": "app/assistants/import-assistant.js"
+    },
+    {"source": "app/assistants/accounts-new-assistant.js"},
+    {
+        "scenes": "accounts",
+        "source": "app/assistants/accounts-assistant.js"
+    },
+    {
+        "scenes": "first",
+        "source": "app/assistants/first-assistant.js"
+    },
+    {
+        "scenes": "login-twitter",
+        "source": "app/assistants/login-twitter-assistant.js"
+    },
+    {
+        "scenes": "tweet",
+        "source": "app/assistants/tweet-assistant.js"
+    },
+    {
+        "scenes": "attributes",
+        "source": "app/assistants/attributes-assistant.js"
+    },
+    {
+        "scenes": "trackables",
+        "source": "app/assistants/trackables-assistant.js"
+    },
+    {
+        "scenes": "trackable",
+        "source": "app/assistants/trackable-assistant.js"
+    },
+    {
+        "scenes": "trackablelogs",
+        "source": "app/assistants/trackablelogs-assistant.js"
+    },
+    {
+        "scenes": "postlog",
+        "source": "app/assistants/postlog-assistant.js"
+    },
+    {
+        "scenes": "postlog-trackables",
+        "source": "app/assistants/postlog-trackables-assistant.js"
+    },
+    {"source": "app/assistants/map-geocacher-assistant.js"},
+    {"source": "app/assistants/map-cache-assistant.js"},
+    {
+        "scenes": "map",
+        "source": "app/assistants/map-assistant.js"
+    }
+]

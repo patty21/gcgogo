@@ -1,0 +1,290 @@
+<div id="corner"></div>
+<div class="palm-page-header multi-line">
+	<div class="palm-page-header-wrapper">
+		<div id="view-selector" class="view-selector">
+				<div id="view-name" class="view-name">Favourites</div>
+		</div>
+		<div class="icon precaching" id="icon"></div>
+		<div class="title truncating-text" id="title">GC-gogo</div>
+	</div>
+</div>
+<div id="actions">
+	<div class="palm-group view-all view-favourites view-caches">
+		<div class="palm-group-title" x-mojo-loc='' id="title-bycoords">Search by Coordinates</div>
+		<div class="palm-list">
+			<div class="palm-row single">
+				<div class="palm-row-wrapper textfield-group" x-mojo-focus-highlight="true">
+					<div class="title">
+						<div class="label" id="title-bycoordslat">Latitude</div>
+						<div id="action-bycoordslat" name="action-bycoorsdlat" x-mojo-element="TextField"></div>
+					</div>
+				</div>
+			</div>
+			<div class="palm-row single">
+				<div class="palm-row-wrapper textfield-group" x-mojo-focus-highlight="true">
+					<div class="title">
+						<div class="label" id="title-bycoordslon">Longitude</div>
+						<div id="action-bycoordslon" name="action-bycoordslon" x-mojo-element="TextField"></div>
+					</div>
+				</div>
+			</div>
+			<div class="palm-row single">
+				<div class="palm-row-wrapper" x-mojo-focus-highlight="true">
+					<div id="action-bycoordstype" name="action-bycoordstype" x-mojo-element="ListSelector"></div>
+				</div>
+			</div>
+			<div class="palm-row single">
+				<div class="palm-row-wrapper textfield-group" x-mojo-focus-highlight="true">
+					<div class="title">
+						<table width="100%">
+							<tr>
+								<td width="38%"><div id="action-button-bycoords" x-mojo-element="Button"></div></td>
+								<td width="38%"><div id="action-button-nearest" x-mojo-element="Button"></div></td>
+								<td width="24%"><div id="action-button-nearest-map" class="palm-button gmaps"><img class="button-gmaps" src="images/icon-googlemaps.png" /></div></td>
+							</tr>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="palm-group view-all view-favourites view-caches">
+		<div class="palm-group-title" x-mojo-loc='' id="title-keyword">Search by keyword</div>
+		<div class="palm-list">
+			<div class="palm-row single">
+				<div class="palm-row-wrapper textfield-group" x-mojo-focus-highlight="true">
+					<div class="title">
+						<div id="action-keyword" name="action-keyword" x-mojo-element="TextField"></div>
+					</div>
+				</div>
+			</div>
+			<div class="palm-row single">
+				<div class="palm-row-wrapper" x-mojo-focus-highlight="true">
+					<div id="action-keywordtype" name="action-keywordtype" x-mojo-element="ListSelector"></div>
+				</div>
+			</div>
+			<div class="palm-row single">
+				<div class="palm-row-wrapper textfield-group" x-mojo-focus-highlight="true">
+					<div class="title">
+						<div id="action-button-keyword" x-mojo-element="Button"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="palm-group view-all view-caches">
+		<div class="palm-group-title" x-mojo-loc='' id="title-gccode">Search by GC Code</div>
+		<div class="palm-list">
+			<div class="palm-row single">
+				<div class="palm-row-wrapper textfield-group" x-mojo-focus-highlight="true">
+					<div class="title">
+						<div id="action-gccode" name="action-gccode" x-mojo-element="TextField"></div>
+					</div>
+				</div>
+			</div>
+			<div class="palm-row single">
+				<div class="palm-row-wrapper textfield-group" x-mojo-focus-highlight="true">
+					<div class="title">
+						<div id="action-button-gccode" x-mojo-element="Button"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="palm-group view-all view-caches">
+		<div class="palm-group-title" x-mojo-loc='' id="title-byaddress">Search by Address</div>
+		<div class="palm-list">
+			<div class="palm-row single">
+				<div class="palm-row-wrapper textfield-group" x-mojo-focus-highlight="true">
+					<div class="title">
+						<div id="action-byaddress" name="action-byaddress" x-mojo-element="TextField"></div>
+					</div>
+				</div>
+			</div>
+			<div class="palm-row single">
+				<div class="palm-row-wrapper" x-mojo-focus-highlight="true">
+					<div id="action-byaddresstype" name="action-byaddresstype" x-mojo-element="ListSelector"></div>
+				</div>
+			</div>
+			<div class="palm-row single">
+				<div class="palm-row-wrapper textfield-group" x-mojo-focus-highlight="true">
+					<div class="title">
+						<div id="action-button-byaddress" x-mojo-element="Button"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="palm-group view-all view-caches">
+		<div class="palm-group-title" x-mojo-loc='' id="title-byusername">Found by Username</div>
+		<div class="palm-list">
+			<div class="palm-row single">
+				<div class="palm-row-wrapper textfield-group" x-mojo-focus-highlight="true">
+					<div class="title">
+						<div id="action-byusername" name="action-byusername" x-mojo-element="TextField"></div>
+					</div>
+				</div>
+			</div>
+			<div class="palm-row single">
+				<div class="palm-row-wrapper" x-mojo-focus-highlight="true">
+					<div id="action-byusernametype" name="action-byusernametype" x-mojo-element="ListSelector"></div>
+				</div>
+			</div>
+			<div class="palm-row single">
+				<div class="palm-row-wrapper textfield-group" x-mojo-focus-highlight="true">
+					<div class="title">
+						<div id="action-button-byusername" x-mojo-element="Button"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="palm-group view-all view-caches">
+		<div class="palm-group-title" x-mojo-loc='' id="title-byowner">Hidden by</div>
+		<div class="palm-list">
+			<div class="palm-row single">
+				<div class="palm-row-wrapper textfield-group" x-mojo-focus-highlight="true">
+					<div class="title">
+						<div id="action-byowner" name="action-byowner" x-mojo-element="TextField"></div>
+					</div>
+				</div>
+			</div>
+			<div class="palm-row single">
+				<div class="palm-row-wrapper" x-mojo-focus-highlight="true">
+					<div id="action-byownertype" name="action-byownertype" x-mojo-element="ListSelector"></div>
+				</div>
+			</div>
+			<div class="palm-row single">
+				<div class="palm-row-wrapper textfield-group" x-mojo-focus-highlight="true">
+					<div class="title">
+						<div id="action-button-byowner" x-mojo-element="Button"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="palm-group view-all view-favourites  view-caches">
+		<div class="palm-group-title" x-mojo-loc='' id="title-lists">Cache lists</div>
+		<div class="palm-list">
+			<div class="palm-row single">
+				<div class="palm-row-wrapper textfield-group" x-mojo-focus-highlight="true">
+					<div class="title">
+						<div id="action-button-favourite" x-mojo-element="Button"></div>
+						<div id="action-button-import" x-mojo-element="Button"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="palm-group view-all view-favourites view-trackables">
+		<div class="palm-group-title" x-mojo-loc='' id="title-tbcode">Trackable by code/number</div>
+		<div class="palm-list">
+			<div class="palm-row single">
+				<div class="palm-row-wrapper textfield-group" x-mojo-focus-highlight="true">
+					<div class="title">
+						<div id="action-tbcode" name="action-tbcode" x-mojo-element="TextField"></div>
+					</div>
+				</div>
+			</div>
+			<div class="palm-row single">
+				<div class="palm-row-wrapper textfield-group" x-mojo-focus-highlight="true">
+					<div class="title">
+						<div id="action-button-tbcode" x-mojo-element="Button"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="palm-group view-all view-trackables">
+		<div class="palm-group-title" x-mojo-loc='' id="title-trackable-keyword">Seach Trackable</div>
+		<div class="palm-list">
+			<div class="palm-row single">
+				<div class="palm-row-wrapper textfield-group" x-mojo-focus-highlight="true">
+					<div class="title">
+						<div id="action-trackable-keyword" name="action-trackable-keyword" x-mojo-element="TextField"></div>
+					</div>
+				</div>
+			</div>
+			<div class="palm-row single">
+				<div class="palm-row-wrapper textfield-group" x-mojo-focus-highlight="true">
+					<div class="title">
+						<div id="action-button-trackables-keyword" x-mojo-element="Button"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="palm-group view-all view-favourites view-trackables">
+		<div class="palm-group-title" x-mojo-loc='' id="title-lists">Trackables lists</div>
+		<div class="palm-list">
+			<div class="palm-row single">
+				<div class="palm-row-wrapper textfield-group" x-mojo-focus-highlight="true">
+					<div class="title">
+						<div id="action-button-trackable-favourite" x-mojo-element="Button"></div>
+						<div id="action-button-trackable-your" x-mojo-element="Button"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="palm-group view-all view-favourites">
+		<div class="palm-group-title" x-mojo-loc='' id="title-quickdecode">Quick decode</div>
+		<div class="palm-list">
+			<div class="palm-row single">
+				<div class="palm-row-wrapper textfield-group" x-mojo-focus-highlight="true">
+					<div class="title">
+						<div id="action-quickdecode" name="action-quickdecode" x-mojo-element="TextField"></div>
+					</div>
+				</div>
+			</div>
+			<div class="palm-row single">
+				<div class="palm-row-wrapper textfield-group" x-mojo-focus-highlight="true">
+					<div class="title">
+						<div id="action-button-quickdecode" x-mojo-element="Button"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="palm-group view-all view-favourites view-caches">
+		<div class="palm-group-title" x-mojo-loc='' id="title-compass">Compass</div>
+		<div class="palm-list">
+			<div class="palm-row single">
+				<div class="palm-row-wrapper textfield-group" x-mojo-focus-highlight="true">
+					<div class="title">
+						<div id="action-button-compass" x-mojo-element="Button"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+<!--
+	<div class="palm-group">
+		<div class="palm-group-title" x-mojo-loc=''>Warning</div>
+		<div class="palm-list">
+			<div class="palm-row single">
+				<div class="palm-row-wrapper" x-mojo-focus-highlight="true">
+					<div class="title" id="expire-text">
+						This version expires in <strong>January 15th</strong>, 2010.<br />
+						<small>After that is recommended to remove this version of <strong>Geocaching for webOS</strong> and download new from Preware (or App Catalog if available).
+						Reason for this limitation is changing application ID for release in Palm's App Catalog.
+						Thank you for your understanding.</small>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+-->
+</div>
+<div id="statsimg" class="statsimg"></div>

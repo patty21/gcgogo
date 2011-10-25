@@ -1,0 +1,25 @@
+{
+	"id": "to.yz.gcgogo",
+	"version": "1.0.0",
+	"vendor": "patty21",
+	"type": "web",
+	"main": "index.html",
+	"title": "GC-gogo",
+	"icon": "icon.png",
+	"smallicon": "icon32x32.png",
+	"copyright": "&copy; Copyright 2009 - 2011 Patty21 & Tomas Kopecny aka Georg.",
+	"support": {
+		"url": "http://gcgogo.yz.to/", 
+		"email": {
+				"address": "patty@gmx.de",
+				"subject": "Support"
+		},
+		"resources": [
+			{
+				"type": "scene",
+				"label": "About crew &amp; Copyright",
+				"sceneName": "about"
+			}
+		]
+	}
+}
