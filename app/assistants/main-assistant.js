@@ -490,7 +490,7 @@ MainAssistant.prototype.setup = function() {
 		) {
 			var template = 'main/changelog-dialog';
 			// Template for Beta notice
-			if(Mojo.Controller.appInfo.id == 'com.georgo.org.precaching.beta') {
+			if(Mojo.Controller.appInfo.id == 'to.yz.gcgogo.beta') {
 				template = 'main/betanotice-dialog';
 			}
 

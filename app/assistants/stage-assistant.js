@@ -4,7 +4,7 @@ function StageAssistant() {
 
 StageAssistant.prototype.setup = function() {
 	this.controller.pushScene('first');
-	// preCaching database
+	// gcgogo database
 	
 	var dbVersions = [
 		{'version': '1.2', 'sql': []},
@@ -23,7 +23,7 @@ StageAssistant.prototype.setup = function() {
 	do {
 		ver = dbVersions[verIndex];
 		try {
-			Geocaching.db = openDatabase('preCaching', ver['version']);
+			Geocaching.db = openDatabase('GCgogo', ver['version']);
 		} catch(e) {
 			if (e.code === e.INVALID_STATE_ERR) {
 				verIndex++;
@@ -67,7 +67,7 @@ StageAssistant.prototype.setup = function() {
 
 	Geocaching.storage = new Mojo.Depot(
 		{
-			'name': "precaching",
+			'name': "gc-gogo",
 			'version': 1,
 			'replace': false
 		},

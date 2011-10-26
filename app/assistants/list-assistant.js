@@ -40,7 +40,7 @@ ListAssistant.prototype.setup = function() {
 			'itemTemplate': 'list/list-item',
 			'listTemplate': 'list/list-container',
 			'emptyTemplate': 'list/list-empty',
-			'addItemLabel': $L("Next page"),
+			'addItemLabel': $L("Extend list"),
 			'swipeToDelete': swipe
 		},
 		this.cacheListModel = {
