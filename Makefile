@@ -32,7 +32,7 @@ build: clean
 	cp -r sources.json $(DESTDIR)/
 	cp -r index.html $(DESTDIR)/
 	cp -r *.png $(DESTDIR)/
-#	rm $(DESTDIR)/*-beta.png 
+	rm $(DESTDIR)/*-beta.png 
 	
 	find $(DESTDIR) -type f -name "*~" -delete
 
@@ -70,9 +70,9 @@ beta: clean
 #		sed -i -e 's/<div id="corner"><\/div>/<div id="corner" class="beta"><\/div>/' $$z; \
 #	done
 
-	sed -i -e 's/"com\.georgo\.org\.precaching"/"com.georgo.org.precaching.beta"/' $(DESTDIR)/appinfo.json
+	sed -i -e 's/"to\.yz\.gcgogo"/"to.yz.gcgogo.beta"/' $(DESTDIR)/appinfo.json
 	sed -i -e 's/"title": "\(.*\)"/"title": "\1 BETA"/' $(DESTDIR)/appinfo.json
-	sed -i -e 's/>Geocaching for webOS</>Geocaching for webOS BETA</' $(DESTDIR)/app/views/main/main-scene.html
+	sed -i -e 's/>GC-gogo</>GC-gogo BETA</' $(DESTDIR)/app/views/main/main-scene.html
 	sed -i -e 's/"version": "\(.*\)"/"version": "$(DATE)"/' $(DESTDIR)/appinfo.json
 
 	find $(DESTDIR) -type f -name "*~" -delete
