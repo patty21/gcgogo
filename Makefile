@@ -3,6 +3,7 @@ ifndef DESTDIR
 endif
 
 JSFILES:=$(shell ls app/assistants/*.js)
+PIFILES:=$(shell ls plugins/*.js)
 CSSFILES:=$(shell ls stylesheets/*.css)
 JAVA:=/usr/bin/env java
 PACKAGE:=/usr/bin/env palm-package
@@ -19,13 +20,18 @@ build: clean
 
 	cp -r app/views $(DESTDIR)/app/
 	cp -r images $(DESTDIR)/
-	cp -r plugins $(DESTDIR)/
 #	cp -r resources $(DESTDIR)/
 
 	mkdir -p $(DESTDIR)/stylesheets
 	for i in $(CSSFILES); do \
 		echo "Compressing $$i"; \
 		$(JAVA) -jar tools/yuicompressor-2.4.2.jar -o $(DESTDIR)/$$i --charset UTF-8 --type css $$i || exit 1; \
+	done
+
+	mkdir -p $(DESTDIR)/plugins
+	for i in $(PIFILES); do \
+		echo "Compressing $$i"; \
+		$(JAVA) -jar tools/yuicompressor-2.4.2.jar -o $(DESTDIR)/$$i --charset UTF-8 --type js $$i || exit 1; \
 	done
 
 	cp -r appinfo.json $(DESTDIR)/
