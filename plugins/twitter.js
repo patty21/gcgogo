@@ -1,6 +1,6 @@
 Twitter  = function() {
-	this.consumerKey = 'tOzuDrakO5ITi6kTh99x8A';
-	this.consumerSecret = 'VsKiOV0t4wUCJ0OOUCechKsISJoezU1mhPGw76Saf4I';
+//	this.consumerKey = 'tOzuDrakO5ITi6kTh99x8A';
+//	this.consumerSecret = 'VsKiOV0t4wUCJ0OOUCechKsISJoezU1mhPGw76Saf4I';
 };
 
 Twitter.prototype.requestToken = function(params, success, failure) {
@@ -41,7 +41,8 @@ Twitter.prototype.requestToken = function(params, success, failure) {
 			success(r.responseText);
 		}.bind(this),
 		onFailure: function(r){
-			failure($L("Error occured on requesting Twitter token."));
+//			failure($L("Error occured on requesting Twitter token."));
+			failure($L("Twitter support is temporarily disabled."));
 		}
 	});
 	Geocaching.lastAjaxId = ajaxId;
