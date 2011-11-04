@@ -10,7 +10,7 @@ GeocachingCom.prototype.doLogin = function(username, password, success, failure)
 		'onSuccess': function(r){
 			var reply = r.responseText;
 			var viewstate = reply.match(/id="__VIEWSTATE"\s+value="([^"]+)"/)[1]
-			var posturl = 'http://www.geocaching.com/login/default.aspx?RESETCOMPLETE=Yč';
+			var posturl = 'http://www.geocaching.com/login/default.aspx?RESETCOMPLETE=Y';
 			var postdata = {
 				'__EVENTTARGET': "",
 				'__EVENTARGUMENT': "",
@@ -36,7 +36,7 @@ GeocachingCom.prototype.doLogin = function(username, password, success, failure)
 						failure($L("Incorrect username or password!"));
 						return false;
 					}
-
+/*
 					// Switch to English
 					var viewstate = reply.match(/id="__VIEWSTATE"\s+value="(.+?)"/)[1]
 					var posturl = 'http://www.geocaching.com/login/default.aspx';
@@ -50,7 +50,7 @@ GeocachingCom.prototype.doLogin = function(username, password, success, failure)
 						'parameters': parameters,
 						'contentType': 'application/x-www-form-urlencoded',
 					});
-
+*/
 					success();
 					return true;
 				}.bind(this)
@@ -798,14 +798,15 @@ GeocachingCom.prototype.loadCache = function(params, success, failure)
 			}
 
 			try {
-				cache[geocode].description = reply.match(/<span id=\"ctl00_ContentBody_LongDescription\">(.*)<\/span>\s*<\/div>\s*<p>\s*<\/p>\s*<p>\s*<strong>\s*Additional Hints/i)[1]
+				cache[geocode].description = reply.match(/<span id=\"ctl00_ContentBody_LongDescription\">(.*)<\/span>\s*<\/div>\s*<p>\s*<\/p>\s*<p>\s*<strong>[^<]+<\/strong>/i)[1];
 			} catch(e) {
-				cache[geocode].description = "";
+				cache[geocode].description = '';
 			}
 
-			// Event date
+			// Hidden/Event date
 			try {
-				cache[geocode].date = reply.match(/Event Date[ ]*:<\/strong>[ ]*([^<]+)<a href="(http:\/\/([\-0-9\.a-z\/]*)?www\.geocaching\.com)?\/my\/vcalendar/i)[3]
+				tmp = reply.match(/<span class="minorCacheDetails">[^<]+:\s*(\d+\/\d+\/\d+)\s*<\/span>/i)[1];
+				cache[geocode].date = Mojo.Format.formatDate(new Date(tmp), {'date':'medium', 'time':''});
 			} catch(e) {
 				cache[geocode].date = "";
 			}
