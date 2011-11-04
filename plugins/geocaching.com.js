@@ -692,11 +692,15 @@ GeocachingCom.prototype.loadCache = function(params, success, failure)
 				return false;
 			}
 
-			if(-1 != reply.search('Sorry, you cannot view this cache listing until it has been published.')) {
+			if(-1 != reply.search('<h2>Cache is Unpublished</h2>')) {
 				failure($L("Cache not found."));
 				return false;
 			}
-			if(-1 != reply.search('has chosen to make this cache listing visible to Premium Members only')) {
+			if(-1 != reply.search('Sorry, you cannot view this cache listing until it has been published.')) {
+				failure($L("This cache hast not yet been published."));
+				return false;
+			}
+			if(-1 != reply.search('<img src="/images/silk/error.png" height="16" alt="Premium Members only" width="16"')) {
 				failure($L("This cache is for premium members only."));
 				return false;
 			}
