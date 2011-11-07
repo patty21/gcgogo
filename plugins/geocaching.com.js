@@ -877,7 +877,7 @@ GeocachingCom.prototype.loadCache = function(params, success, failure)
 
 			//  Gallery images count
 			try {
-				cache[geocode].galleryImagesCount = Number(reply.match(/href="gallery\.aspx\?[^"]*">View the Image Gallery of (\d+) images<\/a>/i)[1])
+				cache[geocode].galleryImagesCount = Number(reply.match(/href="gallery\.aspx\?[^"]*">\D+(\d+)[^<]+<\/a>/i)[1])
 				cache[geocode].galleryImagesCount -= Number(spoilerImagesCount);
 			} catch(e) {
 				cache[geocode].galleryImagesCount = 0;
@@ -885,7 +885,7 @@ GeocachingCom.prototype.loadCache = function(params, success, failure)
 
 			// Waypoints
 			cache[geocode].waypoints = [];
-			var wpBegin = reply.search('<span[^>]*>Additional Waypoints</span');
+			var wpBegin = reply.search('<span id="ctl00_ContentBody_WaypointsInfo"');
 			var wpList, wpEnd, wpItems, wpCount, wp, waypoint;
 			if(-1 != wpBegin) {
 				wpList = reply.substr(wpBegin);
@@ -1109,11 +1109,11 @@ GeocachingCom.prototype.loadImages = function(params, success, failure)
 			// gallery images
 			cache[geocode].galleryImages = new Array();
 			try {
-				tmp = reply.match(/<a href='([^"]+)' data-title='[^']+' class="imageLink">\s*<img\s+src='(http:\/\/([\-0-9\.a-z\/]*)?img.geocaching.com)?\/cache\/log\/thumb\/([^"]+)' alt='View Image' \/><\/a><br \/>\s*<small><strong>\s*([^<]+)<\/strong><\/small>/ig);
+				tmp = reply.match(/<a href='([^"]+)' data-title='[^']+' class="imageLink">\s*<img\s+src='(http:\/\/([\-0-9\.a-z\/]*)?img.geocaching.com)?\/cache\/log\/thumb\/([^"]+)' alt='[^']+' \/><\/a><br \/>\s*<small><strong>\s*([^<]+)<\/strong><\/small>/ig);
 				if(tmp.length>0) {
 					var len = tmp.length, imgTmp, img;
 					for(var z=0; z<len; z++) {
-						imgTmp = tmp[z].match(/<a href='([^"]+)' data-title='[^']+' class="imageLink">\s*<img\s+src='(http:\/\/([\-0-9\.a-z\/]*)?img.geocaching.com)?\/cache\/log\/thumb\/([^"]+)' alt='View Image' \/><\/a><br \/>\s*<small><strong>\s*([^<]+)<\/strong><\/small>/i);
+						imgTmp = tmp[z].match(/<a href='([^"]+)' data-title='[^']+' class="imageLink">\s*<img\s+src='(http:\/\/([\-0-9\.a-z\/]*)?img.geocaching.com)?\/cache\/log\/thumb\/([^"]+)' alt='[^']+' \/><\/a><br \/>\s*<small><strong>\s*([^<]+)<\/strong><\/small>/i);
 						img = {
 							'name': imgTmp[5],
 							'url': 'http:\/\/img.geocaching.com\/cache\/log\/' + imgTmp[4]
