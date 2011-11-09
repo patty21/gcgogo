@@ -752,10 +752,10 @@ GeocachingCom.prototype.loadCache = function(params, success, failure)
 				return false;
 			}
 			try {
-				cache[geocode].latlon = reply.match(/<span id="ctl00_ContentBody_LatLon"[^>]*>([^<]*)<\/span>/i)[1];
+				cache[geocode].latlon = reply.match(/<span id="uxLatLon"[^>]*>([^<]*)<\/span>/i)[1];
 			} catch(e) {
 				try {
-					cache[geocode].latlon = reply.match(/<span id="ctl00_ContentBody_LatLon"[^>]*><b>([^<]*)<\/b><\/span>/i)[1];
+					cache[geocode].latlon = reply.match(/<span id="uxLatLon"[^>]*><b>([^<]*)<\/b><\/span>/i)[1];
 				} catch(e) {
 					cache[geocode].latlon = "";
 				}
