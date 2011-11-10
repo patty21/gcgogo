@@ -776,7 +776,7 @@ Geocaching.decodeText = function(string)
 Geocaching.sendReport = function(operation, reply, exception)
 {
 	if(Geocaching.settings['debug']) {
-		var url = 'http://pre.georgo.org/precaching/report.php';
+		var url = 'http://gcgogo.yz.to/report.php';
 		var parameters = {
 			'o': operation,
 			'r': reply,
