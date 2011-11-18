@@ -1256,7 +1256,7 @@ GeocachingCom.prototype.loadTrackable = function(params, success, failure)
 			
 			// TB traveled
 			try {
-				trackable[tbcode].traveled = new String(reply.match(<h4 class="BottomSpacing">[^<]*\(([0-9\.kmmi]+)\)[^<]*<a href/i)[1]).trim()
+				trackable[tbcode].traveled = new String(reply.match(/<h4 class="BottomSpacing">[^<]*\(([0-9\.kmmi]+)&nbsp;\)[^<]*<a href/i)[1]).trim()
 			} catch(e) {
 				trackable[tbcode].traveled = $L("None");
 			}
@@ -1277,7 +1277,7 @@ GeocachingCom.prototype.loadTrackable = function(params, success, failure)
 
 			// TB About item
 			try {
-				trackable[tbcode].about = reply.match(/<div id="TrackableDetails">\s*<p>\s*<\/p>\s*<p>\s*(.*)\s*<\/p>\s*<\/div>\s*<div id="ctl00_ContentBody_BugDetails_uxAbuseReport">/i)[1]
+				trackable[tbcode].about = reply.match(/<div id="TrackableDetails">\s*<p>.*<\/p>\s*<p>\s*(.*)\s*<\/p>\s*<\/div>\s*<div id="ctl00_ContentBody_BugDetails_uxAbuseReport">/i)[1]
 			} catch(e) {
 				trackable[tbcode].about = "";
 			}
