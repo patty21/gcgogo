@@ -669,7 +669,7 @@ GeocachingCom.prototype.loadCache = function(params, success, failure)
 		params['retry'] = 1;
 	}
 	
-	var url = "http://www.geocaching.com/seek/cache_details.aspx?"+ urlParam +"&decrypt=1&log=y&numlogs="+ Geocaching.settings['logcount'];
+	var url = "http://www.geocaching.com/seek/cache_details.aspx?"+ urlParam;
 	var ajaxId = 'cache-'+ Math.round(new Date().getTime());
 
 	Geocaching.ajaxRequests[ajaxId] = new Ajax.Request(url, {
@@ -714,7 +714,7 @@ GeocachingCom.prototype.loadCache = function(params, success, failure)
 			} catch(e) {
 				Geocaching.sendReport('parseCache_'+url, reply, e);
 				failure($L("Error occured on cache code parsing."));
-				return false;				
+				return false;
 			}
 			
 			if(-1 != reply.search('<li>This cache is temporarily unavailable.')) {
@@ -802,7 +802,7 @@ GeocachingCom.prototype.loadCache = function(params, success, failure)
 			}
 
 			try {
-				cache[geocode].description = reply.match(/<span id=\"ctl00_ContentBody_LongDescription\">(.*)<\/span>\s*<\/div>\s*<p>\s*<\/p>\s*<p>\s*<strong>[^<]+<\/strong>/i)[1];
+				cache[geocode].description = reply.match(/<span id="ctl00_ContentBody_LongDescription">(.*)<\/span>\s*<\/div>\s*<p>\s*<\/p>\s*<p>\s*<strong>[^<]+<\/strong>/i)[1];
 			} catch(e) {
 				cache[geocode].description = '';
 			}
@@ -1256,7 +1256,7 @@ GeocachingCom.prototype.loadTrackable = function(params, success, failure)
 			
 			// TB traveled
 			try {
-				trackable[tbcode].traveled = new String(reply.match(/Tracking History \(([0-9\.km]+)/i)[1]).trim()
+				trackable[tbcode].traveled = new String(reply.match(<h4 class="BottomSpacing">[^<]*\(([0-9\.kmmi]+)\)[^<]*<a href/i)[1]).trim()
 			} catch(e) {
 				trackable[tbcode].traveled = $L("None");
 			}
@@ -1270,7 +1270,7 @@ GeocachingCom.prototype.loadTrackable = function(params, success, failure)
 
 			// TB Goal
 			try {
-				trackable[tbcode].goal = reply.match(/<div id="TrackableGoal">\s*<p>\s*(.*)\s*<\/p>\s*<\/div>\s*<h3>\s*About this item/i)[1]
+				trackable[tbcode].goal = reply.match(/<div id="TrackableGoal">\s*<p>\s*(.*)\s*<\/p>\s*<\/div>\s*<h3>/i)[1]
 			} catch(e) {
 				trackable[tbcode].goal = "";
 			}
@@ -1284,7 +1284,7 @@ GeocachingCom.prototype.loadTrackable = function(params, success, failure)
 			
 			// TB Location
 			try {
-				trackable[tbcode].location = reply.match(/<a id="ctl00_ContentBody_BugDetails_BugLocation" href="(http:\/\/([\-0-9\.a-z\/]*)?www\.geocaching\.com)?\/profile\/[^"]*">In the hands of ([^<]+)\.<\/a>/i)[3]
+				trackable[tbcode].location = reply.match(/<a id="ctl00_ContentBody_BugDetails_BugLocation" href="(http:\/\/([\-0-9\.a-z\/]*)?www\.geocaching\.com)?\/profile\/[^"]*">([^<]+)\.<\/a>/i)[3]
 			} catch(e) {
 				trackable[tbcode].location = "";
 			}
@@ -1292,7 +1292,7 @@ GeocachingCom.prototype.loadTrackable = function(params, success, failure)
 			// Location is cache
 			if(trackable[tbcode].location == "") {
 				try {
-					tmp = reply.match(/<a id="ctl00_ContentBody_BugDetails_BugLocation" title="[^"]*" href="(http:\/\/([\-0-9\.a-z\/]*)?www\.geocaching\.com)?\/seek\/cache_details.aspx\?guid=([^"]*)">In ([^<]+)<\/a>/i);
+					tmp = reply.match(/<a id="ctl00_ContentBody_BugDetails_BugLocation" title="[^"]*" href="(http:\/\/([\-0-9\.a-z\/]*)?www\.geocaching\.com)?\/seek\/cache_details.aspx\?guid=([^"]*)">([^<]+)<\/a>/i);
 					trackable[tbcode].locationGuid = tmp[3];
 					trackable[tbcode].location = tmp[4];
 					trackable[tbcode].locationType = 'cache';
