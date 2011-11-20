@@ -228,7 +228,7 @@ TrackableAssistant.prototype.handleCommand = function(event) {
 								this.controller.stageController.pushScene('postlog-trackables', this.params['tbcode']);
 							break;
 							case 'tweet':
-								this.controller.stageController.pushScene('tweet', $L("I discover #{code} with #Geocaching for #webOS. http://coord.info/#{code}").interpolate({'code': this.params['tbcode']}));
+								this.controller.stageController.pushScene('tweet', $L("I discover #{code} with #GC-gogo. http://coord.info/#{code}").interpolate({'code': this.params['tbcode']}));
 							break;
 						}
 					}.bind(this),

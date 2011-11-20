@@ -1,6 +1,6 @@
 Twitter  = function() {
-//	this.consumerKey = 'tOzuDrakO5ITi6kTh99x8A';
-//	this.consumerSecret = 'VsKiOV0t4wUCJ0OOUCechKsISJoezU1mhPGw76Saf4I';
+	this.consumerKey = '2fiArqfEkulLnNwxOCvptg';
+	this.consumerSecret = 'fIj8gYddj2fx7JXwocMw1zcRa3POnfGm0VfZvsF3w4';
 };
 
 Twitter.prototype.requestToken = function(params, success, failure) {
