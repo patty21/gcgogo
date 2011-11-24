@@ -697,7 +697,7 @@ GeocachingCom.prototype.loadCache = function(params, success, failure)
 				return false;
 			}
 			if(-1 != reply.search('Sorry, you cannot view this cache listing until it has been published.')) {
-				failure($L("This cache hast not yet been published."));
+				failure($L("This cache has not yet been published."));
 				return false;
 			}
 			if(-1 != reply.search('<img src="/images/silk/error.png" height="16" alt="Premium Members only" width="16"')) {
