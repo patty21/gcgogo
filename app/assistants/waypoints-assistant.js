@@ -24,11 +24,13 @@ WaypointsAssistant.prototype.setup = function() {
 		'stage': this.geocode,
 	}
 	
+	var swipe = false;
 	// Add user waypoints
 	try {
 		var userWpts = cache[this.geocode].userdata['waypoints'];
 		var userWptsLen = userWpts.length;
 		if(userWptsLen > 0) {
+			swipe = true;
 			for(z=0; z<userWptsLen; z++) {
 				this.wpts.push(userWpts[z]);
 			}
@@ -39,16 +41,15 @@ WaypointsAssistant.prototype.setup = function() {
 	
 	var wp, coords, _distance, _direction;
 	var wptsLen = this.wpts.length;
-	
-	if(wptsLen > 0) {
+	if (wptsLen > 0) {
 		for(z=0; z<wptsLen; z++) {
 			wp = this.wpts[z];
-			coords = wp['latlon'];
+			coords = '???';
 			distance = '';
 
 			// Waypoint have coordinates
 			if(typeof(wp['latitude'])!='undefined' && typeof(wp['longitude'])!='undefined') {
-				coords = wp.latitudeString +" "+ wp.longitudeString;
+				coords = Geocaching.toLatLon(wp['latitude'],'lat')+" "+ Geocaching.toLatLon(wp['longitude'],'lon');
 				
 				if(wp['type'] == 'puzzle' || wp['type'] == 'stage') {
 					_distance = Geocaching.getHumanDistance(Geocaching.getDistance(prevLat[wp['type']], prevLon[wp['type']], wp['latitude'], wp['longitude']));
@@ -97,7 +98,8 @@ WaypointsAssistant.prototype.setup = function() {
 			'itemTemplate': 'waypoints/list-item',
 			'listTemplate': 'waypoints/list-container',
 			'emptyTemplate':'waypoints/list-empty',
-			'addItemLabel': $L("Add waypoint")
+//			'addItemLabel': $L("Add waypoint"),
+			'swipeToDelete': swipe
 		},
 		this.waypointsListModel = {
 			'listTitle': $L("Waypoints"),
@@ -105,11 +107,35 @@ WaypointsAssistant.prototype.setup = function() {
 		}
 	);
 
+	this.controller.setupWidget(Mojo.Menu.commandMenu, {'menuClass': 'no-fade'},
+		this.commandMenuModel = {
+			'items':	[
+//				this.commandMenuItem1 = {items: [
+//					{'label': $L("More info"), 'icon': 'info', 'command': 'info'},
+//					{'label':'Users note', 'icon':'attach', 'command':'note', 'disabled': true},
+//					{'label': $L("Logs"), 'icon': 'search', 'command': 'logs'},
+//					{'label': $L("Compass"), 'iconPath': defaultnavigationIcons[Geocaching.settings['defaultnavigation']], 'command': 'compass'}
+//				]},
+//				this.commandMenuItem2,
+				this.commandMenuItem3 = {items: [
+					{'label': $L("Add"), 'icon': 'new', 'command': 'addwp'}, // Add a WP
+					{'label': $L("WP"), 'command': 'wpproj'} // WP Projection
+					]}
+			],
+			'visible': true
+		}
+	);
+
+
 	this.handleWaypointListTap = this.handleWaypointListTap.bindAsEventListener(this);
 	Mojo.Event.listen(this.controller.get('waypoints-list'), Mojo.Event.listTap, this.handleWaypointListTap);
 	
-	this.handleWaypointListAdd = this.handleWaypointListAdd.bind(this);
-	Mojo.Event.listen(this.controller.get('waypoints-list'),Mojo.Event.listAdd, this.handleWaypointListAdd);
+//	this.handleWaypointListAdd = this.handleWaypointListAdd.bind(this);
+//	Mojo.Event.listen(this.controller.get('waypoints-list'),Mojo.Event.listAdd, this.handleWaypointListAdd);
+	
+	this.handleDeleteWaypoint = this.handleDeleteWaypoint.bind(this);
+	Mojo.Event.listen(this.controller.get('cache-list'),Mojo.Event.listDelete, this.handleDeleteWaypoint);
+
 }
 
 WaypointsAssistant.prototype.activate = function(event) {
@@ -234,9 +260,18 @@ WaypointsAssistant.prototype.handleWaypointListTap = function(event) {
 	}
 }
 
-WaypointsAssistant.prototype.handleWaypointListAdd = function(event) {
+WaypointsAssistant.prototype.handleCommand = function(event) {
+	if(event.type == Mojo.Event.command) {
+
+
+//WaypointsAssistant.prototype.handleWaypointListAdd = function(event) {
+
+
+
 	var params = {
-		'name': $L({'value':"User defined",'key':'user_defined'}),
+		'name': $L({'value':"",'key':'user_defined'}),
+		'lat': cache[this.geocode].latitude,
+		'lon': cache[this.geocode].longitude,
 		'submit': $L("Save")
 	};
 
@@ -257,7 +292,16 @@ WaypointsAssistant.prototype.handleWaypointListAdd = function(event) {
 			}.bind(this)
 		)
 	});
-};
+}};
+
+
+WaypointsAssistant.prototype.handleDeleteWaypoint = function(event) {
+	if(typeof(event.item['id']) != 'undefined') {
+		var waypoint = this.wpts[event.item['id']];
+		// Add here code to delete a waypoint
+
+	}
+}
 
 WaypointsAssistant.prototype.userCoords = function(wptName, latitude, longitude) {
 	if(latitude == false)
@@ -266,7 +310,7 @@ WaypointsAssistant.prototype.userCoords = function(wptName, latitude, longitude)
 	var lat = Geocaching.parseCoordinate(latitude);
 	var lon = Geocaching.parseCoordinate(longitude);
 
-	if(typeof(lat['coordinate']) == 'undefined') {
+	if(lat == false) {
 		this.controller.showAlertDialog({
 			'preventCancel': true,
 			'onSuccess': function(){},
@@ -277,7 +321,7 @@ WaypointsAssistant.prototype.userCoords = function(wptName, latitude, longitude)
 		return false;
 	}
 
-	if(typeof(lon['coordinate']) == 'undefined') {
+	if(lon == false) {
 		this.controller.showAlertDialog({
 			'preventCancel': true,
 			'onSuccess': function(){},
@@ -325,11 +369,8 @@ WaypointsAssistant.prototype.saveWaypoint = function(wptName, latitude, longitud
 					_waypoint['prefix'] = 'UD';
 					_waypoint['lookup'] = ts;
 					_waypoint['name'] = wptName;
-					_waypoint['latitude'] = Number(lat['coordinate']);
-					_waypoint['longitude'] = Number(lon['coordinate']);
-					_waypoint['latitudeString'] = Geocaching.parseCoordinate(_waypoint['latitude'], 'lat')['string'];
-					_waypoint['longitudeString'] = Geocaching.parseCoordinate(_waypoint['longitude'], 'lon')['string'];
-					_waypoint['latlon'] = _waypoint['latitudeString'] +" "+ _waypoint['longitudeString'];
+					_waypoint['latitude'] = Number(lat);
+					_waypoint['longitude'] = Number(lon);
 					_waypoint['note'] = '';
 					
 					userdata['waypoints'].push(Object.clone(_waypoint));

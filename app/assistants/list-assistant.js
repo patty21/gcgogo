@@ -479,7 +479,7 @@ ListAssistant.prototype.buildList = function(searchResult) {
 			'ddattrs':(cacheList[z]['ddattr']?'<img src="http://www.geocaching.com/ImgGen/seek/CacheDir.ashx?k='+cacheList[z]['ddattr']+'" />':''),
 			'disabled': (cacheList[z]['archived']?' gc-archived':(cacheList[z]['disabled']?' gc-disabled':'')),
 			'found': (cacheList[z]['found']?' <img src="images/found.png" />':''),
-			'mine': (cacheList[z]['mine']?' <img src="images/star.png" />':''),
+			'own': (cacheList[z]['own']?' <img src="images/star.png" />':''),
 			'maintenance': (cacheList[z]['maintenance']?' <img src="images/needsmaint.gif" />':''),
 			'trackables': trackables,
 			'members': (cacheList[z]['members']?' <img src="images/members_small.gif" />':'')

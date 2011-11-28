@@ -218,6 +218,7 @@ GeocachingCom.prototype.parseSearch = function(url, reply, list)
 		else
 			listRow['members'] = false;
 
+
 		if(row.indexOf('images/attributes/firstaid-sm-yes.gif') != -1)
 			listRow['maintenance'] = true;
 		else
@@ -234,12 +235,12 @@ GeocachingCom.prototype.parseSearch = function(url, reply, list)
 			listRow['found'] = false;
 		}
 
-		// Mine flag!
+		// Own flag!
 		if(row.indexOf('images/silk/star.png') != -1) {
 			row = row.replace('images/silk/star.png', '');
-			listRow['mine'] = true;
+			listRow['own'] = true;
 		} else { 
-			listRow['mine'] = false;
+			listRow['own'] = false;
 		}
 
 		// Trackables
@@ -752,29 +753,33 @@ GeocachingCom.prototype.loadCache = function(params, success, failure)
 				return false;
 			}
 			try {
-				cache[geocode].latlon = reply.match(/<span id="uxLatLon"[^>]*>([^<]*)<\/span>/i)[1];
+				tmp = reply.match(/<span id="uxLatLon"[^>]*>([^<]*)<\/span>/i)[1];
 			} catch(e) {
 				try {
-					cache[geocode].latlon = reply.match(/<span id="uxLatLon"[^>]*><b>([^<]*)<\/b><\/span>/i)[1];
+					tmp = reply.match(/<span id="uxLatLon"[^>]*><b>([^<]*)<\/b><\/span>/i)[1];
 				} catch(e) {
-					cache[geocode].latlon = "";
+					tmp = "";
 				}
 			}
+			if (tmp) {
+				tmp = Geocaching.parseLatLon(tmp);
+				cache[geocode].latitude = tmp.latitude;
+				cache[geocode].longitude = tmp.longitude;
+			} else  {
+				cache[geocode].latitude = 0;
+				cache[geocode].longitude = 0;
+			}
+			
 			if(-1 != reply.search('<img src="/images/stockholm/16x16/check.gif"')) {
 				cache[geocode].found = true;
 			} else {
 				cache[geocode].found = false;
 			}
-			try {
-				tmp = Geocaching.parseLatLon(cache[geocode].latlon);
-				if(tmp != false) {
-					cache[geocode].latitudeString = tmp.latitudeString;
-					cache[geocode].longitudeString = tmp.longitudeString;
-					cache[geocode].latitude = tmp.latitude;
-					cache[geocode].longitude = tmp.longitude;
-				}
-			} catch(e) { }
-
+			if(-1 != reply.search('<a href="/hide/attributes.aspx')) {
+				cache[geocode].own = true;
+			} else {
+				cache[geocode].own = false;
+			}
 			try {
 				cache[geocode].location = reply.match(/<span id="ctl00_ContentBody_Location"[^>]*>([^<]*)/i)[1]
 			} catch(e) {
@@ -795,7 +800,7 @@ GeocachingCom.prototype.loadCache = function(params, success, failure)
 			} catch(e) {
 				cache[geocode].difficulty = "0";
 			}
-			try  {
+			try {			
 				cache[geocode].shortdesc = reply.match(/<span id="ctl00_ContentBody_ShortDescription">(.*)<\/span>.*<span id="ctl00_ContentBody_LongDescription">/i)[1];
 			} catch(e) {
 				cache[geocode].shortdesc = "";
@@ -814,7 +819,6 @@ GeocachingCom.prototype.loadCache = function(params, success, failure)
 			} catch(e) {
 				cache[geocode].date = "";
 			}
-
 			// Trackables
 			cache[geocode].trackables = new Array();
 			try {
@@ -920,8 +924,6 @@ GeocachingCom.prototype.loadCache = function(params, success, failure)
 						waypoint['latlon'] = new String(wp[7].match(/>([^<]*)<\/td>/)[1]).replace(/&nbsp;/g, ' ').trim();
 						tmp = Geocaching.parseLatLon(waypoint['latlon']);
 						if(tmp != false) {
-							waypoint['latitudeString'] = tmp.latitudeString;
-							waypoint['longitudeString'] = tmp.longitudeString;
 							waypoint['latitude'] = tmp.latitude;
 							waypoint['longitude'] = tmp.longitude;
 						}

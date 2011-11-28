@@ -555,12 +555,12 @@ MainAssistant.prototype.setup = function() {
 			}
 
 			if(typeof(response.bycoordslat)!='undefined') {
-				this.inputs['bycoordslat'] = this.modelActionByCoorsLat['value'] = response.bycoordslat;
+				this.inputs['bycoordslat'] = this.modelActionByCoorsLat['value'] = Geocaching.toLatLon(response.bycoordslat,'lat');
 				this.controller.modelChanged(this.modelActionByCoorsLat);
 			}
 			
 			if(typeof(response.bycoordslon)!='undefined') {
-				this.inputs['bycoordslon'] = this.modelActionByCoorsLon['value'] = response.bycoordslon;
+				this.inputs['bycoordslon'] = this.modelActionByCoorsLon['value'] = Geocaching.toLatLon(response.bycoordslon,'lon');
 				this.controller.modelChanged(this.modelActionByCoorsLon);
 			}
 			
@@ -857,7 +857,7 @@ MainAssistant.prototype.actionByCoordsClicked = function(event) {
 	var latitude = Geocaching.parseCoordinate(lat);
 	var longitude = Geocaching.parseCoordinate(lon);
 
-	if(typeof(latitude['coordinate']) == 'undefined') {
+	if(latitude == false) {
 		this.controller.showAlertDialog({
 			'title': $L("Coordinates"),
 			'message': $L("Unknown format of coordinates in Latitude."),
@@ -869,7 +869,7 @@ MainAssistant.prototype.actionByCoordsClicked = function(event) {
 		return false;
 	}
 
-	if(typeof(longitude['coordinate']) == 'undefined') {
+	if(longitude == false) {
 		this.controller.showAlertDialog({
 			'title': $L("Coordinates"),
 			'message': $L("Unknown format of coordinates in Longitude."),
@@ -881,8 +881,8 @@ MainAssistant.prototype.actionByCoordsClicked = function(event) {
 		return false;
 	}
 
-	this.inputs['bycoordslat'] = lat;
-	this.inputs['bycoordslon'] = lon;
+	this.inputs['bycoordslat'] = latitude;
+	this.inputs['bycoordslon'] = longitude;
 	this.saveInputs();
 
 	// Share GPS location
@@ -891,8 +891,8 @@ MainAssistant.prototype.actionByCoordsClicked = function(event) {
 	}
 	
 	this.controller.stageController.pushScene('list', 'coords', {
-		'lat': latitude['coordinate'],
-		'lon': longitude['coordinate'],
+		'lat': latitude,
+		'lon': longitude,
 		'tx': this.modelActionCacheType['value']
 	});
 }
@@ -961,8 +961,8 @@ MainAssistant.prototype.actionNearestMapSuccess = function(event) {
 		{
 			'messageText': $L("Location found, accuracy is #{acc} meters.").interpolate({'acc': accuracy.toFixed(1)})
 		}, '', 'nearest');
-	this.controller.get('action-bycoordslat').mojo.setValue(latitude);
-	this.controller.get('action-bycoordslon').mojo.setValue(longitude);
+	this.controller.get('action-bycoordslat').mojo.setValue(Geocaching.toLatLon(latitude,'lat'));
+	this.controller.get('action-bycoordslon').mojo.setValue(Geocaching.toLatLon(longitude,'lon'));
 
 	// Share GPS location
 	if(Geocaching.settings['go4cache']) {

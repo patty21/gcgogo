@@ -716,11 +716,8 @@ CompassAssistant.prototype.saveWaypoint = function(wptName, latitude, longitude)
 						_waypoint['prefix'] = 'UD';
 						_waypoint['lookup'] = ts;
 						_waypoint['name'] = wptName;
-						_waypoint['latitude'] = Number(lat['coordinate']);
-						_waypoint['longitude'] = Number(lon['coordinate']);
-						_waypoint['latitudeString'] = Geocaching.parseCoordinate(_waypoint['latitude'], 'lat')['string'];
-						_waypoint['longitudeString'] = Geocaching.parseCoordinate(_waypoint['longitude'], 'lon')['string'];
-						_waypoint['latlon'] = _waypoint['latitudeString'] +" "+ _waypoint['longitudeString'];
+						_waypoint['latitude'] = Number(lat);
+						_waypoint['longitude'] = Number(lon);
 						_waypoint['note'] = '';
 						
 						userdata['waypoints'].push(Object.clone(_waypoint));
@@ -750,9 +747,6 @@ CompassAssistant.prototype.saveWaypoint = function(wptName, latitude, longitude)
 				var _cache = {}
 				_cache['latitude'] = Number(lat['coordinate']);
 				_cache['longitude'] = Number(lon['coordinate']);
-				_cache['latitudeString'] = Geocaching.parseCoordinate(_cache['latitude'], 'lat')['string'];
-				_cache['longitudeString'] = Geocaching.parseCoordinate(_cache['longitude'], 'lon')['string'];
-				_cache['latlon'] = _cache['latitudeString'] +" "+ _cache['longitudeString'];
 				_cache['geocode'] = "UD"+ts;
 				_cache['name'] = wptName;
 				_cache['found'] = false;

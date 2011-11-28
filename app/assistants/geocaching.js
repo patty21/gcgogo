@@ -171,9 +171,6 @@ var cacheTemplate = {
 	'size': "",
 	'difficulty': 0,
 	'terrain': 0,
-	'latlon': "",
-	'latitudeString': "",
-	'longitudeString': "",
 	'location': "",
 	'latitude': 0,
 	'longitude': 0,
@@ -184,6 +181,7 @@ var cacheTemplate = {
 	'members': false,
 	'needsmaint': false,
 	'found': false,
+	'own': false,
 	'favourite': false,
 	'updated': 0,
 	'waypoints': [],
@@ -482,8 +480,6 @@ Geocaching.parseLatLon = function(latlon) {
 	var tmp = ''; var result = {};
 	latlon = new String(latlon);
 	if(tmp = latlon.match(/^([NS]) (\d+)° (\d+)\.(\d+) ([WE]) (\d+)° (\d+)\.(\d+)$/i)) {
-		result['latitudeString'] = tmp[1]+" "+tmp[2]+"° "+tmp[3]+"."+tmp[4];
-		result['longitudeString'] = tmp[5]+" "+tmp[6]+"° "+tmp[7]+"."+tmp[8];
 		result['latitude'] = (tmp[1] == 'N'  ? 1 : -1 ) * ( Number(tmp[2])  + (tmp[3]+"."+tmp[4])/60 );
 		result['longitude'] = (tmp[5] == 'E'  ? 1 : -1 ) * ( Number(tmp[6])  + (tmp[7]+"."+tmp[8])/60 );
 		return result;
@@ -492,38 +488,40 @@ Geocaching.parseLatLon = function(latlon) {
 	}
 }
 
-Geocaching.parseCoordinate = function(coord, latlon) {
-	var tmp = ''; var result = {};
+Geocaching.parseCoordinate = function(coord) {
+	var tmp = ''; var result = 0;
 	coord = new String(coord);
-	if(tmp = coord.match(/^([NSWE]) (\d+)[°]? (\d+)\.(\d+)$/i)) {
-		result['coordinate'] = (tmp[1] == 'N' || tmp[1] == 'E' ? 1 : -1 ) * ( Number(tmp[2])  + (tmp[3]+"."+tmp[4])/60 );
-		result['string'] = tmp[1]+" "+tmp[2]+"° "+tmp[3]+"."+tmp[4];
+	if(tmp = coord.match(/^([NSWE])\s*(\d+)[°]?\s*(\d+)\.(\d+)$/i)) {
+		result = (tmp[1] == 'N' || tmp[1] == 'E' ? 1 : -1 ) * ( Number(tmp[2])  + (tmp[3]+"."+tmp[4])/60 );
 		return result;
 	} else
-	if(tmp = coord.match(/^([NSWE]) (\d+)\.(\d+)$/i)) {
-		result['coordinate'] = (tmp[1] == 'N' || tmp[1] == 'E' ? 1 : -1 ) * Number(tmp[2]+"."+tmp[3]);
+	if(tmp = coord.match(/^([NSWE])\s*(\d+)\.(\d+)$/i)) {
+		result = (tmp[1] == 'N' || tmp[1] == 'E' ? 1 : -1 ) * Number(tmp[2]+"."+tmp[3]);
 	} else
 	if(tmp = coord.match(/^(-)?(\d+)\.(\d+)$/i)) {
 		if(typeof(tmp[1]) == 'undefined')
 			tmp[1] = "+";
-		result['coordinate'] = Number(tmp[1]+"1") * Number(tmp[2]+"."+tmp[3]);
+		result = Number(tmp[1]+"1") * Number(tmp[2]+"."+tmp[3]);
 	} else
-	if(tmp = coord.match(/^([NSWE]) (\d+)[°]?$/i)) {
-		result['coordinate'] =  (tmp[1] == 'N' || tmp[1] == 'E' ? 1 : -1 ) * Number(tmp[2]);
+	if(tmp = coord.match(/^([NSWE])\s*(\d+)[°]?$/i)) {
+		result =  (tmp[1] == 'N' || tmp[1] == 'E' ? 1 : -1 ) * Number(tmp[2]);
 	} else
 	if(tmp = coord.match(/^(-)?(\d+)[°]?$/i)) {
 		if(typeof(tmp[1]) == 'undefined')
 			tmp[1] = "+";
-		result['coordinate'] = Number(tmp[1]+"1") * Number(tmp[2]);
+		result = Number(tmp[1]+"1") * Number(tmp[2]);
 	} else
-	if(tmp = coord.match(/^([NSWE]) (\d+)$/i)) {
-		result['coordinate'] = (tmp[1] == 'N' || tmp[1] == 'E' ? 1 : -1 ) * Number(tmp[2]);
+	if(tmp = coord.match(/^([NSWE])\s*(\d+)[°]?\s*(\d+)$/i)) {
+		result = (tmp[1] == 'N' || tmp[1] == 'E' ? 1 : -1 ) * (Number(tmp[2])+Number(tmp[3])/60);
 	} else {
 		return false;
 	}
+	return result;
+}
 
-
-	if(tmp = new String(Number(result['coordinate']).toFixed(9)).match(/^(-)?(\d+)\.(\d+)$/i)) {
+Geocaching.toLatLon = function (coord,latlon) {
+	var tmp='';var result='';
+	if(tmp = new String(Number(coord).toFixed(9)).match(/^(-)?(\d+)\.(\d+)$/i)) {
 		if(typeof(tmp[1]) == 'undefined')
 			tmp[1] = "+";
 
@@ -537,7 +535,7 @@ Geocaching.parseCoordinate = function(coord, latlon) {
 			if(tmp[1] == "+") tmp[1] = "E ";
 			if(tmp[1] == "-") tmp[1] = "W ";
 		}
-		result['string'] = tmp[1] + tmp[2] +"° "+(tmpCord/(1/60)).toFixed(3);
+		result = tmp[1] + tmp[2] +"° "+(tmpCord/(1/60)).toFixed(3);
 		delete(tmpCord);
 		
 		return result;
@@ -566,12 +564,10 @@ Geocaching.parseFile = function(filename, success, failure)
 						wpt = wpts[z];
 						_cache['latitude'] = wpt.getElementsByTagName('coord')[0].getAttribute('lat');
 						_cache['longitude'] = wpt.getElementsByTagName('coord')[0].getAttribute('lon');
-						_cache['latitudeString'] = Geocaching.parseCoordinate(_cache['latitude'], 'lat')['string'];
-						_cache['longitudeString'] = Geocaching.parseCoordinate(_cache['longitude'], 'lon')['string'];
-						_cache['latlon'] = _cache['latitudeString'] +" "+ _cache['longitudeString'];
 						_cache['geocode'] = wpt.getElementsByTagName('name')[0].getAttribute('id');
 						_cache['name'] = wpt.getElementsByTagName('name')[0].textContent;
 						_cache['found'] = false;
+						_cache['own'] = false;
 						_cache['archived'] = false
 						_cache['disabled'] = false;
 						_cache['cacheid'] = '';
@@ -617,9 +613,6 @@ Geocaching.parseFile = function(filename, success, failure)
 						wpt = wpts[z];
 						_cache['latitude'] = wpt.getAttribute('lat');
 						_cache['longitude'] = wpt.getAttribute('lon');
-						_cache['latitudeString'] = Geocaching.parseCoordinate(_cache['latitude'], 'lat')['string'];
-						_cache['longitudeString'] = Geocaching.parseCoordinate(_cache['longitude'], 'lon')['string'];
-						_cache['latlon'] = _cache['latitudeString'] +" "+ _cache['longitudeString'];
 						_cache['geocode'] = wpt.getElementsByTagName('name')[0].textContent;
 						_cache['found'] = (wpt.getElementsByTagName('sym')[0].textContent.match(/Found/i));
 						wptCache = wpt.getElementsByTagName('cache')[0];

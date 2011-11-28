@@ -198,7 +198,7 @@ CacheAssistant.prototype.setup = function() {
 			'items':	[
 				this.commandMenuItem1 = {items: [
 					{'label': $L("More info"), 'icon': 'info', 'command': 'info'},
-//					{label:'Users note', icon:'attach', command:'note', disabled: true},
+//					{'label':'Users note', 'icon':'attach', 'command':'note', 'disabled': true},
 					{'label': $L("Logs"), 'icon': 'search', 'command': 'logs'},
 					{'label': $L("Compass"), 'iconPath': defaultnavigationIcons[Geocaching.settings['defaultnavigation']], 'command': 'compass'}
 				]},
@@ -244,6 +244,9 @@ CacheAssistant.prototype.showCacheDetail = function(geocode) {
 	this.controller.get('cache-name').update(cache[this.geocode].name);
 	if(cache[this.geocode].found) {
 		this.controller.get('cache-title').innerHTML += ' <img src="images/found.png" />';
+	}
+	if(cache[this.geocode].own) {
+		this.controller.get('cache-title').innerHTML += ' <img src="images/star.png" />';
 	}
 	if(cache[this.geocode].members) {
 		this.controller.get('cache-title').innerHTML += ' <img src="images/members_small.gif" />';
@@ -300,7 +303,7 @@ CacheAssistant.prototype.showCacheDetail = function(geocode) {
 	this.controller.get('cache-terrain-label').update(cache[this.geocode].terrain);
 	this.controller.get('cache-difficulty').src='images/stars'+ cache[this.geocode].difficulty.replace('.', '_') + '.gif';
 	this.controller.get('cache-difficulty-label').update(cache[this.geocode].difficulty);
-	this.controller.get('cache-latlon').update(cache[this.geocode].latitudeString+"<br>"+cache[this.geocode].longitudeString);
+	this.controller.get('cache-latlon').update(Geocaching.toLatLon(cache[this.geocode].latitude,"lat")+"<br>"+Geocaching.toLatLon(cache[this.geocode].longitude,"lon"));
 	this.controller.get('cache-location').update(cache[this.geocode].location);
 	this.controller.get('cache-description').update(cache[this.geocode].shortdesc != "" ? cache[this.geocode].shortdesc : $L("Tap for full listing"));
 
@@ -577,7 +580,7 @@ CacheAssistant.prototype.cacheCompass = function(event) {
 		'type': cache[this.geocode].type
 	});
 	
-	if(cache[this.geocode].waypoints.length > 0) {
+	if(cache[this.geocode].waypoints.length > 0) {
 		for(var z in cache[this.geocode].waypoints) {
 			var wp = cache[this.geocode].waypoints[z];
 			if(typeof(wp['latitude'])!='undefined' && typeof(wp['longitude'])!='undefined') {
@@ -616,6 +619,7 @@ CacheAssistant.prototype.cacheCompass = function(event) {
 
 	if(Geocaching.settings['defaultnavigation'] == 'mappingtool') {
 		var params = Geocaching.format4Maptool(waypoints);
+		Mojo.Log.error(Object.toJSON(params));
 		// Try Map Tool Pro
 		this.controller.serviceRequest('palm://com.palm.applicationManager', {
 				'method': 'launch',

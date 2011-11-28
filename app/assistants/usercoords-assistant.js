@@ -1,7 +1,7 @@
 function UsercoordsAssistant(defaults, sceneAssistant,callbackFunc,exitFunc) {
 	this.defaultName = defaults['name'];
-	this.defaultLatitude = (typeof(defaults['lat'])=='undefined' ? '' : defaults['lat']);
-	this.defaultLongitude = (typeof(defaults['lon'])=='undefined' ? '' : defaults['lon']);
+	this.defaultLatitude = (typeof(defaults['lat'])=='undefined' ? '' : Geocaching.toLatLon(defaults['lat'],'lat'));
+	this.defaultLongitude = (typeof(defaults['lon'])=='undefined' ? '' : Geocaching.toLatLon(defaults['lon'],'lon'));
 	this.submitLabel = (typeof(defaults['submit'])=='undefined' ? $L("Navigate") : defaults['submit']);
 	this.callbackFunc = callbackFunc;
 	this.exitFunc = exitFunc;
