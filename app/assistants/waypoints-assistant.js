@@ -134,7 +134,7 @@ WaypointsAssistant.prototype.setup = function() {
 //	Mojo.Event.listen(this.controller.get('waypoints-list'),Mojo.Event.listAdd, this.handleWaypointListAdd);
 	
 	this.handleDeleteWaypoint = this.handleDeleteWaypoint.bind(this);
-	Mojo.Event.listen(this.controller.get('cache-list'),Mojo.Event.listDelete, this.handleDeleteWaypoint);
+	Mojo.Event.listen(this.controller.get('waypoints-list'),Mojo.Event.listDelete, this.handleDeleteWaypoint);
 
 }
 
@@ -146,7 +146,7 @@ WaypointsAssistant.prototype.deactivate = function(event) {
 
 WaypointsAssistant.prototype.cleanup = function(event) {
 	Mojo.Event.stopListening(this.controller.get('waypoints-list'), Mojo.Event.listTap, this.handleWaypointListTap);
-	Mojo.Event.stopListening(this.controller.get('waypoints-list'),Mojo.Event.listAdd, this.handleWaypointListAdd);
+	Mojo.Event.stopListening(this.controller.get('waypoints-list'),Mojo.Event.listDelete, this.handleDeleteWaypoint);
 }
 
 WaypointsAssistant.prototype.handleWaypointListTap = function(event) {
@@ -298,9 +298,43 @@ WaypointsAssistant.prototype.handleCommand = function(event) {
 WaypointsAssistant.prototype.handleDeleteWaypoint = function(event) {
 	if(typeof(event.item['id']) != 'undefined') {
 		var waypoint = this.wpts[event.item['id']];
-		// Add here code to delete a waypoint
-
+		if (waypoint['prefix']=='UD') {
+			this.wpts.splice(event.item['id'],1);
+			var userdata=cache[this.geocode].userdata;
+			var userWptsLen = userdata['waypoints'].length;
+			if(userWptsLen > 0) {
+				for(var z=0; z<userWptsLen; z++) {
+					if (waypoint['lookup']==userdata['waypoints'][z]['lookup']) {
+						 userdata['waypoints'].splice(z,1);
+						 break;
+					}
+				}
+			}
+			cache[this.geocode].userdata=userdata;
+			Geocaching.db.transaction( 
+				(function (transaction) { 
+					transaction.executeSql('UPDATE "caches" SET "userdata"=? WHERE "gccode"= ?', [Object.toJSON(userdata), this.geocode],
+						function(transaction, result) {
+							Mojo.Controller.getAppController().showBanner({'messageText': $L("Waypoint deleted ...")}, '', 'compass');
+						}.bind(this),
+						function(transaction, error) {
+							Mojo.Controller.getAppController().showBanner({'messageText': $L("Error occured deleting waypoint...")}, '', 'compass');
+							Mojo.Log.error("Error executing: %j", error);
+						}.bind(this)
+					);
+				}).bind(this)
+			);			
+		} else {
+			this.controller.showAlertDialog({
+			'preventCancel': true,
+			'onChoose': function(){this.controller.stageController.swapScene('waypoints', this.geocode);},
+			'title': $L("Problem"),
+			'message': $L("You can only delete user defined waypoints."),
+			'choices': [{'label' :$L("Close"), 'type': 'primary'} ]
+			});
+		}
 	}
+	return true;
 }
 
 WaypointsAssistant.prototype.userCoords = function(wptName, latitude, longitude) {
@@ -329,7 +363,7 @@ WaypointsAssistant.prototype.userCoords = function(wptName, latitude, longitude)
 			'message': $L({'value': "Unknown format of coordinates in Longitude.", 'key': 'unknown_format_in_longitude'}),
 			'choices': [{'label':$L("Close"), 'type':'primary'}]
 		});
-		return false;
+		this.controller.stageController.swapScene('waypoints', this.geocode);
 	}
 
 	return true;
@@ -343,7 +377,6 @@ WaypointsAssistant.prototype.saveWaypoint = function(wptName, latitude, longitud
 	// Add as user-waypoint to cache
 	Geocaching.db.transaction( 
 		(function (transaction) { 
-			Mojo.Log.error('Iam here');
 			transaction.executeSql('select "userdata" from "caches" where "gccode"= ?', [this.geocode],
 				function(transaction, results) {
 					if(results.rows.length != 1) return;

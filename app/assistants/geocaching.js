@@ -498,7 +498,7 @@ Geocaching.parseCoordinate = function(coord) {
 	if(tmp = coord.match(/^([NSWE])\s*(\d+)\.(\d+)$/i)) {
 		result = (tmp[1] == 'N' || tmp[1] == 'E' ? 1 : -1 ) * Number(tmp[2]+"."+tmp[3]);
 	} else
-	if(tmp = coord.match(/^(-)?(\d+)\.(\d+)$/i)) {
+	if(tmp = coord.match(/^([+-])?(\d+)\.(\d+)$/i)) {
 		if(typeof(tmp[1]) == 'undefined')
 			tmp[1] = "+";
 		result = Number(tmp[1]+"1") * Number(tmp[2]+"."+tmp[3]);
@@ -506,7 +506,7 @@ Geocaching.parseCoordinate = function(coord) {
 	if(tmp = coord.match(/^([NSWE])\s*(\d+)[°]?$/i)) {
 		result =  (tmp[1] == 'N' || tmp[1] == 'E' ? 1 : -1 ) * Number(tmp[2]);
 	} else
-	if(tmp = coord.match(/^(-)?(\d+)[°]?$/i)) {
+	if(tmp = coord.match(/^([+-])?(\d+)[°]?$/i)) {
 		if(typeof(tmp[1]) == 'undefined')
 			tmp[1] = "+";
 		result = Number(tmp[1]+"1") * Number(tmp[2]);

@@ -941,8 +941,8 @@ MainAssistant.prototype.actionNearestSuccess = function(event) {
 		{
 			'messageText': $L("Location found, accuracy is #{acc} meters.").interpolate({'acc': accuracy.toFixed(1)})
 		}, '', 'nearest');
-	this.controller.get('action-bycoordslat').mojo.setValue(latitude);
-	this.controller.get('action-bycoordslon').mojo.setValue(longitude);
+	this.controller.get('action-bycoordslat').mojo.setValue(Geocaching.toLatLon(latitude,'lat'));
+	this.controller.get('action-bycoordslon').mojo.setValue(Geocaching.toLatLon(longitude,'lon'));
 	
 	this.actionByCoordsClicked(event);
 }
