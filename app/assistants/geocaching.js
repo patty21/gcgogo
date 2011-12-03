@@ -219,6 +219,8 @@ var kmInMiles = 1/1.609344;
 var deg2rad = Math.PI/180;
 var rad2deg = 180/Math.PI;
 var erad = 6371.0;
+var ft2miles = 5280;
+var ft2yard = 3;
 
 var Geocaching = {
 	'login' : {
@@ -436,12 +438,12 @@ Geocaching.getHumanDistance = function(distance) {
 			return Math.round(distance,1) +" mi";
 		} else
 		if(distance > 0.1) {
-			return Math.round(distance*5280) +" ft";
+			return Math.round(distance*ft2miles) +" ft";
 		} else
 		if(distance > 0.05) {
-			return (Math.round(distance*5280*10)/10) +" ft";
+			return (Math.round(distance*ft2miles*10)/10) +" ft";
 		} else {
-			return (Math.round(distance*5280*100)/100) +" ft";
+			return (Math.round(distance*ft2miles*100)/100) +" ft";
 		}
 	} else {
 		if(distance > 10) {
@@ -543,6 +545,24 @@ Geocaching.toLatLon = function (coord,latlon) {
 		return false;
 	}
 
+}
+
+Geocaching.simpleProjection = function(srclat,srclon,angle,distance,unit) {
+	var result = {};
+	var dist;
+	switch (unit) {
+	 	case 0:	dist = distance/1000;
+			break;
+		case 1: dist = distance/kmInMiles/ft2miles;
+			break;
+		case 2: dist = distance/kmInMiles/ft2miles*ft2yards;
+			break;
+		case 3: dist = distance/kmInMiles;
+			break;
+	}
+	result['lat']=srclat+(dist*180/Math.PI/erad)*Math.cos(deg2rad*angle);
+	result['lon']=srclon+(dist*180/Math.PI/erad)*Math.sin(deg2rad*angle)/Math.cos(deg2rad*result['lat']);
+	return result;
 }
 
 Geocaching.parseFile = function(filename, success, failure)

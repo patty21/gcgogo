@@ -45,6 +45,10 @@
         "source": "app/assistants/about-assistant.js"
     },
     {
+        "scenes": "wpprojection",
+        "source": "app/assistants/wpprojection-assistant.js"
+    },
+    {
         "scenes": "waypoints",
         "source": "app/assistants/waypoints-assistant.js"
     },

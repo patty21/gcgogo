@@ -139,6 +139,13 @@ WaypointsAssistant.prototype.setup = function() {
 }
 
 WaypointsAssistant.prototype.activate = function(event) {
+	try{
+		Mojo.Log.error(Object.toJSON(event));
+		if (event['wpname']!='undefined') {
+			this.saveWaypoint(event['wpname'],event['lat'],event['lon']);
+		}
+	} catch(e) {};
+
 }
 
 WaypointsAssistant.prototype.deactivate = function(event) {
@@ -265,34 +272,39 @@ WaypointsAssistant.prototype.handleCommand = function(event) {
 
 
 //WaypointsAssistant.prototype.handleWaypointListAdd = function(event) {
+		switch(event.command) {
+		case "addwp":
+			var params = {
+				'name': $L({'value':"",'key':'user_defined'}),
+				'lat': cache[this.geocode].latitude,
+				'lon': cache[this.geocode].longitude,
+				'submit': $L("Save")
+			};
 
-
-
-	var params = {
-		'name': $L({'value':"",'key':'user_defined'}),
-		'lat': cache[this.geocode].latitude,
-		'lon': cache[this.geocode].longitude,
-		'submit': $L("Save")
-	};
-
-	this.controller.setMenuVisible(Mojo.Menu.commandMenu, false);
-	this.controller.showDialog({
-		'template': 'compass/usercoords-scene',
-		'preventCancel': true,
-		'assistant': new UsercoordsAssistant(
-			params,
-			this,
-			function(wptName, latitude, longitude) {
-				if(this.userCoords(wptName, latitude, longitude)) {
-					this.saveWaypoint(wptName, latitude, longitude);
-				}
-			}.bind(this),
-			function() {
-				this.controller.setMenuVisible(Mojo.Menu.commandMenu, true);
-			}.bind(this)
-		)
-	});
-}};
+			this.controller.setMenuVisible(Mojo.Menu.commandMenu, false);
+			this.controller.showDialog({
+				'template': 'compass/usercoords-scene',
+				'preventCancel': true,
+				'assistant': new UsercoordsAssistant(
+					params,
+					this,
+					function(wptName, latitude, longitude) {
+						if(this.userCoords(wptName, latitude, longitude)) {
+							this.saveWaypoint(wptName, latitude, longitude);
+						}
+					}.bind(this),
+					function() {
+						this.controller.setMenuVisible(Mojo.Menu.commandMenu, true);
+					}.bind(this)
+				)
+			});
+			break;
+		case "wpproj":
+			this.controller.stageController.pushScene('wpprojection', this.geocode,this.wpts);
+		break;
+		}
+	}
+};
 
 
 WaypointsAssistant.prototype.handleDeleteWaypoint = function(event) {
