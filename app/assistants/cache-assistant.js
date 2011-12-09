@@ -214,6 +214,18 @@ CacheAssistant.prototype.activate = function(event) {
 	if(event == 'posted') {
 		this.reloadCache();
 	}
+	var wpCount = cache[this.geocode].waypoints.length;
+	try {
+		wpCount += cache[this.geocode].userdata['waypoints'].length;
+	} catch(e) {}
+	if(wpCount > 1) {
+		this.controller.get('cache-waypoints').update($L("#{num} waypoints").interpolate({'num': wpCount}) +' ');
+	} else
+	if(wpCount == 1) {
+		this.controller.get('cache-waypoints').update($L("1 waypoint"));
+	} else {
+		this.controller.get('cache-waypoints').update($L("No waypoints"));
+	}
 }
 
 CacheAssistant.prototype.deactivate = function(event) {

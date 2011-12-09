@@ -7,7 +7,7 @@
 	"title": "GC-gogo",
 	"icon": "icon.png",
 	"smallicon": "icon32x32.png",
-	"copyright": "&copy; Copyright 2009 - 2011 Patty21 & Tomas Kopecny aka Georg.",
+	"copyright": "&copy; Copyright 2009 - 2011 Patty21 & Tomas Kopecny aka Georgo.",
 	"support": {
 		"url": "http://gcgogo.yz.to/", 
 		"email": {
@@ -19,6 +19,16 @@
 				"type": "scene",
 				"label": "About crew &amp; Copyright",
 				"sceneName": "about"
+			},
+			{
+				"type": "web",
+				"label": "Dicsussion forums",
+				"url": "http://m.forums.precentral.net/webos-homebrew-apps/307998-gc-gogo.html"
+			},
+			{
+				"type": "web",
+				"label": "Donate",
+				"url": "https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=9RKCJYW7PL65W"
 			}
 		]
 	}

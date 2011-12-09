@@ -119,7 +119,7 @@ WaypointsAssistant.prototype.setup = function() {
 //				this.commandMenuItem2,
 				this.commandMenuItem3 = {items: [
 					{'label': $L("Add"), 'icon': 'new', 'command': 'addwp'}, // Add a WP
-					{'label': $L("WP"), 'command': 'wpproj'} // WP Projection
+					{'label': $L("WP"), 'iconPath': 'images/icon-projection.png' , 'command': 'wpproj'} // WP Projection
 					]}
 			],
 			'visible': true

@@ -1286,7 +1286,8 @@ GeocachingCom.prototype.loadTrackable = function(params, success, failure)
 			
 			// TB Location
 			try {
-				trackable[tbcode].location = reply.match(/<a id="ctl00_ContentBody_BugDetails_BugLocation" href="(http:\/\/([\-0-9\.a-z\/]*)?www\.geocaching\.com)?\/profile\/[^"]*">([^<]+)\.<\/a>/i)[3]
+				trackable[tbcode].location = reply.match(/<a id="ctl00_ContentBody_BugDetails_BugLocation" href="(http:\/\/([\-0-9\.a-z\/]*)?www\.geocaching\.com)?\/profile\/[^"]*">([^<]+)<\/a>/i)[3];
+				trackable[tbcode].locationType = 'none'; // disabled due to parsing problem in different languages
 			} catch(e) {
 				trackable[tbcode].location = "";
 			}
