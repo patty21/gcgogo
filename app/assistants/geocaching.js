@@ -493,6 +493,7 @@ Geocaching.parseLatLon = function(latlon) {
 Geocaching.parseCoordinate = function(coord) {
 	var tmp = ''; var result = 0;
 	coord = new String(coord);
+	coord = coord.toUpperCase();
 	if(tmp = coord.match(/^([NSWE])\s*(\d+)[°]?\s*(\d+)\.(\d+)$/i)) {
 		result = (tmp[1] == 'N' || tmp[1] == 'E' ? 1 : -1 ) * ( Number(tmp[2])  + (tmp[3]+"."+tmp[4])/60 );
 		return result;

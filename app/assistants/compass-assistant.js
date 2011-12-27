@@ -255,12 +255,12 @@ CompassAssistant.prototype.renderCompass = function() {
 			alon += this.locateDB[z]['lon'];
 		}
 
-		this.controller.get('message_latlon').update(Geocaching.parseCoordinate(new String(alat/len), 'lat')['string'] +' '+Geocaching.parseCoordinate(new String(alon/len), 'lon')['string'] +' ('+ len +')');
+		this.controller.get('message_latlon').update(Geocaching.toLatLon(alat/len,'lat') +' '+Geocaching.toLatLon(alon/len,'lon') +' ('+ len +')');
 		delete(len); delete(alat); delete(alon);
 	}
 	
-	this.commandMenuLatitude =  Geocaching.parseCoordinate(new String(this.latitude), 'lat')['string'];
-	this.commandMenuLongitude =  Geocaching.parseCoordinate(new String(this.longitude), 'lon')['string'];
+	this.commandMenuLatitude =  Geocaching.toLatLon(this.latitude, 'lat');
+	this.commandMenuLongitude =  Geocaching.toLatLon(this.longitude, 'lon');
 	this.commandMenuHeading = this.heading + ' °';
 
 	var degrees = 0;
@@ -375,8 +375,8 @@ CompassAssistant.prototype.handleCommand = function(event) {
 					if(wptsLen > 0) {
 						try {
 							items.push({'label': $L({'value': "Heading to", 'key': 'heading_to'}) });
-							items.push({'label': $L("Lat") +": "+ Geocaching.parseCoordinate(new String(this.parameters['latitude']), 'lat')['string'], disabled: true, 'command': 'none'});
-							items.push({'label': $L("Lon") +": "+ Geocaching.parseCoordinate(new String(this.parameters['longitude']), 'lon')['string'], disabled: true, 'command': 'none'});
+							items.push({'label': $L("Lat") +": "+ Geocaching.toLatLon(this.parameters['latitude'],'lat'), disabled: true, 'command': 'none'});
+							items.push({'label': $L("Lon") +": "+ Geocaching.toLatLon(this.parameters['longitude'],'lon'), disabled: true, 'command': 'none'});
 							items.push({'label': $L("Waypoints")});
 						} catch(e) {
 							items = [];
@@ -516,8 +516,8 @@ CompassAssistant.prototype.defineUserCoords = function() {
 	
 	//  Add last latitude here 
 	if(this.latitude != null && this.longitude != null) {
-		params['lat'] = Geocaching.parseCoordinate(new String(this.latitude), 'lat')['string'];
-		params['lon'] = Geocaching.parseCoordinate(new String(this.longitude), 'lon')['string'];
+		params['lat'] = this.latitude;
+		params['lon'] = this.longitude;
 	};
 	
 	this.controller.setMenuVisible(Mojo.Menu.commandMenu, false);
@@ -549,7 +549,7 @@ CompassAssistant.prototype.userCoords = function(wptName, latitude, longitude) {
 	var lat = Geocaching.parseCoordinate(latitude);
 	var lon = Geocaching.parseCoordinate(longitude);
 
-	if(typeof(lat['coordinate']) == 'undefined') {
+	if(lat == false) {
 		this.controller.showAlertDialog({
 			'preventCancel': true,
 			'onSuccess': function(){},
@@ -560,7 +560,7 @@ CompassAssistant.prototype.userCoords = function(wptName, latitude, longitude) {
 		return false;
 	}
 
-	if(typeof(lon['coordinate']) == 'undefined') {
+	if(lon == false) {
 		this.controller.showAlertDialog({
 			'preventCancel': true,
 			'onSuccess': function(){},
@@ -578,8 +578,8 @@ CompassAssistant.prototype.userCoords = function(wptName, latitude, longitude) {
 	}
 
 	this.parameters['title'] = wptName;
-	this.parameters['latitude'] = lat['coordinate'];
-	this.parameters['longitude'] = lon['coordinate'];
+	this.parameters['latitude'] = lat;
+	this.parameters['longitude'] = lon;
 
 	this.parameters.waypoints.push({
 		'title': this.parameters['title'],
@@ -622,8 +622,8 @@ CompassAssistant.prototype.doLocateMe = function() {
 			'assistant': new UsercoordsAssistant(
 				{
 					'name': $L({'value':"User defined",'key':'user_defined'}) +" #"+ (this.parameters.waypoints.length+1),
-					'lat': Geocaching.parseCoordinate(new String(alat/len), 'lat')['string'],
-					'lon': Geocaching.parseCoordinate(new String(alon/len), 'lon')['string'],
+					'lat': alat/len,
+					'lon': alon/len,
 					'submit': $L("Save & Navigate")
 				},
 				this,

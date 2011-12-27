@@ -269,9 +269,6 @@ WaypointsAssistant.prototype.handleWaypointListTap = function(event) {
 
 WaypointsAssistant.prototype.handleCommand = function(event) {
 	if(event.type == Mojo.Event.command) {
-
-
-//WaypointsAssistant.prototype.handleWaypointListAdd = function(event) {
 		switch(event.command) {
 		case "addwp":
 			var params = {
