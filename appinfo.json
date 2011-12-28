@@ -1,11 +1,11 @@
 {
 	"id": "to.yz.gcgogo",
-	"version": "1.1.0",
+	"version": "1.1.1",
 	"vendor": "patty21",
 	"type": "web",
 	"main": "index.html",
 	"title": "GC-gogo",
-	"icon": "icon.png",
+	"icon": "icon64x64.png",
 	"smallicon": "icon32x32.png",
 	"copyright": "&copy; Copyright 2009 - 2011 Patty21 & Tomas Kopecny aka Georgo.",
 	"support": {
