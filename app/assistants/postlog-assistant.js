@@ -20,7 +20,7 @@ PostlogAssistant.prototype.setup = function() {
 		19: $L("I attended #{code}. http://coord.info/#{code}"),
 		23: $L("I enable #{code} with #Geocaching for #webOS.. http://coord.info/#{code}")
 	};
-
+/*
 	// Set right choices on trackables radio button
 	var fullChoices = [
 		{'label': $L("None"), 'value': ''},
@@ -45,7 +45,7 @@ PostlogAssistant.prototype.setup = function() {
 			this.trackablesChoices = fullChoices;
 		
 	}
-
+*/
 	this.controller.setupWidget('logtype',
 		this.attributesLogType = {
 			'label': $L("Log type")
@@ -98,7 +98,7 @@ PostlogAssistant.prototype.setup = function() {
 			'disabled': true
 		}
 	);
-
+/*
 	this.controller.setupWidget('trackable', 
 		{
 			'choices': this.trackablesChoices 
@@ -107,7 +107,7 @@ PostlogAssistant.prototype.setup = function() {
 			'disabled': false
 		}
 	);
-
+*/
 	// Trackables
 	this.controller.setupWidget("trackables-list",
 		this.attributes = {
@@ -264,7 +264,11 @@ PostlogAssistant.prototype.radioCallback = function(event) {
 	var trackablesCount = this.trackables.length;
 	for(var z=0; z<trackablesCount; z++) {
 		if(this.trackables[z]['num'] == event.model['num']) {
-			this.trackables[z]['choice'] = event.value;
+			if (event.value==true) {
+				this.trackables[z]['choice'] = "_DroppedOff";
+			} else {
+				this.trackables[z]['choice'] = "";
+			}
 			break;
 		}
 	}

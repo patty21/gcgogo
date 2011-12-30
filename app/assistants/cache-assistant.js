@@ -308,7 +308,7 @@ CacheAssistant.prototype.showCacheDetail = function(geocode) {
 
 	this.controller.get('cache-type').update(cache[this.geocode].type);
 	this.controller.get('cache-owner').update(cache[this.geocode].owner);
-	this.controller.get('cache-hint').update(Geocaching.decodeText(cache[this.geocode].hint).replace("\n", '<br>'));
+	this.controller.get('cache-hint').update(cache[this.geocode].hint);
 	this.controller.get('cache-size').src='images/'+ (cacheSizes[cache[this.geocode].size]?cacheSizes[cache[this.geocode].size]:'other') + '.gif';
 	this.controller.get('cache-size-label').update($L(cache[this.geocode].size));
 	this.controller.get('cache-terrain').src='images/stars'+ cache[this.geocode].terrain.replace('.', '_') + '.gif';

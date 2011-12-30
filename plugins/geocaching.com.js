@@ -1783,7 +1783,7 @@ GeocachingCom.prototype.postLogLoad = function(params, success, failure)
 			logParams['viewstate1'] = reply.match(/id="__VIEWSTATE1"\s+value="(.+?)"/)[1]
 
 			// Trackables
-			var trackablesBegin = reply.search('<table id="tblTravelBugs" class="LogTrackablesTable Table Spacing">');
+			var trackablesBegin = reply.search('<table id="tblTravelBugs" class="LogTrackablesTable Table">');
 			if (-1 != trackablesBegin) {
 	  		var trackablesTable = reply.substr(trackablesBegin);
 				var trackablesEnd = trackablesTable.search('</table>');
