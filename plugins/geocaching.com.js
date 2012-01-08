@@ -955,26 +955,23 @@ GeocachingCom.prototype.loadCache = function(params, success, failure)
 			Geocaching.ajaxRequests[ajaxIdLog] = new Ajax.Request(url, {
 				'method': 'get',
 				'onSuccess': function(rl){
-					var logs = rl.responseText.replace(/\n/g, " ").replace(/\r/g, "").replace(/\t/g," ");
-					wpItems = logs.split(']},{"LogID":');
-					wpCount = wpItems.length;
-					for(var z=0; z<wpCount; z++) {
-						wp = wpItems[z];
+					var logs = rl.responseText.evalJSON();
+					for(var z=0; z<logs['data'].length; z++) {
+						wp = logs['data'][z];
 						clog = {};
 						try {
-							clog['author'] = wp.match(/,"UserName":"([^"]+)",/i)[1];
+							clog['author'] = wp["UserName"];
 						} catch(e) {
 							clog['author'] = '';
 						}
 						try {
-							tmp = wp.match(/,"Visited":"([^"]+)",/i)[1];
-							clog['date'] = Mojo.Format.formatDate(new Date(tmp), {'date':'medium', 'time':''});
+							clog['date'] = Mojo.Format.formatDate(new Date(wp["Visited"]), {'date':'medium', 'time':''});
 						} catch(e) {
 							clog['date'] = '';
 						}
 						
 						try {
-							tmp = wp.match(/"LogTypeImage":"([^\.]+)\.gif"/)[1];
+							tmp = wp["LogTypeImage"].match(/([^\.]+)\.gif/)[1];
 						} catch(e) {
 							tmp = 'note';
 						}
@@ -988,6 +985,9 @@ GeocachingCom.prototype.loadCache = function(params, success, failure)
 							break;
 							case 'icon_greenlight':
 								clog['icon'] = 'published';
+							break;
+							case 'icon_redlight':
+								clog['icon'] = 'unpublished';
 							break;
 							case 'icon_needsmaint':
 								clog['icon'] = 'needsmaint';
@@ -1025,15 +1025,14 @@ GeocachingCom.prototype.loadCache = function(params, success, failure)
 							break;
 						}
 						try {
-							tmp = wp.match(/"LogText":"(.*)","Created":"\d+\/\d+\/\d+","Visited"/i);
-							clog['body'] = tmp[1].replace(/^<br[ ]*\/>/, "").replace(/<p>/g, "<br />").replace(/<\/p>/g, "").replace(/\\"/g,"\"");
+							tmp = wp["LogText"];
+							clog['body'] = tmp.replace(/^<br[ ]*\/>/, "").replace(/<p>/g, "<br />").replace(/<\/p>/g, "").replace(/\\"/g,"\"");
 						} catch(e) {
 							clog['body'] = '';
 						}
 						
 						try {
-							tmp = wp.match(/"GeocacheFindCount":(\d+),"GeocacheHideCount":(\d+),"ChallengesCompleted":/i);
-							clog['founds'] = tmp[1]+'/'+tmp[2];
+							clog['founds'] = wp["GeocacheFindCount"]+'/'+wp["GeocacheHideCount"];
 						} catch(e) {
 							clog['founds'] = '-';
 						}

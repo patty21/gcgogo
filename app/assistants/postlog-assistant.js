@@ -34,18 +34,17 @@ PostlogAssistant.prototype.setup = function() {
 	];
 
 	this.trackablesChoices = [];
-	
+*/	
 	switch(cache[this.geocode].type) {
 		case 'Earthcache':
 		case 'Webcam Cache':
 		case 'Virtual Cache':
-			this.trackablesChoices = lessChoices;
+			this.trackablesChoices = false;
 		break;
 		default:
-			this.trackablesChoices = fullChoices;
-		
+			this.trackablesChoices = true;	
 	}
-*/
+
 	this.controller.setupWidget('logtype',
 		this.attributesLogType = {
 			'label': $L("Log type")
@@ -206,7 +205,7 @@ PostlogAssistant.prototype.generateLogTypes = function() {
 
 PostlogAssistant.prototype.generateTrackablesList = function() {
 	var trackablesCount = this.trackables.length;
-	if(trackablesCount > 0) {
+	if(trackablesCount > 0 && this.trackablesChoices) {
 		this.trackablesListModel['items'] = this.trackables;
 		this.controller.modelChanged(this.trackablesListModel);
 		this.controller.get('trackables').show();
