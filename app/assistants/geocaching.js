@@ -1,10 +1,10 @@
 var cacheSizes = {
+	'Not chosen': 'not_chosen'
 	'Micro': 'micro',
 	'Small': 'small',
 	'Regular': 'regular',
 	'Large': 'large',
 	'Virtual': 'virtual',
-	'Not chosen': 'not_chosen'
 };
 
 var cacheTypes = {

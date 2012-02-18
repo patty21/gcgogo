@@ -4,8 +4,11 @@ function StageAssistant() {
 
 StageAssistant.prototype.setup = function() {
 	this.controller.pushScene('first');
-	// gcgogo database
 	
+	gblStageController = Mojo.Controller.StageController;
+	
+	// gcgogo database
+
 	var dbVersions = [
 		{'version': '1.2', 'sql': []},
 		{'version': '1.1', 'sql': [
@@ -82,7 +85,11 @@ StageAssistant.prototype.setup = function() {
 					Geocaching.login['password'] = response.password;
 					Geocaching.login['uid'] = response.uid;
 
-					this.controller.swapScene('main');
+					if (gblLaunchParams!=undefined && gblLaunchParams['gcid']!=undefined) {
+						this.controller.swapScene('cache',gblLaunchParams['gcid']);
+					} else {
+						this.controller.swapScene('main');
+					}
 					Geocaching.accounts['geocaching.com'].doLogin(Geocaching.login['username'], Geocaching.login['password'], function() {
 							// Success
 							if(typeof(Geocaching.login['uid']) == 'undefined' || Geocaching.login['uid'] == '' ) {

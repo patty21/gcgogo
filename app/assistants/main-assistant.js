@@ -590,11 +590,22 @@ MainAssistant.prototype.setup = function() {
 			}
 		}
 		this.inputsLoaded = true;
+		
+		if (typeof(gblLaunchParams['center']) != 'undefined') {
+		this.inputs['bycoordslat'] = this.modelActionByCoorsLat['value'] = Geocaching.toLatLon(gblLaunchParams['center']['lat'],'lat');
+		this.controller.modelChanged(this.modelActionByCoorsLat);
+		this.inputs['bycoordslon'] = this.modelActionByCoorsLon['value'] = Geocaching.toLatLon(gblLaunchParams['center']['lon'],'lon');
+		this.controller.modelChanged(this.modelActionByCoorsLon);
+		}
+		
+		
+		
 	}.bind(this), function () {});
 
 	if(typeof(Geocaching.login['uid']) != 'undefined' && Geocaching.login['uid'] != null) {
 		this.controller.get('statsimg').update('<img src="http://img.geocaching.com/stats/img.aspx?txt=Your+statistics&uid='+ Geocaching.login['uid'] +'" />');
 	}
+	
 	
 /*
 	var ts = Math.round(new Date().getTime() / 1000);

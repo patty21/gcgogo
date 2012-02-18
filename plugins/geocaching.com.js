@@ -2185,13 +2185,14 @@ GeocachingCom.prototype.loadCachesOnMap = function(params, success, failure){
 			delete(Geocaching.ajaxRequests[ajaxId]);
 			var reply = r.responseJSON;	
 			var caches = reply['d'].evalJSON();
-
+			Mojo.Log.error(Object.toJSON(caches['cs']));
 			success(caches['cs']['count'], caches['cs']['cc']);
 		}.bind(this),
 		'onFailure': function(r){
 			failure($L("Error occured in getting caches on map."));
 		},
 		'onException': function(r){
+			Mojo.Log.error(Object.toJSON(r));
 			failure($L("Error occured in getting caches on map."));
 		}
 

@@ -15,6 +15,8 @@ ListAssistant.prototype.setup = function() {
 	this.loaded = false;
 	this.backgroundMapGenerated = false;
 	this.viewstate = null;
+	this.userToken = null;
+	this.dst = 0;
 	this.sceneTitle = $L("Cache List");
 	/* use Mojo.View.render to render view templates and add them to the scene, if needed. */
 	//this.controller.stageController.setWindowOrientation('free');
@@ -219,63 +221,108 @@ ListAssistant.prototype.cleanup = function(event) {
 	Mojo.Event.stopListening(this.controller.get('cache-list'),Mojo.Event.listDelete, this.handleDeleteItem);
 }
 
+
+ListAssistant.prototype.makeDist = function(dist) {
+	var bne = Geocaching.simpleProjection(this.searchParameters['lat'],this.searchParameters['lon'],45,dist,0);
+	var bsw = Geocaching.simpleProjection(this.searchParameters['lat'],this.searchParameters['lon'],225,dist,0);
+	var par = {
+		'token': this.userToken,
+		'lat1': bsw['lat'],
+		'lon1': bsw['lon'],
+		'lat2': bne['lat'],
+		'lon2': bne['lon']
+	}
+	Mojo.Log.error(Object.toJSON(par));
+	return par;
+}
+
+
+ListAssistant.prototype.mapTool = function(cachesCount, caches) {
+	Mojo.Log.error(cachesCount);
+	var params = {
+    		'center': {
+			'lat': this.searchParameters['lat'],
+			'lon': this.searchParameters['lon'], 
+			'zoom': 14},
+		'targets': []
+	} ;
+	
+	if (cachesCount<20 && this.dst<2) {
+		this.dst++;
+		Geocaching.accounts['geocaching.com'].loadCachesOnMap(this.makeDist(30000*this.dst), 
+			this.mapTool.bind(this),
+			function() {}
+		);			
+	} else if (cachesCount>500) {
+		Geocaching.accounts['geocaching.com'].loadCachesOnMap(this.makeDist(3000), 
+			this.mapTool.bind(this),
+			function() {}
+		);			
+	} else {
+		var len = caches.length;
+		var item = {};
+		for(var z = 0; z<len; z++) {
+			item = {
+				'lat':caches[z]['lat'],
+				'lon':caches[z]['lon'],
+				'name':caches[z]['nn'],
+				'gcid':caches[z]['gc'],
+				'image':'http://www.geocaching.com/images/WptTypes/sm/'+caches[z]['ctid']+'.gif'
+			}
+			if (caches[z]['f']) {
+				item['image'] = 'http://www.geocaching.com/images/gmn/f.png';
+			}
+			params['targets'].push(Object.clone(item));
+		}
+	
+		Mojo.Log.error(Object.toJSON(params));			
+		// Try Map Tool Pro
+		this.controller.serviceRequest('palm://com.palm.applicationManager', {
+			'method': 'launch',
+			'parameters': {
+				'id': 'de.metaviewsoft.maptoolpro',
+				'params': params
+			},
+			'onFailure': function(text, value) {
+			// Now try Map Tool Free
+				this.controller.serviceRequest('palm://com.palm.applicationManager', {
+				'method': 'launch',
+				'parameters': {
+					'id': 'de.metaviewsoft.maptool',
+					'params': Object.toJSON(params)
+				},
+				'onFailure': function(text, value) {
+					this.controller.showAlertDialog({
+					'onChoose': function(value) {},
+					'title': $L("Execution failure"),
+					'message': $L({'value': "This feature require external application 'Mapping Tool'. It can be downloaded from App Catalog.", 'key':'mappingtool_failure'}),
+					'choices': [{'label': $L("Close"), 'value':'close', 'type':'primary'} ]
+					});
+				}.bind(this)
+				});
+			}.bind(this)
+		});
+	}
+}
+
+
 ListAssistant.prototype.handleCommand = function(event) {
 	if(event.type == Mojo.Event.command) {
 		switch(event.command)
 		{
 			case 'mappingtool':
-				var params = new Array();
-				var cacheList = this.searchResult.cacheList;
-				var len = cacheList.length;
-				var _cache, item = {};
-				for(var z = 0; z<len; z++) {
-					try {
-						_cache = cacheList[z];
-						if(_cache['latitude'] && _cache['longitude']) {
-							item = {
-								'lat': _cache['latitude'],
-								'lon': _cache['longitude'],
-								'name': _cache['name'],
-								'image': 'http://www.geocaching.com/images/WptTypes/sm/'+cacheTypesIDs[_cache['type']]+'.gif'
-							};
-							// Special icons
-							if(_cache['found']) {
-								item['image'] = 'http://www.geocaching.com/images/gmn/f.png';
-							} else
-							if(_cache['disabled'] || _cache['archived']) {
-								item['image'] = 'http://www.geocaching.com/images/icons/icon_disabled.gif';
-							}
-							params.push(Object.clone(item));
-						}
-					} catch(e) { }
-				};
-
-				// Try Map Tool Pro
-				this.controller.serviceRequest('palm://com.palm.applicationManager', {
-						'method': 'launch',
-						'parameters': {
-							'id': 'de.metaviewsoft.maptoolpro',
-							'params': Object.toJSON(params)
-						},
-						'onFailure': function(text, value) {
-							// Now try Map Tool Free
-							this.controller.serviceRequest('palm://com.palm.applicationManager', {
-								'method': 'launch',
-								'parameters': {
-									'id': 'de.metaviewsoft.maptool',
-									'params': Object.toJSON(params)
-								},
-								'onFailure': function(text, value) {
-									this.controller.showAlertDialog({
-										'onChoose': function(value) {},
-										'title': $L("Execution failure"),
-										'message': $L({'value': "This feature require external application 'Mapping Tool'. It can be downloaded from App Catalog.", 'key':'mappingtool_failure'}),
-										'choices': [{'label': $L("Close"), 'value':'close', 'type':'primary'} ]
-									});
-								}.bind(this)
-							});
-						}.bind(this)
-					});
+				this.dst=0;
+				Geocaching.accounts['geocaching.com'].loadMapPage( {},
+					function(userToken) {
+						this.userToken = userToken;
+						var par = this.makeDist(10000);
+						Geocaching.accounts['geocaching.com'].loadCachesOnMap(par, 
+							this.mapTool.bind(this),
+							function() {}
+						);						
+					}.bind(this),
+					function() {}
+				);
 			break;
 			case 'map':
 				this.controller.stageController.pushScene(
