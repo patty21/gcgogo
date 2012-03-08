@@ -11,9 +11,11 @@ AppAssistant.prototype.setup = function() {
 };
 
 AppAssistant.prototype.handleLaunch = function(params) {
+/*
 	if (!params){
 		return;
 	}
+	
 	Mojo.Log.error('params:', Object.toJSON(params));	
 	gblCt++;
 	var stageController = this.controller.getActiveStageController();
@@ -53,7 +55,7 @@ AppAssistant.prototype.handleLaunch = function(params) {
       this.controller.createStageWithCallback(stageArguments, pushMainScene, "card");
   }
 
-	
+*/	
 	
 
 /*

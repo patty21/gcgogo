@@ -148,7 +148,7 @@ ImportAssistant.prototype.generateList = function(cacheList) {
 				'name': cacheList[z]['name'],
 				'gccode': cacheList[z]['geocode'],
 				'type': cacheTypes[cacheList[z]['type']],
-				'size': (cacheSizes[cacheList[z]['size']]?cacheSizes[cacheList[z]['size']]:'other'),
+				'size': (cacheSizeNo[cacheList[z]['size']]?cacheSizeNo[cacheList[z]['size']]:'other'),
 				'attribs': cacheList[z]['difficulty'] +"/"+ cacheList[z]['terrain'],
 				'distance': '',
 				'direction': '',

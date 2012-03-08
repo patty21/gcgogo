@@ -590,14 +590,14 @@ MainAssistant.prototype.setup = function() {
 			}
 		}
 		this.inputsLoaded = true;
-		
-		if (typeof(gblLaunchParams['center']) != 'undefined') {
-		this.inputs['bycoordslat'] = this.modelActionByCoorsLat['value'] = Geocaching.toLatLon(gblLaunchParams['center']['lat'],'lat');
-		this.controller.modelChanged(this.modelActionByCoorsLat);
-		this.inputs['bycoordslon'] = this.modelActionByCoorsLon['value'] = Geocaching.toLatLon(gblLaunchParams['center']['lon'],'lon');
-		this.controller.modelChanged(this.modelActionByCoorsLon);
-		}
-		
+		try {
+			if (typeof(gblLaunchParams['center']) != 'undefined') {
+				this.inputs['bycoordslat'] = this.modelActionByCoorsLat['value'] = Geocaching.toLatLon(gblLaunchParams['center']['lat'],'lat');
+				this.controller.modelChanged(this.modelActionByCoorsLat);
+				this.inputs['bycoordslon'] = this.modelActionByCoorsLon['value'] = Geocaching.toLatLon(gblLaunchParams['center']['lon'],'lon');
+				this.controller.modelChanged(this.modelActionByCoorsLon);
+			}
+		} catch(e) {};	
 		
 		
 	}.bind(this), function () {});

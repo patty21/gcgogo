@@ -1,11 +1,37 @@
-var cacheSizes = {
-	'Not chosen': 'not_chosen'
-	'Micro': 'micro',
-	'Small': 'small',
-	'Regular': 'regular',
-	'Large': 'large',
-	'Virtual': 'virtual',
+var cacheSizeImages = {
+	'0': 'not_chosen',
+	'1': 'micro',
+	'2': 'small',
+	'3': 'regular',
+	'4': 'large',
+	'5': 'virtual',
+	'6': 'other'
 };
+
+var cacheSizeNames = {
+	'0': 'Not chosen',
+	'1': 'Micro',
+	'2': 'Small',
+	'3': 'Regular',
+	'4': 'Large',
+	'5': 'Virtual',
+	'6': 'Other'
+};
+
+
+var cacheSizeNo = {
+	'not_chosen':'0',
+	'micro':'1',
+	'small':'2',
+	'regular':'3',
+	'large':'4',
+	'virtual':'5',
+	'other':'6'
+};
+
+
+
+
 
 var cacheTypes = {
 	'Traditional Cache': 'traditional',

@@ -518,7 +518,7 @@ ListAssistant.prototype.buildList = function(searchResult) {
 			'name': cacheList[z]['name'],
 			'gccode': cacheList[z]['gccode'],
 			'type': cacheTypes[cacheList[z]['type']],
-			'attrs': (cacheList[z]['attribs']?'<img src="images/'+cacheSizes[cacheList[z]['size']]+'.gif" /> ('+cacheList[z]['attribs']+')':'<img src="http://www.geocaching.com/ImgGen/seek/CacheInfo.ashx?v='+cacheList[z]['gsattr']+'" />'),
+			'attrs': (cacheList[z]['attribs']?'<img src="images/'+cacheSizeImages[cacheList[z]['size']]+'.gif" /> ('+cacheList[z]['attribs']+')':'<img src="http://www.geocaching.com/ImgGen/seek/CacheInfo.ashx?v='+cacheList[z]['gsattr']+'" />'),
 			'latitude': cacheList[z]['latitude'],
 			'longitude': cacheList[z]['longitude'],	
 			'distance': (typeof(cacheList[z]['distance'])!='undefined'?cacheList[z]['distance']:''),
@@ -568,7 +568,7 @@ ListAssistant.prototype.buildList = function(searchResult) {
 	this.controller.get('loading-spinner').hide();
 	this.controller.get('list').show();
 	if(typeof(this.searchParameters['lat']) != 'undefined') {
-		this.controller.setMenuVisible(Mojo.Menu.commandMenu, true);
+//		this.controller.setMenuVisible(Mojo.Menu.commandMenu, true);
 	}
 	if(units != null && units != Geocaching.settings['units']) {
 		this.controller.showAlertDialog({

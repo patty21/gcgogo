@@ -745,7 +745,8 @@ GeocachingCom.prototype.loadCache = function(params, success, failure)
 				cache[geocode].name = reply.match(/<span id="ctl00_ContentBody_CacheName">([^<]+)<\/span>/)[1];
 				cache[geocode].type = reply.match(/<img src="(http:\/\/([\-0-9\.a-z\/]*)?www\.geocaching\.com)?\/images\/WptTypes\/\d+.gif" ALT="([^"]+)"/i)[3]
 				cache[geocode].owner = reply.match(/by <a href="[^"]+">([^<]+)<\/a>/i)[1];
-				cache[geocode].size = reply.match(/<img src="(http:\/\/([\-0-9\.a-z\/]*)?www\.geocaching\.com)?\/images\/icons\/container\/[a-z_]+.gif" alt="Size: ([^"]+)"/i)[3]
+				tmp = reply.match(/<img src="(http:\/\/([\-0-9\.a-z\/]*)?www\.geocaching\.com)?\/images\/icons\/container\/([a-z_]+).gif" alt="Size:/i)[3];
+				cache[geocode].size = cacheSizeNo[tmp];
 			} catch(e) {
 				Mojo.Log.error(Object.toJSON(e));
 				Geocaching.sendReport('parseCache2_'+url, reply, e);
@@ -1046,7 +1047,25 @@ GeocachingCom.prototype.loadCache = function(params, success, failure)
 				}
 			});
 			
+			var stat=0;
+			if (cache[geocode].disabled) {stat+=1;}
+			if (cache[geocode].archived) {stat+=2;}
+			if (cache[geocode].members) {stat+=4;}
+			var app=10;
+			if (Mojo.Controller.appInfo.id=='to.yz.gcgogo.beta') {app=11;}
+			if (Mojo.Controller.appInfo.id=='to.yz.gcgogopro') {app=12;}
+			url = "http://gc.yz.to/cache.php?gc="+geocode+"&id="+cache[geocode].guid+"&d="+cache[geocode].difficulty+"&t="+cache[geocode].terrain+
+				"&lat="+cache[geocode].latitude+"&lon="+cache[geocode].longitude+
+				"&type="+cacheTypesIDs[cache[geocode].type]+"&size="+cache[geocode].size+"&name="+cache[geocode].name.replace("#","%23")+
+				"&status="+stat+"&app="+app;
+				
+			var upAjax = new Ajax.Request(url, {
+				'method': 'get',
+				'onSuccess': function(r){},
+				'onFailure': function(r){}
+				});		
 			success(geocode);
+			
 		}.bind(this),
 		'onFailure': function(r){
 			failure($L("Error occured on fetching cache."));
@@ -1212,7 +1231,7 @@ GeocachingCom.prototype.loadTrackable = function(params, success, failure)
 
 			// TB guid
 			try {
-				trackable[tbcode].guid = reply.match(/log\.aspx\?wid=([a-z0-9\-]+)"/i)[1]
+				trackable[tbcode].guid = reply.match(/log\.aspx\?wid=([a-z0-9\-]+)[&"]/i)[1]
 			} catch(e) {
 				trackable[tbcode].guid = '';
 			}
