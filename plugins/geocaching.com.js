@@ -225,7 +225,7 @@ GeocachingCom.prototype.parseSearch = function(url, reply, list)
 			listRow['maintenance'] = false;
 
 		
-		listRow['gccode'] = row.match(/(GC[A-Z0-9]+)/)[1]
+		listRow['gccode'] = row.match(/\|\s+(GC[A-Z0-9]+)/)[1]
 		
 		// Found it flag!
 		if(row.indexOf('images/icons/icon_smile.png') != -1) {
