@@ -4,7 +4,7 @@ GeocachingCom  = function() {
 GeocachingCom.prototype.doLogin = function(username, password, success, failure)
 {
 	/* Load login page to check inputs */
-	var url = "http://www.geocaching.com/login/default.aspx?RESETCOMPLETE=Y";
+	var url = "http://www.geocaching.com/login/default.aspx?RESET=Y";
 	var checkAjax = new Ajax.Request(url, {
 		'method': 'get',
 		'onSuccess': function(r){
@@ -708,7 +708,7 @@ GeocachingCom.prototype.loadCache = function(params, success, failure)
 
 			try {
 				// Get GC code
-				var geocode = new String(reply.match(/class="CoordInfoCode">([^<]+)<\/span>/i)[1]).trim();
+				var geocode = new String(reply.match(/<title>\s*(GC\w+) /i)[1]).trim();
 				// Clone template
 				cache[geocode] = Object.clone(cacheTemplate);
 				cache[geocode].geocode = geocode;
