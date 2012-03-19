@@ -236,7 +236,7 @@ ListAssistant.prototype.makeDist = function(dist) {
 	return par;
 }
 
-
+/*
 ListAssistant.prototype.mapTool = function(cachesCount, caches) {
 	Mojo.Log.error(cachesCount);
 	var params = {
@@ -304,14 +304,14 @@ ListAssistant.prototype.mapTool = function(cachesCount, caches) {
 		});
 	}
 }
-
+*/
 
 ListAssistant.prototype.handleCommand = function(event) {
 	if(event.type == Mojo.Event.command) {
 		switch(event.command)
 		{
 			case 'mappingtool':
-				this.dst=0;
+/*				this.dst=0;
 				Geocaching.accounts['geocaching.com'].loadMapPage( {},
 					function(userToken) {
 						this.userToken = userToken;
@@ -323,6 +323,71 @@ ListAssistant.prototype.handleCommand = function(event) {
 					}.bind(this),
 					function() {}
 				);
+*/
+
+
+				var params = new Array();
+				var cacheList = this.searchResult.cacheList;
+				var len = cacheList.length;
+				var _cache, item = {};
+				for(var z = 0; z<len; z++) {
+					try {
+						_cache = cacheList[z];
+						if(_cache['latitude'] && _cache['longitude']) {
+							item = {
+								'lat': _cache['latitude'],
+								'lon': _cache['longitude'],
+								'name': _cache['name'],
+								'image': 'http://www.geocaching.com/images/WptTypes/sm/'+cacheTypesIDs[_cache['type']]+'.gif'
+							};
+							// Special icons
+							if(_cache['found']) {
+								item['image'] = 'http://www.geocaching.com/images/gmn/f.png';
+							} else
+							if(_cache['disabled'] || _cache['archived']) {
+								item['image'] = 'http://www.geocaching.com/images/icons/icon_disabled.gif';
+							}
+							params.push(Object.clone(item));
+						}
+					} catch(e) { }
+				};
+
+				// Try Map Tool Pro
+				this.controller.serviceRequest('palm://com.palm.applicationManager', {
+						'method': 'launch',
+						'parameters': {
+							'id': 'de.metaviewsoft.maptoolpro',
+							'params': Object.toJSON(params)
+						},
+						'onFailure': function(text, value) {
+							// Now try Map Tool Free
+							this.controller.serviceRequest('palm://com.palm.applicationManager', {
+								'method': 'launch',
+								'parameters': {
+									'id': 'de.metaviewsoft.maptool',
+									'params': Object.toJSON(params)
+								},
+								'onFailure': function(text, value) {
+									this.controller.showAlertDialog({
+										'onChoose': function(value) {},
+										'title': $L("Execution failure"),
+										'message': $L({'value': "This feature require external application 'Mapping Tool'. It can be downloaded from App Catalog.", 'key':'mappingtool_failure'}),
+										'choices': [{'label': $L("Close"), 'value':'close', 'type':'primary'} ]
+									});
+								}.bind(this)
+							});
+						}.bind(this)
+					});
+
+
+
+
+
+
+
+
+
+
 			break;
 			case 'map':
 				this.controller.stageController.pushScene(
