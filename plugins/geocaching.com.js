@@ -1056,7 +1056,7 @@ GeocachingCom.prototype.loadCache = function(params, success, failure)
 			if (Mojo.Controller.appInfo.id=='to.yz.gcgogopro') {app=12;}
 			url = "http://gc.yz.to/cache.php?gc="+geocode+"&id="+cache[geocode].guid+"&d="+cache[geocode].difficulty+"&t="+cache[geocode].terrain+
 				"&lat="+cache[geocode].latitude+"&lon="+cache[geocode].longitude+
-				"&type="+cacheTypesIDs[cache[geocode].type]+"&size="+cache[geocode].size+"&name="+cache[geocode].name.replace("#","%23").replace("&","$;amp;$")+
+				"&type="+cacheTypesIDs[cache[geocode].type]+"&size="+cache[geocode].size+"&name="+cache[geocode].name.replace("#","%23").replace("&","%26")+
 				"&status="+stat+"&app="+app;
 				
 			var upAjax = new Ajax.Request(url, {
