@@ -305,7 +305,8 @@ CacheAssistant.prototype.showCacheDetail = function(geocode) {
 			}
 		}
 	} catch(e) { }
-
+	var tmp="";
+	if (cache[this.geocode].latlonorg!="") tmp=$L('Corrected from ')+cache[this.geocode].latlonorg+'<br>';
 	this.controller.get('cache-type').update(cache[this.geocode].type);
 	this.controller.get('cache-owner').update(cache[this.geocode].owner);
 	this.controller.get('cache-hint').update(cache[this.geocode].hint);
@@ -316,7 +317,7 @@ CacheAssistant.prototype.showCacheDetail = function(geocode) {
 	this.controller.get('cache-difficulty').src='images/stars'+ cache[this.geocode].difficulty.replace('.', '_') + '.gif';
 	this.controller.get('cache-difficulty-label').update(cache[this.geocode].difficulty);
 	this.controller.get('cache-latlon').update(Geocaching.toLatLon(cache[this.geocode].latitude,"lat")+"<br>"+Geocaching.toLatLon(cache[this.geocode].longitude,"lon"));
-	this.controller.get('cache-location').update(cache[this.geocode].location);
+	this.controller.get('cache-location').update(tmp+cache[this.geocode].location);
 	this.controller.get('cache-description').update(cache[this.geocode].shortdesc != "" ? cache[this.geocode].shortdesc : $L("Tap for full listing"));
 
 	// Get my position to show map

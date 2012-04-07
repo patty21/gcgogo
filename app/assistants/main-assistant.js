@@ -349,6 +349,7 @@ MainAssistant.prototype.setup = function() {
 		'visible': true,
 		'items': [
 			{ 'label': $L("Import..."), 'command': 'import' },
+//			{ 'label': $L("Offline tools..."), 'command': 'offline' },
 			Mojo.Menu.editItem,
 			{ 'label': $L("Accounts..."), 'command': 'accounts' },
 			{ 'label': $L("Preferences..."), 'command': 'settings' },
@@ -449,6 +450,9 @@ MainAssistant.prototype.setup = function() {
 			}
 			if(typeof(response.compassInNewCard)!='undefined') {
 				Geocaching.settings['compassInNewCard'] = response.compassInNewCard;
+			}
+			if(typeof(response.magneticcompass)!='undefined') {
+				Geocaching.settings['magneticcompass'] = response.magneticcompass;
 			}
 			if(typeof(response.autoclean)!='undefined') {
 				Geocaching.settings['autoclean'] = response.autoclean;
@@ -681,6 +685,10 @@ MainAssistant.prototype.handleCommand = function(event) {
 			case 'accounts':
 				this.controller.stageController.pushScene('accounts');
 			break;
+			case 'offline':
+				this.controller.stageController.pushScene('offline');
+			break;
+
 
 		}
 	}

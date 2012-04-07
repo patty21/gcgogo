@@ -200,6 +200,7 @@ var cacheTemplate = {
 	'location': "",
 	'latitude': 0,
 	'longitude': 0,
+	'latlonorg': "",
 	'shortdesc': "",
 	'description': "",
 	'disabled': false,
@@ -283,6 +284,7 @@ var Geocaching = {
 		'firstTimeout': 12,
 		'secondTimeout': 45,
 		'compassInNewCard': false,
+		'magneticcompass': false,
 		'tutorials': {
 			'mappingtool': false,
 			'compass': false

@@ -1,0 +1,57 @@
+<div id="corner"></div>
+<div class="palm-page-header multi-line">
+	<div class="palm-page-header-wrapper">
+		<div class="icon precaching" id="icon"></div>
+		<div class="title truncating-text" id="title">Offline tools</div>
+	</div>
+</div>
+<div id="load" style="display:none">
+	<div x-mojo-element="Spinner" class="big-spinner" id="spinner"></div>
+	<div id="spinnerStatus" style="text-align:center"><b>Starting</b></div>
+	<div id="progress" class="progress">
+		<div id="progress-bar" class="progress-bar"></div>
+	</div>
+</div>
+
+<div id="actions">
+	<div class="palm-group">
+		<div class="palm-group-title" x-mojo-loc='' id="title-bycoords">Download by Coordinates</div>
+		<div class="palm-list">
+			<div class="palm-row single">
+				<div class="palm-row-wrapper textfield-group" x-mojo-focus-highlight="true">
+					<div class="title">
+						<div class="label" id="title-bycoordslat" style="margin:0px;" >Latitude</div>
+						<div id="action-bycoordslat" name="action-bycoorsdlat" x-mojo-element="TextField"></div>
+					</div>
+				</div>
+			</div>
+			<div class="palm-row single">
+				<div class="palm-row-wrapper textfield-group" x-mojo-focus-highlight="true">
+					<div class="title">
+						<div class="label" id="title-bycoordslon" style="margin:0px;">Longitude</div>
+						<div id="action-bycoordslon" name="action-bycoordslon" x-mojo-element="TextField"></div>
+					</div>
+				</div>
+			</div>
+			<div class="palm-row single">
+				<div class="palm-row-wrapper textfield-group" x-mojo-focus-highlight="true">
+					<div class="title">
+						<div class="label" id="title-bycoordsnum" style="">Number</div>
+						<div id="action-bycoordsnum" name="action-bycoordsnum" x-mojo-element="TextField"></div>
+					</div>
+				</div>
+			</div>
+			<div class="palm-row single">
+				<div class="palm-row-wrapper textfield-group" x-mojo-focus-highlight="true">
+					<div class="title">
+						<table width="50%">
+							<tr>
+								<td><div id="action-button-bycoords" x-mojo-element="Button"></div></td>
+							</tr>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

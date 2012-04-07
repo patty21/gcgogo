@@ -57,7 +57,7 @@ GeocachingCom.prototype.doLogin = function(username, password, success, failure)
 			});
 		}.bind(this),
 		onFailure: function(r){
-			failure($L("Error occured on loging."));
+			failure($L("Error occured on loging in."));
 		}
 	});
 }
@@ -669,7 +669,7 @@ GeocachingCom.prototype.loadCache = function(params, success, failure)
 	} else {
 		params['retry'] = 1;
 	}
-	
+	Mojo.Log.error('Load:'+urlParam);
 	var url = "http://www.geocaching.com/seek/cache_details.aspx?"+ urlParam;
 	var ajaxId = 'cache-'+ Math.round(new Date().getTime());
 
@@ -713,9 +713,22 @@ GeocachingCom.prototype.loadCache = function(params, success, failure)
 				cache[geocode] = Object.clone(cacheTemplate);
 				cache[geocode].geocode = geocode;
 			} catch(e) {
-				Geocaching.sendReport('parseCache_'+url, reply, e);
-				failure($L("Error occured on cache code parsing."));
-				return false;
+				if(typeof(params['retry']) != 'undefined' && params['retry']>0) {
+					Geocaching.sendReport('parseCache_'+url, reply, e);
+					failure($L("Error occured on cache code parsing."));
+					return false;
+				} else {
+					params['retry'] = 1;
+					this.doLogin(
+						Geocaching.login['username'],
+						Geocaching.login['password'], 
+						function() {
+							this.loadCache(params, success, failure);
+						}.bind(this),
+						failure
+					);
+					return false;
+				}
 			}
 			
 			if(-1 != reply.search('<li>This cache is temporarily unavailable.')) {
@@ -769,6 +782,15 @@ GeocachingCom.prototype.loadCache = function(params, success, failure)
 			} else  {
 				cache[geocode].latitude = 0;
 				cache[geocode].longitude = 0;
+			}
+			
+			try {
+				tmp=reply.match(/var userDefinedCoords = ([^;]+);/i)[1].evalJSON();
+				if (tmp['data']['isUserDefined']) {
+					cache[geocode].latlonorg=tmp['data']['oldLatLngDisplay'];
+				} 
+			} catch(e) {
+				Mojo.Log.error(Object.toJSON(e)+tmp);
 			}
 			
 			if(-1 != reply.search('<img src="/images/stockholm/16x16/check.gif"')) {
@@ -950,103 +972,102 @@ GeocachingCom.prototype.loadCache = function(params, success, failure)
 			// Cache logs
 			
 			cache[geocode].logs = [];
-			var tkn= reply.match(/userToken = '(\w+)';/)[1];
-			url = "http://www.geocaching.com/seek/geocache.logbook?tkn="+ tkn +"&idx=1&num="+ Geocaching.settings['logcount']+"&decrypt=false";
-			var ajaxIdLog = 'logs-'+ Math.round(new Date().getTime());
-			Geocaching.ajaxRequests[ajaxIdLog] = new Ajax.Request(url, {
-				'method': 'get',
-				'onSuccess': function(rl){
-					var logs = rl.responseText.evalJSON();
-					for(var z=0; z<logs['data'].length; z++) {
-						wp = logs['data'][z];
-						clog = {};
-						try {
+			if (Geocaching.settings['logcount']>0) {
+				var tkn= reply.match(/userToken = '(\w+)';/)[1];
+				url = "http://www.geocaching.com/seek/geocache.logbook?tkn="+ tkn +"&idx=1&num="+ Geocaching.settings['logcount']+"&decrypt=false";
+				var ajaxIdLog = 'logs-'+ Math.round(new Date().getTime());
+				Geocaching.ajaxRequests[ajaxIdLog] = new Ajax.Request(url, {
+				  	'method': 'get',
+				  	'onSuccess': function(rl){
+						var logs = rl.responseText.evalJSON();
+						for(var z=0; z<logs['data'].length; z++) {
+							wp = logs['data'][z];
+							clog = {};
+							try {
 							clog['author'] = wp["UserName"];
-						} catch(e) {
-							clog['author'] = '';
-						}
-						try {
-							clog['date'] = Mojo.Format.formatDate(new Date(wp["Visited"]), {'date':'medium', 'time':''});
-						} catch(e) {
-							clog['date'] = '';
-						}
+							} catch(e) {
+								clog['author'] = '';
+							}
+							try {
+								clog['date'] = Mojo.Format.formatDate(new Date(wp["Visited"]), {'date':'medium', 'time':''});
+							} catch(e) {
+								clog['date'] = '';
+							}
 						
-						try {
-							tmp = wp["LogTypeImage"].match(/([^\.]+)\.gif/)[1];
-						} catch(e) {
-							tmp = 'note';
-						}
+							try {
+								tmp = wp["LogTypeImage"].match(/([^\.]+)\.gif/)[1];
+							} catch(e) {
+								tmp = 'note';
+							}
 
-						switch(tmp) {
-							case 'icon_smile':
-								clog['icon'] = 'found';
-							break;
-							case 'icon_sad':
-								clog['icon'] = 'notfound';
-							break;
-							case 'icon_greenlight':
-								clog['icon'] = 'published';
-							break;
-							case 'icon_redlight':
-								clog['icon'] = 'unpublished';
-							break;
-							case 'icon_needsmaint':
-								clog['icon'] = 'needsmaint';
-							break;
-							case 'icon_maint':
-								clog['icon'] = 'maint';
-							break;
-							case 'icon_disabled':
-								clog['icon'] = 'disabled';
-							break;
-							case 'icon_enabled':
-								clog['icon'] = 'enabled';
-							break;
-							case 'coord_update':
-								clog['icon'] = 'coords';
-							break;
-							case 'big_smile':
-								clog['icon'] = 'reviewernote';
-							break;
-							case 'traffic_cone':
-								clog['icon'] = 'archive';
-							break;
-							case 'icon_rsvp':
-								clog['icon'] = 'willattend';
-							break;
-							case 'icon_announcement':
-								clog['icon'] = 'announcement';
-							break;
-							case 'icon_attended':
-								clog['icon'] = 'attended';
-							break;
-							case 'icon_note':
-							default:
-								clog['icon'] = 'note';
-							break;
+							switch(tmp) {
+								case 'icon_smile':
+									clog['icon'] = 'found';
+								break;
+								case 'icon_sad':
+									clog['icon'] = 'notfound';
+								break;
+								case 'icon_greenlight':
+									clog['icon'] = 'published';
+								break;
+								case 'icon_redlight':
+									clog['icon'] = 'unpublished';
+								break;
+								case 'icon_needsmaint':
+									clog['icon'] = 'needsmaint';
+								break;
+								case 'icon_maint':
+									clog['icon'] = 'maint';
+								break;
+								case 'icon_disabled':
+									clog['icon'] = 'disabled';
+									break;
+								case 'icon_enabled':
+									clog['icon'] = 'enabled';
+								break;
+								case 'coord_update':
+									clog['icon'] = 'coords';
+								break;
+								case 'big_smile':
+									clog['icon'] = 'reviewernote';
+								break;
+								case 'traffic_cone':
+									clog['icon'] = 'archive';
+								break;
+									case 'icon_rsvp':
+									clog['icon'] = 'willattend';
+								break;
+								case 'icon_announcement':
+									clog['icon'] = 'announcement';
+									break;
+								case 'icon_attended':
+									clog['icon'] = 'attended';
+								break;
+								case 'icon_note':
+								default:
+									clog['icon'] = 'note';
+								break;
+							}
+							try {
+								tmp = wp["LogText"];
+								clog['body'] = tmp.replace(/^<br[ ]*\/>/, "").replace(/<p>/g, "<br />").replace(/<\/p>/g, "").replace(/\\"/g,"\"");
+							} catch(e) {
+								clog['body'] = '';
+							}
+							try {
+								clog['founds'] = wp["GeocacheFindCount"]+'/'+wp["GeocacheHideCount"];
+							} catch(e) {
+								clog['founds'] = '-';
+							}
+							cache[geocode].logs.push(Object.clone(clog));
 						}
-						try {
-							tmp = wp["LogText"];
-							clog['body'] = tmp.replace(/^<br[ ]*\/>/, "").replace(/<p>/g, "<br />").replace(/<\/p>/g, "").replace(/\\"/g,"\"");
-						} catch(e) {
-							clog['body'] = '';
-						}
-						
-						try {
-							clog['founds'] = wp["GeocacheFindCount"]+'/'+wp["GeocacheHideCount"];
-						} catch(e) {
-							clog['founds'] = '-';
-						}
-						cache[geocode].logs.push(Object.clone(clog));
+						success(tkn);
+					},
+					'onFailure': function(rl){
+						failure($L("Error occured on fetching logs."));
 					}
-					success(tkn);
-
-				},
-				'onFailure': function(rl){
-					failure($L("Error occured on fetching logs."));
-				}
-			});
-			
+			 	 });
+			}
 			var stat=0;
 			if (cache[geocode].disabled) {stat+=1;}
 			if (cache[geocode].archived) {stat+=2;}
@@ -1058,7 +1079,7 @@ GeocachingCom.prototype.loadCache = function(params, success, failure)
 				"&lat="+cache[geocode].latitude+"&lon="+cache[geocode].longitude+
 				"&type="+cacheTypesIDs[cache[geocode].type]+"&size="+cache[geocode].size+"&name="+cache[geocode].name.replace("#","%23").replace("&","%26")+
 				"&status="+stat+"&app="+app;
-				
+			if (cache[geocode].latlonorg!="") {url= url+"&llo="+cache[geocode].latlonorg;}
 			var upAjax = new Ajax.Request(url, {
 				'method': 'get',
 				'onSuccess': function(r){},
@@ -1088,6 +1109,8 @@ GeocachingCom.prototype.loadCache = function(params, success, failure)
 		}
 	}.bind(this), timeout*1000, ajaxId, params, success, failure);
 }
+
+
 
 GeocachingCom.prototype.loadImages = function(params, success, failure) 
 {

@@ -59,7 +59,7 @@ SettingsAssistant.prototype.setup = function() {
 	this.controller.setupWidget('logcount', 
 		{
 			'label': $L({'value':"Download log count",'key':'download_log_count'}),
-			'min': 5,
+			'min': 0,
 			'max': 50
 		},
 		this.modelLogCount = {
@@ -132,6 +132,18 @@ SettingsAssistant.prototype.setup = function() {
 		},
 		this.modelCompassInNewCard = {
 			'value': Geocaching.settings['compassInNewCard'],
+			'disabled': false
+		}
+	);
+	this.controller.setupWidget("toggle-magneticcompass",
+		{
+			'trueValue': true,
+			'trueLabel': $L("Yes"),
+			'falseValue': false,
+			'falseLabel': $L("No")
+		},
+		this.modelMagneticCompass = {
+			'value': Geocaching.settings['magneticcompass'],
 			'disabled': false
 		}
 	);
@@ -226,6 +238,7 @@ SettingsAssistant.prototype.setup = function() {
 	Mojo.Event.listen(this.controller.get('cachetype'), Mojo.Event.propertyChange, this.actionSave);
 	Mojo.Event.listen(this.controller.get('builtin-compass'), Mojo.Event.propertyChange, this.actionSave);
 	Mojo.Event.listen(this.controller.get('toggle-compassinnewcard'), Mojo.Event.propertyChange, this.actionSave);
+	Mojo.Event.listen(this.controller.get('toggle-magneticcompass'), Mojo.Event.propertyChange, this.actionSave);
 	Mojo.Event.listen(this.controller.get('toggle-autoclean'), Mojo.Event.propertyChange, this.actionSave);
 	Mojo.Event.listen(this.controller.get('toggle-recalculatedistance'), Mojo.Event.propertyChange, this.actionSave);
 	Mojo.Event.listen(this.controller.get('toggle-go4cache'), Mojo.Event.propertyChange, this.actionSave);
@@ -250,6 +263,7 @@ SettingsAssistant.prototype.cleanup = function(event) {
 	Mojo.Event.stopListening(this.controller.get('cachetype'), Mojo.Event.propertyChange, this.actionSave);
 	Mojo.Event.stopListening(this.controller.get('builtin-compass'), Mojo.Event.propertyChange, this.actionSave);
 	Mojo.Event.stopListening(this.controller.get('toggle-compassinnewcard'), Mojo.Event.propertyChange, this.actionSave);
+	Mojo.Event.stopListening(this.controller.get('toggle-magneticcompass'), Mojo.Event.propertyChange, this.actionSave);
 	Mojo.Event.stopListening(this.controller.get('toggle-autoclean'), Mojo.Event.propertyChange, this.actionSave);
 	Mojo.Event.stopListening(this.controller.get('toggle-recalculatedistance'), Mojo.Event.propertyChange, this.actionSave);
 	Mojo.Event.stopListening(this.controller.get('toggle-go4cache'), Mojo.Event.propertyChange, this.actionSave);
@@ -264,6 +278,7 @@ SettingsAssistant.prototype.actionSave = function(event) {
 	Geocaching.settings['cachetype'] = this.modelActionCacheType.value;
 	Geocaching.settings['defaultnavigation'] = this.modelDefaultNavigation.value;
 	Geocaching.settings['compassInNewCard'] = this.modelCompassInNewCard.value;
+	Geocaching.settings['magneticcompass'] = this.modelMagneticCompass.value;
 	Geocaching.settings['autoclean'] = this.modelAutoclean.value;
 	Geocaching.settings['recalculatedistance'] = this.modelRecalculateDistance.value;
 	Geocaching.settings['logcount'] = this.modelLogCount.value;

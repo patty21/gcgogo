@@ -90,6 +90,7 @@ StageAssistant.prototype.setup = function() {
 					} else {
 						this.controller.swapScene('main');
 					}
+					/*
 					Geocaching.accounts['geocaching.com'].doLogin(Geocaching.login['username'], Geocaching.login['password'], function() {
 							// Success
 							if(typeof(Geocaching.login['uid']) == 'undefined' || Geocaching.login['uid'] == '' ) {
@@ -106,6 +107,7 @@ StageAssistant.prototype.setup = function() {
 							Mojo.Controller.getAppController().showBanner({'messageText': 'Geocaching.com: '+message}, '', 'accounts');
 						}.bind(this)
 					);
+					*/
 				} else { 
 					this.controller.swapScene('accounts', true);
 				}

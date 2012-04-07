@@ -74,6 +74,10 @@
         "source": "app/assistants/accounts-assistant.js"
     },
     {
+        "scenes": "offline",
+        "source": "app/assistants/offline-assistant.js"
+    },
+    {
         "scenes": "first",
         "source": "app/assistants/first-assistant.js"
     },

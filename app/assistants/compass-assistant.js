@@ -95,7 +95,22 @@ CompassAssistant.prototype.setup = function() {
 		'onFailure': this.gpsError.bind(this)
 	});
 	this.compassRendering = window.setInterval(this.renderCompass.bind(this), 1000);
+	this.magnetic = (Geocaching.settings['magneticcompass'] && (Mojo.Environment.DeviceInfo['modelNameAscii'] == 'Pre3'));
+	Mojo.Log.error(Mojo.Environment.DeviceInfo['modelNameAscii']);
+	if(this.magnetic){
+		this.controller.get('northpole').style['-webkit-transition-duration'] = '0s';
+		this.controller.document.addEventListener('compass', this.magneticgo.bind(this), false);
+		Mojo.Log.error('magnetic');
+	}
 }
+
+CompassAssistant.prototype.magneticgo = function(event) {
+	this.heading = event.trueHeading;
+	degrees = Number(360-this.heading);
+	this.controller.get('northpole').style['-webkit-transform'] = 'rotate('+degrees+'deg)';
+
+}
+
 
 CompassAssistant.prototype.activate = function(event) {
 	this.turnScreenON();
@@ -114,6 +129,9 @@ CompassAssistant.prototype.cleanup = function(event) {
 	try {
 		clearInterval(this.compassRendering);
 	} catch(e) {}
+	if(this.magnetic){
+		this.controller.document.removeEventListener('compass', this.magneticgo, false);
+	}
 }
 
 CompassAssistant.prototype.turnScreenON = function() {
@@ -175,7 +193,7 @@ CompassAssistant.prototype.gpsChanged = function(event) {
 		this.accuracy = event.horizAccuracy;
 		this.speed = event.velocity;
 		this.lastGPSAct = ts;
-		this.heading = event.heading;
+		if (!this.magnetic) this.heading = event.heading;
 	}
 }
 
@@ -283,16 +301,17 @@ CompassAssistant.prototype.renderCompass = function() {
 	}
 
 	this.commandMenuVelocity = Geocaching.getHumanSpeed(this.speed);
-
-	degrees = Number(360-this.heading);
-	while(degrees -180 >= this.northDirection) {
-		degrees = degrees -360;
+	if (!this.magnetic) {
+		degrees = Number(360-this.heading);
+		while(degrees -180 >= this.northDirection) {
+			degrees = degrees -360;
+		}
+		while(degrees +180 < this.northDirection) {
+			degrees = degrees +360;
+		}
+		this.controller.get('northpole').style['-webkit-transform'] = 'rotate('+degrees+'deg)';
+		this.northDirection = degrees;
 	}
-	while(degrees +180 < this.northDirection) {
-		degrees = degrees +360;
-	}
-	this.controller.get('northpole').style['-webkit-transform'] = 'rotate('+degrees+'deg)';
-	this.northDirection = degrees;
 	this.controller.commitChanges();
 	this.refreshContentMenu();
 }
