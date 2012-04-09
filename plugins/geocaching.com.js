@@ -804,7 +804,7 @@ GeocachingCom.prototype.loadCache = function(params, success, failure)
 				cache[geocode].own = false;
 			}
 			try {
-				cache[geocode].location = reply.match(/<span id="ctl00_ContentBody_Location"[^>]*>([^<]*)/i)[1]
+				cache[geocode].location = reply.match(/<span id="ctl00_ContentBody_Location"[^>]*>In (<a href[^>]+>)?([^<]*)/i)[2]
 			} catch(e) {
 				cache[geocode].location = "";
 			}
