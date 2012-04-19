@@ -709,7 +709,7 @@ CompassAssistant.prototype.saveWaypoint = function(wptName, latitude, longitude)
 		// Add as user-waypoint to cache
 		Geocaching.db.transaction( 
 			(function (transaction) { 
-				Mojo.Log.error('Iam here');
+				Mojo.Log.error('Iam here'+wptName+this.parameters['geocode']);
 				transaction.executeSql('select "userdata" from "caches" where "gccode"= ?', [this.parameters['geocode']],
 					function(transaction, results) {
 						if(results.rows.length != 1) return;
@@ -740,7 +740,7 @@ CompassAssistant.prototype.saveWaypoint = function(wptName, latitude, longitude)
 						_waypoint['note'] = '';
 						
 						userdata['waypoints'].push(Object.clone(_waypoint));
-						cache[this.geocode].userdata['waypoints'] = userdata['waypoints'];
+						cache[this.parameters['geocode']].userdata['waypoints'] = userdata['waypoints'];
 						
 						transaction.executeSql('UPDATE "caches" SET "userdata"=? WHERE "gccode"= ?', [Object.toJSON(userdata), this.parameters['geocode']],
 							function(transaction, result) {

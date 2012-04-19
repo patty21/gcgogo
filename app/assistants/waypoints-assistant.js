@@ -372,7 +372,7 @@ WaypointsAssistant.prototype.userCoords = function(wptName, latitude, longitude)
 			'message': $L({'value': "Unknown format of coordinates in Longitude.", 'key': 'unknown_format_in_longitude'}),
 			'choices': [{'label':$L("Close"), 'type':'primary'}]
 		});
-		this.controller.stageController.swapScene('waypoints', this.geocode);
+		return false;
 	}
 
 	return true;
