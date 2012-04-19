@@ -349,7 +349,7 @@ MainAssistant.prototype.setup = function() {
 		'visible': true,
 		'items': [
 			{ 'label': $L("Import..."), 'command': 'import' },
-//			{ 'label': $L("Offline tools..."), 'command': 'offline' },
+			{ 'label': $L("Offline tools..."), 'command': 'offline' },
 			Mojo.Menu.editItem,
 			{ 'label': $L("Accounts..."), 'command': 'accounts' },
 			{ 'label': $L("Preferences..."), 'command': 'settings' },

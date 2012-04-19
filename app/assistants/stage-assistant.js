@@ -10,16 +10,11 @@ StageAssistant.prototype.setup = function() {
 	// gcgogo database
 
 	var dbVersions = [
-		{'version': '1.2', 'sql': []},
-		{'version': '1.1', 'sql': [
-			'ALTER TABLE "trackables" ADD COLUMN "id" TEXT NULL'
+		{'version': '1.3', 'sql': [
 		]},
-		{'version': '1.0', 'sql': [
-			'ALTER TABLE "trackables" ADD COLUMN "id" TEXT NULL',
-			'ALTER TABLE "caches" ADD COLUMN "guid" TEXT NULL',
-			'ALTER TABLE "caches" ADD COLUMN "userdata" TEXT DEFAULT \'{}\'',
-			'CREATE UNIQUE INDEX "guid" on caches (guid ASC)'
-		]}
+		{'version': '1.2', 'sql': [
+			'ALTER TABLE "caches" ADD COLUMN "logs" TEXT DEFAULT \'{}\'',
+		]},
 	];
 	
 	var verIndex = 0, ver;
@@ -143,6 +138,7 @@ StageAssistant.prototype.createDB = function()
 					'    "latitude" REAL DEFAULT (0),'+
 					'    "longitude" REAL DEFAULT (0),'+
 					'    "json" TEXT DEFAULT (\'{}\'),'+
+					'    "logs" TEXT DEFAULT (\'{}\'),'+
 					'    "userdata" TEXT DEFAULT (\'{}\')'+
 					'); GO;', [],
 					function(transaction, results) {

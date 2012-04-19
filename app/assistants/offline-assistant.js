@@ -147,8 +147,9 @@ OfflineAssistant.prototype.actionByCoordsClicked = function(event) {
 	this.controller.get('actions').hide();
 	this.controller.get('load').show();
 	this.showProgress();
-	this.setProgress(10);
-	this.setStatus('A');
+	this.setProgress(0);
+	this.page=1;
+	this.setStatus('Page '+this.page);
 	Geocaching.accounts['geocaching.com'].searchByCoords({
 		'latitude': latitude, 
 		'longitude': longitude
@@ -178,9 +179,9 @@ OfflineAssistant.prototype.downloadNext = function () {
 		return;
 	}
 	var len = this.cacheList.length;
-	Mojo.Log.error('Len:'+len);
+//	Mojo.Log.error('Len:'+len);
 	if (len>0) {
-		Mojo.Log.error('Len2:'+len);
+//		Mojo.Log.error('Len2:'+len);
 		var dlc=this.cacheList.shift();
 		this.dlnum--;
 		this.geocode=dlc['gccode'];
@@ -203,6 +204,7 @@ OfflineAssistant.prototype.downloadNext = function () {
 					escape(cache[geocode].latitude) + ', ' +
 					escape(cache[geocode].longitude) + ', "' +  
 					escape(Object.toJSON(cache[geocode])) +'"); GO;';
+					Mojo.Log.info(query);
 					this.geocode=geocode;
 					Geocaching.db.transaction( 
 					(function (transaction) { 
@@ -225,6 +227,18 @@ OfflineAssistant.prototype.downloadNext = function () {
 				); 
 
 				this.downloadNext();
+			}.bind(this),
+			function(geocode) {
+				var query = 'UPDATE "caches" set "logs"="'+escape(Object.toJSON(cache[geocode].logs))+'" WHERE "gccode"="'+escape(geocode)+'"; GO;';
+				Mojo.Log.info('Save logs:'+geocode+query);
+				Geocaching.db.transaction( 
+				(function (transaction) { 
+					transaction.executeSql(query, [], 
+						function() {},
+						function() {}
+					);
+				}).bind(this)
+			);
 			}.bind(this),
 			function(message) {
 				delete(cache[this.geocode]);

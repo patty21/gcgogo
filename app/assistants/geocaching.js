@@ -218,6 +218,8 @@ var cacheTemplate = {
 	'galleryImagesCount': 0,
 	'galleryImages': [],
 	'attrs': [],
+	'finds': 0,
+	'dnfs': 0,
 	'userdata': {}
 };
 

@@ -654,7 +654,7 @@ GeocachingCom.prototype.searchByOwner = function(params, success, failure)
 	}.bind(this), timeout*1000, ajaxId, params, success, failure);
 }
 
-GeocachingCom.prototype.loadCache = function(params, success, failure)
+GeocachingCom.prototype.loadCache = function(params, success, logsuccess, failure)
 {
 	var urlParam;
 	if(params['geocode']) {
@@ -686,7 +686,7 @@ GeocachingCom.prototype.loadCache = function(params, success, failure)
 					Geocaching.login['username'],
 					Geocaching.login['password'], 
 					function() {
-						this.loadCache(params, success, failure);
+						this.loadCache(params, success, logsuccess, failure);
 					}.bind(this),
 					failure
 				);
@@ -723,7 +723,7 @@ GeocachingCom.prototype.loadCache = function(params, success, failure)
 						Geocaching.login['username'],
 						Geocaching.login['password'], 
 						function() {
-							this.loadCache(params, success, failure);
+							this.loadCache(params, success, logsuccess, failure);
 						}.bind(this),
 						failure
 					);
@@ -970,7 +970,18 @@ GeocachingCom.prototype.loadCache = function(params, success, failure)
 			}
 
 			// Cache logs
-			
+			try {
+				cache[geocode].finds = reply.match(/<p class="LogTotals"><.+icon_smile[^>]+>\s*([\d,]+)/i)[1].replace(/,/g,'');
+			} catch(e) {
+				cache[geocode].finds = "0";
+				Mojo.Log.error(e);
+			}
+			try {
+				cache[geocode].dnfs = reply.match(/<p class="LogTotals"><.+icon_sad.gif[^>]+>\s([\d,]+)/i)[1].replace(/,/g,'');
+			} catch(e) {
+				cache[geocode].dnfs = "0";
+			}			
+			Mojo.Log.error('Logs/DNFS:'+cache[geocode].finds+'/'+cache[geocode].dnfs);
 			cache[geocode].logs = [];
 			if (Geocaching.settings['logcount']>0) {
 				var tkn= reply.match(/userToken = '(\w+)';/)[1];
@@ -1061,10 +1072,10 @@ GeocachingCom.prototype.loadCache = function(params, success, failure)
 							}
 							cache[geocode].logs.push(Object.clone(clog));
 						}
-						success(tkn);
+						logsuccess(geocode);
 					},
 					'onFailure': function(rl){
-						failure($L("Error occured on fetching logs."));
+						Mojo.Log.error('Log download error: '+rl);
 					}
 			 	 });
 			}
@@ -1104,7 +1115,7 @@ GeocachingCom.prototype.loadCache = function(params, success, failure)
 			} else {
 				Mojo.Controller.getAppController().showBanner({'messageText': "Getting cache failed, retrying ..."}, "", "cache");
 				params['retry']++;
-				this.loadCache(params, success, failure);
+				this.loadCache(params, success, logsuccess, failure);
 			}
 		}
 	}.bind(this), timeout*1000, ajaxId, params, success, failure);

@@ -41,6 +41,9 @@ CacheAssistant.prototype.setup = function() {
 	this.cacheTrackables = this.cacheTrackables.bind(this);
 	this.controller.listen("cache-trackables-row", Mojo.Event.tap, this.cacheTrackables);
 
+	this.cacheLogs = this.cacheLogs.bind(this);
+	this.controller.listen("cache-logs-row", Mojo.Event.tap, this.cacheLogs);
+
 	this.cacheAttributes = this.cacheAttributes.bind(this);
 	this.controller.listen("cache-attributes-row", Mojo.Event.tap, this.cacheAttributes);
 	
@@ -84,6 +87,11 @@ CacheAssistant.prototype.setup = function() {
 									if(item['favourite'] == 1)
 										cache[this.geocode].favourite = true;
 								} catch(e) {}
+								try {
+									cache[this.geocode].logs = unescape(item['logs']).evalJSON();
+								} catch(e) {
+									cache[this.geocode].logs = {};
+								}
 
 								cache[this.geocode].updated = item['updated'];
 
@@ -146,6 +154,13 @@ CacheAssistant.prototype.setup = function() {
 									if(item['favourite'] == 1)
 										cache[this.geocode].favourite = true;
 								} catch(e) {}
+								
+								try {
+									cache[this.geocode].logs = unescape(item['logs']).evalJSON();
+								} catch(e) {
+									cache[this.geocode].logs = {};
+								}
+
 
 								cache[this.geocode].updated = item['updated'];
 
@@ -241,6 +256,7 @@ CacheAssistant.prototype.cleanup = function(event) {
 	Mojo.Event.stopListening(this.controller.get("cache-description-row"), Mojo.Event.tap, this.cacheDescription);
 	Mojo.Event.stopListening(this.controller.get("cache-waypoints-row"), Mojo.Event.tap, this.cacheWaypoints);
 	Mojo.Event.stopListening(this.controller.get("cache-trackables-row"), Mojo.Event.tap, this.cacheTrackables);
+	Mojo.Event.stopListening(this.controller.get("cache-logs-row"), Mojo.Event.tap, this.cacheLogs);
 	Mojo.Event.stopListening(this.controller.get("cache-attributes-row"), Mojo.Event.tap, this.cacheAttributes);
 }
 
@@ -382,6 +398,10 @@ CacheAssistant.prototype.showCacheDetail = function(geocode) {
 		this.controller.get('cache-trackables').update($L("No trackable"));
 	}
 	delete(trkCount);
+	
+	this.controller.get('cache-logs').update('<img src="images/log_found.gif"> '+cache[this.geocode].finds+
+				' &nbsp;&nbsp;&nbsp; <img src="images/log_notfound.gif"> '+cache[this.geocode].dnfs+'</div>');
+	
 
 	
 	var atCount = cache[this.geocode].attrs.length;
@@ -561,6 +581,11 @@ CacheAssistant.prototype.cacheOwnerClickHandle = function(event) {
 CacheAssistant.prototype.cacheDescription = function(event) {
 	this.controller.stageController.pushScene('description', this.geocode);
 }
+
+CacheAssistant.prototype.cacheLogs = function(event) {
+	this.controller.stageController.pushScene('cachelogs', this.geocode);
+}
+
 
 CacheAssistant.prototype.cacheSpoilerImages = function(event) {
 	if(cache[this.geocode].spoilerImages.length > 0) {
@@ -790,6 +815,7 @@ CacheAssistant.prototype.reloadCache = function() {
 
 				this.showCacheDetail(this.geocode);
 			}.bind(this),
+			this.saveLogs.bind(this),
 			function(message) {
 				delete(cache[this.geocode]);
 				this.controller.get('loading-spinner').hide();
@@ -843,6 +869,7 @@ CacheAssistant.prototype.reloadCache = function() {
 
 				this.showCacheDetail(this.geocode);
 			}.bind(this),
+			this.saveLogs.bind(this),
 			function(message) {
 				delete(cache[this.geocode]);
 				this.controller.get('loading-spinner').hide();
@@ -852,6 +879,21 @@ CacheAssistant.prototype.reloadCache = function() {
 		);
 	}
 }
+
+
+CacheAssistant.prototype.saveLogs = function(geocode) {
+	var query = 'UPDATE "caches" set "logs"="'+escape(Object.toJSON(cache[geocode].logs))+'" WHERE "gccode"="'+escape(geocode)+'"; GO;';
+	Mojo.Log.info('Save logs:'+geocode+query);
+	Geocaching.db.transaction( 
+		(function (transaction) { 
+			transaction.executeSql(query, [], 
+				function() {},
+				function() {}
+			);
+		}).bind(this)
+	);
+}
+
 
 CacheAssistant.prototype.actionMyPositionSuccess = function(event) {
 	var accuracy = event.horizAccuracy;
