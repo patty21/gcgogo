@@ -94,7 +94,7 @@ GeocachingCom.prototype.parseSearch = function(url, reply, list)
 {
 	var viewstate = new Array();
 	var viewstate0, viewstate1, viewstate2, viewstate3, eventvalidation0;
-	
+	var pageleft = 0;
 	try {
 		eventvalidation0 = reply.match(/id="__EVENTVALIDATION" value="([^"]+)"/)[1]
 		viewstate.push(eventvalidation0);
@@ -120,6 +120,11 @@ GeocachingCom.prototype.parseSearch = function(url, reply, list)
 	try {
 		viewstate3 = reply.match(/id="__VIEWSTATE3" value="([^"]+)"/)[1]
 		viewstate.push(viewstate3);
+	} catch(e) { }
+	
+	try {
+		var tmp = reply.match(/<td class="PageBuilderWidget"><span>[^<]+<b>[^<]+<\/b>[^<]+<b>(\d+)<\/b>[^<]+<b>(\d+)<\/b>/);
+		pageleft = tmp[2]-tmp[1];
 	} catch(e) { }
 
 	var startPos = reply.indexOf('<table class="SearchResultsTable Table">');
@@ -279,7 +284,8 @@ GeocachingCom.prototype.parseSearch = function(url, reply, list)
 	var searchResult = {
 		'url': url,
 		'viewstate': viewstate,
-		'cacheList': list
+		'cacheList': list,
+		'pageleft' : pageleft
 	}
 
 	return searchResult;
@@ -971,7 +977,8 @@ GeocachingCom.prototype.loadCache = function(params, success, logsuccess, failur
 
 			// Cache logs
 			try {
-				cache[geocode].finds = reply.match(/<p class="LogTotals"><.+icon_smile[^>]+>\s*([\d,]+)/i)[1].replace(/,/g,'');
+				cache[geocode].finds = reply.match(/<p class="LogTotals"><.+icon_smile.gif" alt="Found it[^>]+>\s*(\d[\d,]*)/i)[1].replace(/,/g,'');
+				Mojo.Log.error("Finds:"+cache[geocode].finds);
 			} catch(e) {
 				cache[geocode].finds = "0";
 				Mojo.Log.error(e);

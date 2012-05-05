@@ -236,46 +236,39 @@ ListAssistant.prototype.makeDist = function(dist) {
 	return par;
 }
 
-/*
-ListAssistant.prototype.mapTool = function(cachesCount, caches) {
-	Mojo.Log.error(cachesCount);
-	var params = {
-    		'center': {
-			'lat': this.searchParameters['lat'],
-			'lon': this.searchParameters['lon'], 
-			'zoom': 14},
-		'targets': []
-	} ;
-	
-	if (cachesCount<20 && this.dst<2) {
-		this.dst++;
-		Geocaching.accounts['geocaching.com'].loadCachesOnMap(this.makeDist(30000*this.dst), 
-			this.mapTool.bind(this),
-			function() {}
-		);			
-	} else if (cachesCount>500) {
-		Geocaching.accounts['geocaching.com'].loadCachesOnMap(this.makeDist(3000), 
-			this.mapTool.bind(this),
-			function() {}
-		);			
-	} else {
+
+ListAssistant.prototype.mapTool = function(res) {
+	var reply = res.responseText;
+//	Mojo.Log.error(reply);
+	var caches = reply.evalJSON();
+//	Mojo.Log.error('Caches');
 		var len = caches.length;
+//		Mojo.Log.error('Len:'+len);
 		var item = {};
+		var params = {'center':{
+				'lat' : this.searchParameters['lat'], 
+				'lon' : this.searchParameters['lon'], 
+				'zoom': 14}
+			   };
+		params['targets']=new Array();
+		
 		for(var z = 0; z<len; z++) {
 			item = {
 				'lat':caches[z]['lat'],
 				'lon':caches[z]['lon'],
-				'name':caches[z]['nn'],
+				'name':caches[z]['name'],
 				'gcid':caches[z]['gc'],
-				'image':'http://www.geocaching.com/images/WptTypes/sm/'+caches[z]['ctid']+'.gif'
+				'image':'http://www.geocaching.com/images/WptTypes/sm/'+caches[z]['typ']+'.gif'
 			}
-			if (caches[z]['f']) {
+/*			if (caches[z]['f']) {
 				item['image'] = 'http://www.geocaching.com/images/gmn/f.png';
 			}
+			Mojo.Log.error(Object.toJSON(item);
+*/
 			params['targets'].push(Object.clone(item));
 		}
 	
-		Mojo.Log.error(Object.toJSON(params));			
+//		Mojo.Log.error(Object.toJSON(params));			
 		// Try Map Tool Pro
 		this.controller.serviceRequest('palm://com.palm.applicationManager', {
 			'method': 'launch',
@@ -302,29 +295,23 @@ ListAssistant.prototype.mapTool = function(cachesCount, caches) {
 				});
 			}.bind(this)
 		});
-	}
 }
-*/
+
 
 ListAssistant.prototype.handleCommand = function(event) {
 	if(event.type == Mojo.Event.command) {
 		switch(event.command)
 		{
 			case 'mappingtool':
-/*				this.dst=0;
-				Geocaching.accounts['geocaching.com'].loadMapPage( {},
-					function(userToken) {
-						this.userToken = userToken;
-						var par = this.makeDist(10000);
-						Geocaching.accounts['geocaching.com'].loadCachesOnMap(par, 
-							this.mapTool.bind(this),
-							function() {}
-						);						
-					}.bind(this),
-					function() {}
-				);
-*/
-
+			
+			   if (this.searchMethod=='coords') {
+			   	var url = "http://gc.yz.to/map.php?lat="+ this.searchParameters['lat'] +"&lon="+ this.searchParameters['lon'];
+				var upAjax = new Ajax.Request(url, {
+					'method': 'get',
+					'onSuccess': this.mapTool.bind(this),
+					'onFailure': function(r){}
+				});
+			   } else {
 
 				var params = new Array();
 				var cacheList = this.searchResult.cacheList;
@@ -380,7 +367,7 @@ ListAssistant.prototype.handleCommand = function(event) {
 					});
 
 
-
+				}
 
 
 
@@ -623,7 +610,8 @@ ListAssistant.prototype.buildList = function(searchResult) {
 	}
 
 	// Visibility of "Next page"
-	if(typeof(searchResult.nextPage) != 'undefined') {
+	Mojo.Log.error('Pageleft:'+searchResult['pageleft']);
+	if(searchResult['pageleft']==0) {
 		this.controller.get('cache-list').mojo.showAddItem(searchResult.nextPage);
 	}
 

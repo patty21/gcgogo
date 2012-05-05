@@ -149,6 +149,7 @@ OfflineAssistant.prototype.actionByCoordsClicked = function(event) {
 	this.showProgress();
 	this.setProgress(0);
 	this.page=1;
+	this.pageleft=0;
 	this.setStatus('Page '+this.page);
 	Geocaching.accounts['geocaching.com'].searchByCoords({
 		'latitude': latitude, 
@@ -168,8 +169,29 @@ OfflineAssistant.prototype.actionByCoordsClicked = function(event) {
 OfflineAssistant.prototype.downloadList = function (result) {
 	Mojo.Log.error('downloadList');
 	this.cacheList = result.cacheList;
+	this.viewstate = result['viewstate'];
+	this.url = result['url'];
+	this.pageleft = result['pageleft'];
 	this.downloadNext();
 };
+
+OfflineAssistant.prototype.downloadNextPage = function() {
+	this.page++;
+	this.setStatus('Page '+this.page);
+	Geocaching.accounts['geocaching.com'].searchByUrlNextPage({
+		'url': this.url,
+		'viewstate': this.viewstate
+//		'list': this.searchParameters['list']
+		},
+		this.downloadList.bind(this),
+		function(message) {
+			this.controller.get('loading-spinner').hide();
+			this.showPopup(null, $L("Problem"), message, function() { Mojo.Controller.stageController.popScene(); });
+			return false;
+		}.bind(this)
+	);
+}
+
 
 OfflineAssistant.prototype.downloadNext = function () {
 	this.setProgress(Math.round((this.dlnumtotal-this.dlnum)*100/this.dlnumtotal));
@@ -204,7 +226,7 @@ OfflineAssistant.prototype.downloadNext = function () {
 					escape(cache[geocode].latitude) + ', ' +
 					escape(cache[geocode].longitude) + ', "' +  
 					escape(Object.toJSON(cache[geocode])) +'"); GO;';
-					Mojo.Log.info(query);
+//					Mojo.Log.info(query);
 					this.geocode=geocode;
 					Geocaching.db.transaction( 
 					(function (transaction) { 
@@ -230,7 +252,7 @@ OfflineAssistant.prototype.downloadNext = function () {
 			}.bind(this),
 			function(geocode) {
 				var query = 'UPDATE "caches" set "logs"="'+escape(Object.toJSON(cache[geocode].logs))+'" WHERE "gccode"="'+escape(geocode)+'"; GO;';
-				Mojo.Log.info('Save logs:'+geocode+query);
+//				Mojo.Log.info('Save logs:'+geocode+query);
 				Geocaching.db.transaction( 
 				(function (transaction) { 
 					transaction.executeSql(query, [], 
@@ -247,8 +269,13 @@ OfflineAssistant.prototype.downloadNext = function () {
 				return false;
 			}.bind(this)
 		);
+	} else if (this.pageleft > 0) {
+		this.downloadNextPage();
+	} else  {
+		this.controller.get('load').hide();
+		this.showPopup(null, $L("Download"), $L("No more caches to Download"), function() { this.controller.get('actions').show(); });
+		return;
 	}
-
 };
 
 
