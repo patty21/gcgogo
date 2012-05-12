@@ -1252,7 +1252,7 @@ GeocachingCom.prototype.loadTrackable = function(params, success, failure)
 			}
 			try {
 				// Get TB code
-				var tbcode = reply.match(/<meta name="og:url" content="http:\/\/coord.info\/(TB.*)" property="og:url" \/>/i)[1];
+				var tbcode = reply.match(/<span id="ctl00_ContentBody_CoordInfoLinkControl1_uxCoordInfoCode" class="CoordInfoCode">(TB\w+)<\/span>/i)[1];
 				// Clone template
 				trackable[tbcode] = Object.clone(trackableTemplate);
 				trackable[tbcode].tbcode = tbcode;
