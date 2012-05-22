@@ -262,6 +262,7 @@ OfflineAssistant.prototype.downloadNext = function () {
 				this.downloadNext();
 			}.bind(this),
 			function(geocode) {
+				// Save Logs
 				var query = 'UPDATE "caches" set "logs"="'+escape(Object.toJSON(cache[geocode].logs))+'" WHERE "gccode"="'+escape(geocode)+'"; GO;';
 //				Mojo.Log.info('Save logs:'+geocode+query);
 				Geocaching.db.transaction( 
@@ -274,10 +275,9 @@ OfflineAssistant.prototype.downloadNext = function () {
 			);
 			}.bind(this),
 			function(message) {
+				// On Error Skip and try next cache
 				delete(cache[this.geocode]);
-				this.controller.get('loading-spinner').hide();
-				this.showPopup(null, $L("Problem"), message, function() { Mojo.Controller.stageController.popScene(); });
-				return false;
+				this.downloadNext();
 			}.bind(this)
 		);
 	} else if (this.pageleft > 0) {

@@ -400,7 +400,8 @@ CacheAssistant.prototype.showCacheDetail = function(geocode) {
 	delete(trkCount);
 	
 	this.controller.get('cache-logs').update('<img src="images/log_found.gif"> '+cache[this.geocode].finds+
-				' &nbsp;&nbsp;&nbsp; <img src="images/log_notfound.gif"> '+cache[this.geocode].dnfs+'</div>');
+				' &nbsp;&nbsp;&nbsp; <img src="images/log_notfound.gif"> '+cache[this.geocode].dnfs+
+				' &nbsp;&nbsp;&nbsp; <img src="images/favorites.png"> '+cache[this.geocode].favs);
 	
 
 	

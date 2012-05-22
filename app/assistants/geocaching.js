@@ -220,6 +220,7 @@ var cacheTemplate = {
 	'attrs': [],
 	'finds': 0,
 	'dnfs': 0,
+	'favs': 0,
 	'userdata': {}
 };
 

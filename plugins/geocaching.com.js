@@ -987,7 +987,13 @@ GeocachingCom.prototype.loadCache = function(params, success, logsuccess, failur
 				cache[geocode].dnfs = reply.match(/<p class="LogTotals"><.+icon_sad.gif[^>]+>\s([\d,]+)/i)[1].replace(/,/g,'');
 			} catch(e) {
 				cache[geocode].dnfs = "0";
+			}
+			try {
+				cache[geocode].favs = reply.match(/<span class="favorite-value">\s*(\d+)\s*<\/span>/i)[1].replace(/,/g,'');
+			} catch(e) {
+				cache[geocode].favs = "0";
 			}			
+
 			Mojo.Log.error('Logs/DNFS:'+cache[geocode].finds+'/'+cache[geocode].dnfs);
 			cache[geocode].logs = [];
 			if (Geocaching.settings['logcount']>0) {
