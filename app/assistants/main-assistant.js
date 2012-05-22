@@ -605,6 +605,20 @@ MainAssistant.prototype.setup = function() {
 		
 		
 	}.bind(this), function () {});
+	
+	// Load found & hidden caches
+	
+	Geocaching.storage.simpleGet('ownfinds', function(response) {
+		var size = Object.values(response).size();
+		if(1 <= size) {
+			if(typeof(response)!='undefined') {
+				Geocaching.ownfinds = response;
+			}
+		}
+		this.inputsLoaded = true;
+	}.bind(this), function () {});
+	
+	
 
 	if(typeof(Geocaching.login['uid']) != 'undefined' && Geocaching.login['uid'] != null) {
 		this.controller.get('statsimg').update('<img src="http://img.geocaching.com/stats/img.aspx?txt=Your+statistics&uid='+ Geocaching.login['uid'] +'" />');

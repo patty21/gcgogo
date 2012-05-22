@@ -298,6 +298,7 @@ var Geocaching = {
 	'db': null, 
 	'lastAjaxId': null,
 	'lastActiveMap': null,
+	'ownfinds': {},
 	'ajaxRequests': {}
 }
 

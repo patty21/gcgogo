@@ -510,7 +510,7 @@ GeocachingCom.prototype.searchByCoords = function(params, success, failure)
 				);
 				return false;
 			}
-			var list = this.parseSearch(url, reply);
+ 			var list = this.parseSearch(url, reply);
 			if(list == false) {
 				failure($L("No caches found."));
 			} else {
@@ -574,7 +574,7 @@ GeocachingCom.prototype.searchByUsername = function( params, success, failure)
 			if(list == false) {
 				failure($L("No caches found."));
 			} else {
-				success(list);
+ 				success(list);
 			}
 		}.bind(this),
 		onFailure: function(r){
@@ -702,7 +702,7 @@ GeocachingCom.prototype.loadCache = function(params, success, logsuccess, failur
 			if(-1 != reply.search('<h2>Cache is Unpublished</h2>')) {
 				failure($L("Cache not found."));
 				return false;
-			}
+ 			}
 			if(-1 != reply.search('Sorry, you cannot view this cache listing until it has been published.')) {
 				failure($L("This cache has not yet been published."));
 				return false;
@@ -766,7 +766,7 @@ GeocachingCom.prototype.loadCache = function(params, success, logsuccess, failur
 				cache[geocode].owner = reply.match(/by <a href="[^"]+">([^<]+)<\/a>/i)[1];
 				tmp = reply.match(/<img src="(http:\/\/([\-0-9\.a-z\/]*)?www\.geocaching\.com)?\/images\/icons\/container\/([a-z_]+).gif" alt="Size:/i)[3];
 				cache[geocode].size = cacheSizeNo[tmp];
-			} catch(e) {
+ 			} catch(e) {
 				Mojo.Log.error(Object.toJSON(e));
 				Geocaching.sendReport('parseCache2_'+url, reply, e);
 				failure($L("Error occured on cache parsing."));
@@ -2328,4 +2328,98 @@ GeocachingCom.prototype.loadCacheDetailOnMap = function(params, success, failure
 		}
 	}.bind(this), timeout*1000, ajaxId, params, success, failure);
 };
+
+
+GeocachingCom.prototype.ownedFinds = function(success, failure)
+{
+	var timeout = Geocaching.settings['secondTimeout'];
+	var url = "http://www.geocaching.com/my/owned.aspx";
+	var ajaxId = 'owned-'+ Math.round(new Date().getTime());
+	Geocaching.ajaxRequests[ajaxId] = new Ajax.Request(url, {
+		'method': 'get',
+		'onSuccess': function(r){
+			Geocaching.lastAjaxId = null;
+			delete(Geocaching.ajaxRequests[ajaxId]);
+
+			var reply = r.responseText.replace(/\n/g, " ").replace(/\r/g, "").replace(/\t/g," ");
+			
+			if(!this.checkLogin(reply)) {
+				this.doLogin(
+					Geocaching.login['username'],
+					Geocaching.login['password'], 
+					function() {
+						this.ownedFinds(success, failure);
+					}.bind(this),
+					failure
+				);
+				return false;
+			}
+			
+			var owBegin = reply.search('<table class="Table">');
+			var owList, owEnd, owItems, owCount, guid;
+			if(-1 != owBegin) {
+				owList = reply.substr(owBegin);
+				owEnd = owList.search('</table>');
+				owList = owList.substr(0, owEnd);
+				owItems = owList.split('<tr');
+				owCount = owItems.length-1;
+				for(var z=2; z<=owCount; z++) {
+					guid = owItems[z].match(/cache_details.aspx\?guid=([\w-]+)/)[1];
+					Geocaching.ownfinds[guid]=2;
+				}
+			}
+			var url = "http://www.geocaching.com/my/logs.aspx?s=1";
+			var ajaxId = 'finds-'+ Math.round(new Date().getTime());
+			Geocaching.ajaxRequests[ajaxId] = new Ajax.Request(url, {
+				'method': 'get',
+				'onSuccess': function(r){
+					Geocaching.lastAjaxId = null;
+					delete(Geocaching.ajaxRequests[ajaxId]);
+					var reply = r.responseText.replace(/\n/g, " ").replace(/\r/g, "").replace(/\t/g," ");
+					var foBegin = reply.search('<table class="Table">');
+					var foList, foEnd, foItems, foCount, guid;
+					if(-1 != foBegin) {
+						foList = reply.substr(foBegin);
+						foEnd = foList.search('</table>');
+						foList = foList.substr(0, foEnd);
+						foItems = foList.split('<tr');
+						foCount = foItems.length-1;
+						for(var z=1; z<=foCount; z++) {
+							try {
+								guid = foItems[z].match(/icon_(attended|smile)\.gif.+cache_details.aspx\?guid=([\w-]+)/)[2];
+								Geocaching.ownfinds[guid]=1;
+							} catch(e) {}
+						}
+					}
+					Mojo.Log.info('Anzahl:'+Object.keys(Geocaching.ownfinds).length);
+					success();
+				},
+				'onFailure': function(r){
+					failure($L("Error reading found caches."));
+				},
+				'onException': function(r){
+					failure($L("Exception reading found caches."));
+				}
+			});
+		}.bind(this),
+		'onFailure': function(r){
+			Mojo.Log.error(Object.toJSON(r));
+			failure($L("Error reading owned caches."));
+		},
+		'onException': function(r){
+			Mojo.Log.error(Object.toJSON(r));
+			failure($L("Exception reading owned caches."));
+		}
+	});
+	Geocaching.lastAjaxId = ajaxId;
+
+	window.setTimeout(function(ajaxId, params, success, failure) {
+		if(Ajax.activeRequestCount > 0 && ajaxId == Geocaching.lastAjaxId) {
+			Geocaching.ajaxRequests[ajaxId].abort();
+			delete(Geocaching.ajaxRequests[ajaxId]);
+			failure($L("Operation timeout"));
+		}
+	}.bind(this), timeout*1000, ajaxId, success, failure);
+};
+
 

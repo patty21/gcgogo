@@ -151,6 +151,11 @@ LoginAssistant.prototype.loginClicked = function(event) {
 					this.showPopup(event, $L("Login"), $L("Login information are correct, but cannot be saved."), false);
 				}.bind(this)
 			);
+			Geocaching.ownfinds = {};
+			Geocaching.storage.simplaadd('ownfinds',Geocaching.ownfinds,
+				function() {}.bind(this),
+				function() {}.bind(this)
+			);
 		}.bind(this),
 		function(message) {
 			this.enableButton();

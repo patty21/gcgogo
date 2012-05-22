@@ -251,6 +251,10 @@ ListAssistant.prototype.mapTool = function(res) {
 				'zoom': 14}
 			   };
 		params['targets']=new Array();
+		var imgurl = {
+			'1' : 'http://www.geocaching.com/images/gmn/f.png',
+			'2' : 'http://www.geocaching.com/images/silk/star.png'
+		}
 		
 		for(var z = 0; z<len; z++) {
 			item = {
@@ -260,11 +264,10 @@ ListAssistant.prototype.mapTool = function(res) {
 				'gcid':caches[z]['gc'],
 				'image':'http://www.geocaching.com/images/WptTypes/sm/'+caches[z]['typ']+'.gif'
 			}
-/*			if (caches[z]['f']) {
-				item['image'] = 'http://www.geocaching.com/images/gmn/f.png';
+
+			if (Geocaching.ownfinds[caches[z]['guid']]!=undefined) {
+				item['image'] = imgurl[Geocaching.ownfinds[caches[z]['guid']]];
 			}
-			Mojo.Log.error(Object.toJSON(item);
-*/
 			params['targets'].push(Object.clone(item));
 		}
 	

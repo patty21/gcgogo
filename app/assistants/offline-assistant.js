@@ -64,12 +64,23 @@ OfflineAssistant.prototype.setup = function() {
 			'disabled': false
 		}
 	);
+	
+	// Owns & Finds
+	this.controller.setupWidget('action-button-ownfinds', {},
+		{
+			'label': $L("Download"),
+			'buttonClass': "palm-button buttonfloat primary",
+			'disabled': false
+		}
+	);
 
 	this.inputs['bycoordsnum'] = this.modelActionByCoordsNum['value'] = "10";
 	this.controller.modelChanged(this.modelActionByCoordsNum);
 	
 	this.actionByCoordsClicked = this.actionByCoordsClicked.bind(this);
 	Mojo.Event.listen(this.controller.get('action-button-bycoords'), Mojo.Event.tap, this.actionByCoordsClicked);
+	this.actionOwnfindsClicked = this.actionOwnfindsClicked.bind(this);
+	Mojo.Event.listen(this.controller.get('action-button-ownfinds'), Mojo.Event.tap, this.actionOwnfindsClicked);
 
 	
 	Geocaching.storage.simpleGet('inputs', function(response) {
@@ -99,6 +110,7 @@ OfflineAssistant.prototype.deactivate = function(event) {
 
 OfflineAssistant.prototype.cleanup = function(event) {
 	Mojo.Event.stopListening(this.controller.get('action-button-bycoords'), Mojo.Event.tap, this.actionByCoordsClicked);
+	Mojo.Event.stopListening(this.controller.get('action-button-ownfinds'), Mojo.Event.tap, this.actionOwnfindsClicked);
 }
 
 OfflineAssistant.prototype.showProgress = function()
@@ -167,7 +179,6 @@ OfflineAssistant.prototype.actionByCoordsClicked = function(event) {
 };
 
 OfflineAssistant.prototype.downloadList = function (result) {
-	Mojo.Log.error('downloadList');
 	this.cacheList = result.cacheList;
 	this.viewstate = result['viewstate'];
 	this.url = result['url'];
@@ -277,6 +288,37 @@ OfflineAssistant.prototype.downloadNext = function () {
 		return;
 	}
 };
+
+
+OfflineAssistant.prototype.actionOwnfindsClicked = function(event) {
+	this.hideProgress();
+	this.controller.get('actions').hide();
+	this.setStatus('Hides & Finds');
+	this.controller.get('load').show();
+	Geocaching.accounts['geocaching.com'].ownedFinds(
+		this.actionOwnfindsFinished.bind(this),
+		function(message) {
+				delete(cache[this.geocode]);
+				this.controller.get('load').hide();
+				this.showPopup(null, $L("Problem"), message, function() { Mojo.Controller.stageController.popScene(); });
+				return false;
+			}.bind(this)
+	);
+
+}
+
+OfflineAssistant.prototype.actionOwnfindsFinished = function () {
+
+	this.controller.get('load').hide();
+	this.showPopup(null, $L("Download"), $L("Download complete"), function() { this.controller.get('actions').show(); });
+	try {
+		Geocaching.storage.simpleAdd('ownfinds', Geocaching.ownfinds,
+			function() {}.bind(this),
+			function() {}.bind(this)
+		);
+	} catch(e) { }
+
+}
 
 
 OfflineAssistant.prototype.showPopup = function(event, title, message, onChoose) {
