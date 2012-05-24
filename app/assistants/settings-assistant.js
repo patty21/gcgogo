@@ -112,8 +112,8 @@ SettingsAssistant.prototype.setup = function() {
 		{
 			'choices': [
 				{'label': $L({'value': "Builtin compass", 'key': 'builtin_compass'}), 'value': 'builtin'},
-				{'label': $L({'value': "Mapping Tool", 'key': 'mapping_tool'}), 'value': 'mappingtool'},
-				{'label': $L({'value': "Google Maps", 'key': 'google_maps'}), 'value': 'googlemaps'}
+				{'label': $L({'value': "Mapping Tool", 'key': 'mapping_tool'}), 'value': 'mappingtool'}
+/*				{'label': $L({'value': "Google Maps", 'key': 'google_maps'}), 'value': 'googlemaps'}  */
 			],
 			'label': $L({'value': "default navigation", 'key': 'default_navigation'}),
 			'labelPlacement': Mojo.Widget.labelPlacementLeft

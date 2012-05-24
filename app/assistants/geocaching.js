@@ -181,8 +181,8 @@ var logTypesTrackable = [
 
 var defaultnavigationIcons = {
 	'builtin': 'images/icon-compass.png',
-	'mappingtool': 'images/icon-mappingtool.png',
-	'googlemaps': 'images/icon-googlemaps.png'
+	'mappingtool': 'images/icon-mappingtool.png'
+//	'googlemaps': 'images/icon-googlemaps.png'
 }
 
 var cache = {};

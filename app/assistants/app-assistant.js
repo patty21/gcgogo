@@ -11,24 +11,15 @@ AppAssistant.prototype.setup = function() {
 };
 
 AppAssistant.prototype.handleLaunch = function(params) {
-/*
+	gblCt++;
 	if (!params){
 		return;
 	}
-	
-	Mojo.Log.error('params:', Object.toJSON(params));	
-	gblCt++;
-	var stageController = this.controller.getActiveStageController();
-	if(!!stageController) {
-		// Push scene from input parameters
-		if(typeof(params['scene']) != 'undefined') {
-			stageController.pushScene(params['scene']);
-		}
-	}
-	
-	Mojo.Log.error('1');
+//	Mojo.Log.error('params:', Object.toJSON(params));	
 	gblLaunchParams = params;
-	
+	if (gblCt==1) {
+		return;
+	}
 	
   // Look for an existing main stage by name.
   var stageProxy = this.controller.getStageProxy(MainStageName);
@@ -54,23 +45,4 @@ AppAssistant.prototype.handleLaunch = function(params) {
       // Specify the stage type with the last property.
       this.controller.createStageWithCallback(stageArguments, pushMainScene, "card");
   }
-
-*/	
-	
-
-/*
-
-	var stageProxy = this.controller.getStageProxy("main");
-//	stageController = this.controller.getStageController("main");
-	if(stageController) {
-		Mojo.Log.error('2');
-	}
-	
-	if(gblStageController && typeof(params['gcid']) != 'undefined') {
-//		gblStageController.window.focus();
-		Mojo.Log.error('3');
-//		gblStageController.pushScene('cache',params['gcid']);
-	}
-	gblLaunchParams = params;
-*/
 };

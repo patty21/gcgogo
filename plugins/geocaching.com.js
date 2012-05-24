@@ -836,7 +836,7 @@ GeocachingCom.prototype.loadCache = function(params, success, logsuccess, failur
 			}
 
 			try {
-				cache[geocode].description = reply.match(/<span id="ctl00_ContentBody_LongDescription">(.*)<\/span>\s*<\/div>\s*<p>\s*<\/p>\s*<p>\s*<strong>[^<]+<\/strong>/i)[1];
+				cache[geocode].description = reply.match(/<span id="ctl00_ContentBody_LongDescription">(.*)<\/span>\s*<\/div>\s*<p>\s*<\/p>\s*<p id="ctl00_ContentBody_hints">\s*<strong>[^<]+<\/strong>/i)[1];
 			} catch(e) {
 				cache[geocode].description = '';
 			}

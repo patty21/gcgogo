@@ -266,13 +266,14 @@ OfflineAssistant.prototype.downloadNext = function () {
 				var query = 'UPDATE "caches" set "logs"="'+escape(Object.toJSON(cache[geocode].logs))+'" WHERE "gccode"="'+escape(geocode)+'"; GO;';
 //				Mojo.Log.info('Save logs:'+geocode+query);
 				Geocaching.db.transaction( 
-				(function (transaction) { 
-					transaction.executeSql(query, [], 
-						function() {},
-						function() {}
-					);
-				}).bind(this)
-			);
+					(function (transaction) { 
+						transaction.executeSql(query, [], 
+							function() {},
+							function() {}
+						);
+					}).bind(this)
+				);
+				delete(cache[this.geocode]);
 			}.bind(this),
 			function(message) {
 				// On Error Skip and try next cache
