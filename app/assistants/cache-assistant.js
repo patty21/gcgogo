@@ -214,8 +214,9 @@ CacheAssistant.prototype.setup = function() {
 				this.commandMenuItem1 = {items: [
 					{'label': $L("More info"), 'icon': 'info', 'command': 'info'},
 //					{'label':'Users note', 'icon':'attach', 'command':'note', 'disabled': true},
-					{'label': $L("Logs"), 'icon': 'search', 'command': 'logs'},
-					{'label': $L("Compass"), 'iconPath': defaultnavigationIcons[Geocaching.settings['defaultnavigation']], 'command': 'compass'}
+//					{'label': $L("Logs"), 'icon': 'search', 'command': 'logs'},
+					{'label': $L("Compass"), 'iconPath': defaultnavigationIcons['builtin'], 'command': 'compassbuiltin'},
+					{'label': $L("Compass"), 'iconPath': defaultnavigationIcons['mappingtool'], 'command': 'mappingtool'}
 				]},
 				this.commandMenuItem2,
 				this.commandMenuItem3 = {'label': $L("Post log"), 'icon': 'send', 'command': 'log'} // Preparation for post log
@@ -527,6 +528,12 @@ CacheAssistant.prototype.handleCommand = function(event) {
 			case 'compass':
 				this.cacheCompass(event);
 			break;
+			case 'compassbuiltin':
+				this.cacheCompass(1);
+			break;
+			case 'mappingtool':
+				this.cacheCompass(2);
+			break;
 			case 'favourite':
 				var favourite;
 				if(cache[this.geocode].favourite) {
@@ -656,7 +663,7 @@ CacheAssistant.prototype.cacheCompass = function(event) {
 		Mojo.Log.error(Object.toJSON(e));
 	}
 
-	if(Geocaching.settings['defaultnavigation'] == 'mappingtool') {
+	if((event!=1 && Geocaching.settings['defaultnavigation'] == 'mappingtool') || event == 2) {
 		var params = Geocaching.format4Maptool(waypoints);
 		Mojo.Log.error(Object.toJSON(params));
 		// Try Map Tool Pro
