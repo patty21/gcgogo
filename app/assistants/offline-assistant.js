@@ -221,22 +221,26 @@ OfflineAssistant.prototype.downloadNext = function () {
 		this.setStatus(this.geocode);
 		Mojo.Log.error('Len:'+len+' GC:'+this.geocode+' Rest:'+this.dlnum);
 		Geocaching.accounts['geocaching.com'].loadCache({
-				'geocode': this.geocode
+				'geocode': this.geocode,
+				'logcount': 0
 			},
 			function(geocode) {
 				var ts = Math.round(new Date().getTime() / 1000);
 				cache[geocode].updated = ts;
 				Mojo.Log.error('Got:'+geocode);
 				this.guid = cache[geocode].guid;
-
-				var query = 'INSERT INTO "caches"("gccode", "guid", "updated", "found", "latitude", "longitude", "json") VALUES ("'+
+				var logs=cache[this.geocode].logs;
+				delete(cache[this.geocode].logs);
+				var query = 'INSERT INTO "caches"("gccode", "guid", "updated", "found", "latitude", "longitude", "json", "logs") VALUES ("'+
 					escape(geocode) + '", "' + 
 					escape(cache[geocode].guid) + '", ' + 
 					escape(ts) + ', ' +
 					escape(cache[geocode].found?1:0) + ', ' +
 					escape(cache[geocode].latitude) + ', ' +
 					escape(cache[geocode].longitude) + ', "' +  
-					escape(Object.toJSON(cache[geocode])) +'"); GO;';
+					escape(Object.toJSON(cache[this.geocode])) +'","'+
+					escape(Object.toJSON(logs))+ '"); GO;';
+
 //					Mojo.Log.info(query);
 					this.geocode=geocode;
 					Geocaching.db.transaction( 
@@ -248,6 +252,7 @@ OfflineAssistant.prototype.downloadNext = function () {
 									transaction.executeSql('UPDATE "caches" SET '+
 										'"guid"="'+ escape(cache[this.geocode].guid) +'", '+
 										'"json"="'+ escape(Object.toJSON(cache[this.geocode])) +'", '+
+										'"logs"="'+ escape(Object.toJSON(logs)) +'", '+
 										'"updated"="'+ escape(ts) +'", '+
 										'"found"="'+ escape(cache[this.geocode].found?1:0) +'", '+
 										'"latitude"='+ escape(cache[this.geocode].latitude) +', '+
@@ -261,7 +266,7 @@ OfflineAssistant.prototype.downloadNext = function () {
 
 				this.downloadNext();
 			}.bind(this),
-			function(geocode) {
+/*			function(geocode) {
 				// Save Logs
 				var query = 'UPDATE "caches" set "logs"="'+escape(Object.toJSON(cache[geocode].logs))+'" WHERE "gccode"="'+escape(geocode)+'"; GO;';
 //				Mojo.Log.info('Save logs:'+geocode+query);
@@ -274,7 +279,8 @@ OfflineAssistant.prototype.downloadNext = function () {
 					}).bind(this)
 				);
 				delete(cache[this.geocode]);
-			}.bind(this),
+			}.bind(this), */
+			function() {},
 			function(message) {
 				// On Error Skip and try next cache
 				delete(cache[this.geocode]);

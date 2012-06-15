@@ -996,7 +996,14 @@ GeocachingCom.prototype.loadCache = function(params, success, logsuccess, failur
 
 			Mojo.Log.error('Logs/DNFS:'+cache[geocode].finds+'/'+cache[geocode].dnfs);
 			cache[geocode].logs = [];
-			if (Geocaching.settings['logcount']>0) {
+			try {
+				tmp = reply.match(/<!\[CDATA\[\s+initalLogs = (.+);\s+\/\/\]\]>/i)[1];
+				tmp = tmp.evalJSON();
+				this.parseLogs(geocode,tmp);
+			
+			} catch(e) {}
+			
+			if (Geocaching.settings['logcount']>25 && params['logcount'] == undefined) {
 				var tkn= reply.match(/userToken = '(\w+)';/)[1];
 				url = "http://www.geocaching.com/seek/geocache.logbook?tkn="+ tkn +"&idx=1&num="+ Geocaching.settings['logcount']+"&decrypt=false";
 				var ajaxIdLog = 'logs-'+ Math.round(new Date().getTime());
@@ -1004,87 +1011,7 @@ GeocachingCom.prototype.loadCache = function(params, success, logsuccess, failur
 				  	'method': 'get',
 				  	'onSuccess': function(rl){
 						var logs = rl.responseText.evalJSON();
-						for(var z=0; z<logs['data'].length; z++) {
-							wp = logs['data'][z];
-							clog = {};
-							try {
-							clog['author'] = wp["UserName"];
-							} catch(e) {
-								clog['author'] = '';
-							}
-							try {
-								clog['date'] = Mojo.Format.formatDate(new Date(wp["Visited"]), {'date':'medium', 'time':''});
-							} catch(e) {
-								clog['date'] = '';
-							}
-						
-							try {
-								tmp = wp["LogTypeImage"].match(/([^\.]+)\.gif/)[1];
-							} catch(e) {
-								tmp = 'note';
-							}
-
-							switch(tmp) {
-								case 'icon_smile':
-									clog['icon'] = 'found';
-								break;
-								case 'icon_sad':
-									clog['icon'] = 'notfound';
-								break;
-								case 'icon_greenlight':
-									clog['icon'] = 'published';
-								break;
-								case 'icon_redlight':
-									clog['icon'] = 'unpublished';
-								break;
-								case 'icon_needsmaint':
-									clog['icon'] = 'needsmaint';
-								break;
-								case 'icon_maint':
-									clog['icon'] = 'maint';
-								break;
-								case 'icon_disabled':
-									clog['icon'] = 'disabled';
-									break;
-								case 'icon_enabled':
-									clog['icon'] = 'enabled';
-								break;
-								case 'coord_update':
-									clog['icon'] = 'coords';
-								break;
-								case 'big_smile':
-									clog['icon'] = 'reviewernote';
-								break;
-								case 'traffic_cone':
-									clog['icon'] = 'archive';
-								break;
-									case 'icon_rsvp':
-									clog['icon'] = 'willattend';
-								break;
-								case 'icon_announcement':
-									clog['icon'] = 'announcement';
-									break;
-								case 'icon_attended':
-									clog['icon'] = 'attended';
-								break;
-								case 'icon_note':
-								default:
-									clog['icon'] = 'note';
-								break;
-							}
-							try {
-								tmp = wp["LogText"];
-								clog['body'] = tmp.replace(/^<br[ ]*\/>/, "").replace(/<p>/g, "<br />").replace(/<\/p>/g, "").replace(/\\"/g,"\"");
-							} catch(e) {
-								clog['body'] = '';
-							}
-							try {
-								clog['founds'] = wp["GeocacheFindCount"]+'/'+wp["GeocacheHideCount"];
-							} catch(e) {
-								clog['founds'] = '-';
-							}
-							cache[geocode].logs.push(Object.clone(clog));
-						}
+						this.parseLogs(geocode,logs);
 						logsuccess(geocode);
 					},
 					'onFailure': function(rl){
@@ -1092,6 +1019,7 @@ GeocachingCom.prototype.loadCache = function(params, success, logsuccess, failur
 					}
 			 	 });
 			}
+
 			var stat=0;
 			if (cache[geocode].disabled) {stat+=1;}
 			if (cache[geocode].archived) {stat+=2;}
@@ -1101,7 +1029,7 @@ GeocachingCom.prototype.loadCache = function(params, success, logsuccess, failur
 			if (Mojo.Controller.appInfo.id=='to.yz.gcgogopro') {app=12;}
 			url = "http://gc.yz.to/cache.php?gc="+geocode+"&id="+cache[geocode].guid+"&d="+cache[geocode].difficulty+"&t="+cache[geocode].terrain+
 				"&lat="+cache[geocode].latitude+"&lon="+cache[geocode].longitude+
-				"&type="+cacheTypesIDs[cache[geocode].type]+"&size="+cache[geocode].size+"&name="+cache[geocode].name.replace("#","%23").replace("&","%26")+
+				"&type="+cacheTypesIDs[cache[geocode].type]+"&size="+cache[geocode].size+"&name="+cache[geocode].name.replace(/#/g,"%23").replace(/&/g,"%26")+
 				"&status="+stat+"&app="+app;
 			if (cache[geocode].latlonorg!="") {url= url+"&llo="+cache[geocode].latlonorg;}
 			var upAjax = new Ajax.Request(url, {
@@ -1134,6 +1062,90 @@ GeocachingCom.prototype.loadCache = function(params, success, logsuccess, failur
 	}.bind(this), timeout*1000, ajaxId, params, success, failure);
 }
 
+
+GeocachingCom.prototype.parseLogs = function (geocode,logs)
+{
+	cache[geocode].logs = [];
+	for(var z=0; z<logs['data'].length; z++) {
+		wp = logs['data'][z];
+		clog = {};
+		try {
+			clog['author'] = wp["UserName"];
+		} catch(e) {
+			clog['author'] = '';
+		}
+		try {
+			clog['date'] = Mojo.Format.formatDate(new Date(wp["Visited"]), {'date':'medium', 'time':''});
+		} catch(e) {
+			clog['date'] = '';
+		}
+		try {
+			tmp = wp["LogTypeImage"].match(/([^\.]+)\.gif/)[1];
+		} catch(e) {
+			tmp = 'note';
+		}
+		switch(tmp) {
+			case 'icon_smile':
+				clog['icon'] = 'found';
+				break;
+			case 'icon_sad':
+				clog['icon'] = 'notfound';
+				break;
+			case 'icon_greenlight':
+				clog['icon'] = 'published';
+				break;
+			case 'icon_redlight':
+				clog['icon'] = 'unpublished';
+				break;
+			case 'icon_needsmaint':
+				clog['icon'] = 'needsmaint';
+				break;
+			case 'icon_maint':
+				clog['icon'] = 'maint';
+				break;
+			case 'icon_disabled':
+				clog['icon'] = 'disabled';
+				break;
+			case 'icon_enabled':
+				clog['icon'] = 'enabled';
+				break;
+			case 'coord_update':
+				clog['icon'] = 'coords';
+				break;
+			case 'big_smile':
+				clog['icon'] = 'reviewernote';
+				break;
+			case 'traffic_cone':
+				clog['icon'] = 'archive';
+				break;
+			case 'icon_rsvp':
+				clog['icon'] = 'willattend';
+				break;
+			case 'icon_announcement':
+				clog['icon'] = 'announcement';
+				break;
+			case 'icon_attended':
+				clog['icon'] = 'attended';
+				break;
+			case 'icon_note':
+			default:
+				clog['icon'] = 'note';
+				break;
+		}
+		try {
+			tmp = wp["LogText"];
+			clog['body'] = tmp.replace(/^<br[ ]*\/>/, "").replace(/<p>/g, "<br />").replace(/<\/p>/g, "").replace(/\\"/g,"\"");
+		} catch(e) {
+			clog['body'] = '';
+		}
+		try {
+			clog['founds'] = wp["GeocacheFindCount"]+'/'+wp["GeocacheHideCount"];
+		} catch(e) {
+			clog['founds'] = '-';
+		}
+		cache[geocode].logs.push(Object.clone(clog));
+	}
+}
 
 
 GeocachingCom.prototype.loadImages = function(params, success, failure) 

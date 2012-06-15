@@ -60,16 +60,17 @@ ListAssistant.prototype.setup = function() {
 		]
 	};
 	this.controller.setupWidget(Mojo.Menu.appMenu, {'omitDefaultItems': true}, this.appMenuModel);
-
+	var vis = false;
+	if (this.searchMethod == 'coords' || this.searchMethod == 'favourite') { vis = true; }
 	this.controller.setupWidget(Mojo.Menu.commandMenu, {'menuClass': 'no-fade'},
 		this.commandMenuModel = {
 			'items':	[
 				{}, // Empty
 				{'items': [
-					{'label': $L("Show on map"), 'iconPath': defaultnavigationIcons['googlemaps'], 'command': 'map'}
+					{'label': $L("Show on map"), 'iconPath': defaultnavigationIcons['mappingtool'], 'command': 'mappingtool'}
 				]}
 			],
-			'visible': false
+			'visible': vis
 		}
 	);
 	
@@ -250,6 +251,7 @@ ListAssistant.prototype.mapTool = function(res) {
 				'lon' : this.searchParameters['lon'], 
 				'zoom': 14}
 			   };
+		params['app']=Mojo.Controller.appInfo.id;
 		params['targets']=new Array();
 		var imgurl = {
 			'1' : 'http://www.geocaching.com/images/gmn/f.png',
