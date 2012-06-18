@@ -212,9 +212,7 @@ OfflineAssistant.prototype.downloadNext = function () {
 		return;
 	}
 	var len = this.cacheList.length;
-//	Mojo.Log.error('Len:'+len);
 	if (len>0) {
-//		Mojo.Log.error('Len2:'+len);
 		var dlc=this.cacheList.shift();
 		this.dlnum--;
 		this.geocode=dlc['gccode'];

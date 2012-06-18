@@ -310,6 +310,7 @@ ListAssistant.prototype.handleCommand = function(event) {
 			case 'mappingtool':
 			
 			   if (this.searchMethod=='coords') {
+			   	Mojo.Controller.getAppController().showBanner({'messageText': $L("Requesting map data ...")}, '', 'nearest');
 			   	var url = "http://gc.yz.to/map.php?lat="+ this.searchParameters['lat'] +"&lon="+ this.searchParameters['lon'];
 				var upAjax = new Ajax.Request(url, {
 					'method': 'get',

@@ -843,7 +843,7 @@ GeocachingCom.prototype.loadCache = function(params, success, logsuccess, failur
 
 			// Hidden/Event date
 			try {
-				tmp = reply.match(/<span class="minorCacheDetails">[^<]+:\s*(\d+\/\d+\/\d+)\s*<\/span>/i)[1];
+				tmp = reply.match(/<div id="ctl00_ContentBody_mcd2">[^<]+:\s*(\d+\/\d+\/\d+)\s*</i)[1];
 				cache[geocode].date = Mojo.Format.formatDate(new Date(tmp), {'date':'medium', 'time':''});
 			} catch(e) {
 				cache[geocode].date = "";
@@ -978,7 +978,6 @@ GeocachingCom.prototype.loadCache = function(params, success, logsuccess, failur
 			// Cache logs
 			try {
 				cache[geocode].finds = reply.match(/<p class="LogTotals"><.+icon_smile.gif" alt="Found it[^>]+>\s*(\d[\d,]*)/i)[1].replace(/,/g,'');
-				Mojo.Log.error("Finds:"+cache[geocode].finds);
 			} catch(e) {
 				cache[geocode].finds = "0";
 				Mojo.Log.error(e);
