@@ -999,11 +999,12 @@ GeocachingCom.prototype.loadCache = function(params, success, logsuccess, failur
 			try {
 				tmp = reply.match(/<!\[CDATA\[\s+initalLogs = (.+);\s+\/\/\]\]>/i)[1];
 				tmp = tmp.evalJSON();
-				this.parseLogs(geocode,tmp);
+				cache[geocode].logs = this.parseLogs(tmp);
 			
 			} catch(e) {}
 			
 			if (Geocaching.settings['logcount']>25 && params['logcount'] == undefined) {
+				Mojo.Log.error('Longlogsload:'+geocode);
 				var tkn= reply.match(/userToken = '(\w+)';/)[1];
 				url = "http://www.geocaching.com/seek/geocache.logbook?tkn="+ tkn +"&idx=1&num="+ Geocaching.settings['logcount']+"&decrypt=false";
 				var ajaxIdLog = 'logs-'+ Math.round(new Date().getTime());
@@ -1011,9 +1012,10 @@ GeocachingCom.prototype.loadCache = function(params, success, logsuccess, failur
 				  	'method': 'get',
 				  	'onSuccess': function(rl){
 						var logs = rl.responseText.evalJSON();
-						this.parseLogs(geocode,logs);
+						Mojo.Log.error('Longlogs:'+geocode);
+						cache[geocode].logs =  this.parseLogs(logs);
 						logsuccess(geocode);
-					},
+					}.bind(this),
 					'onFailure': function(rl){
 						Mojo.Log.error('Log download error: '+rl);
 					}
@@ -1063,9 +1065,10 @@ GeocachingCom.prototype.loadCache = function(params, success, logsuccess, failur
 }
 
 
-GeocachingCom.prototype.parseLogs = function (geocode,logs)
+GeocachingCom.prototype.parseLogs = function (logs)
 {
-	cache[geocode].logs = [];
+	var lg =[];
+//	Mojo.Log.error('ParseLogsFunc:'+Object.toJSON(logs));
 	for(var z=0; z<logs['data'].length; z++) {
 		wp = logs['data'][z];
 		clog = {};
@@ -1143,8 +1146,9 @@ GeocachingCom.prototype.parseLogs = function (geocode,logs)
 		} catch(e) {
 			clog['founds'] = '-';
 		}
-		cache[geocode].logs.push(Object.clone(clog));
+		lg.push(Object.clone(clog));
 	}
+	return lg;
 }
 
 

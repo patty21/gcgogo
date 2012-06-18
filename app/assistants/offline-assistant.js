@@ -227,7 +227,6 @@ OfflineAssistant.prototype.downloadNext = function () {
 			function(geocode) {
 				var ts = Math.round(new Date().getTime() / 1000);
 				cache[geocode].updated = ts;
-				Mojo.Log.error('Got:'+geocode);
 				this.guid = cache[geocode].guid;
 				var logs=cache[this.geocode].logs;
 				delete(cache[this.geocode].logs);
@@ -246,7 +245,10 @@ OfflineAssistant.prototype.downloadNext = function () {
 					Geocaching.db.transaction( 
 					(function (transaction) { 
 						transaction.executeSql(query, [], 
-							function() {},
+							function() {
+								// Success - Next Cache
+								this.downloadNext();
+							}.bind(this),
 							function(transaction, error) {
 								if(error['code'] == 1) {
 									transaction.executeSql('UPDATE "caches" SET '+
@@ -259,12 +261,11 @@ OfflineAssistant.prototype.downloadNext = function () {
 										'"longitude"='+ escape(cache[this.geocode].longitude) +' '+
 										' WHERE "gccode"="'+ escape(this.geocode) +'"; GO; ', []);
 								}
+								this.downloadNext();
 							}.bind(this)
 						);
 					}).bind(this) 
 				); 
-
-				this.downloadNext();
 			}.bind(this),
 /*			function(geocode) {
 				// Save Logs
