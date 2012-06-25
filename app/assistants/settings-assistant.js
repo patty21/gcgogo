@@ -59,8 +59,8 @@ SettingsAssistant.prototype.setup = function() {
 	this.controller.setupWidget('logcount', 
 		{
 			'label': $L({'value':"Download log count",'key':'download_log_count'}),
-			'min': 0,
-			'max': 50
+			'min': 25,
+			'max': 100
 		},
 		this.modelLogCount = {
 			'value': Geocaching.settings['logcount'],

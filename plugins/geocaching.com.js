@@ -996,7 +996,7 @@ GeocachingCom.prototype.loadCache = function(params, success, logsuccess, failur
 			Mojo.Log.error('Logs/DNFS:'+cache[geocode].finds+'/'+cache[geocode].dnfs);
 			cache[geocode].logs = [];
 			try {
-				tmp = reply.match(/<!\[CDATA\[\s+initalLogs = (.+);\s+\/\/\]\]>/i)[1];
+				tmp = reply.match(/<!\[CDATA\[\s+var uvtoken .*\s+initalLogs = (.+);\s+\/\/\]\]>/i)[1];
 				tmp = tmp.evalJSON();
 				cache[geocode].logs = this.parseLogs(tmp);
 			

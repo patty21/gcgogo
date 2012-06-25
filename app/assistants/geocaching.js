@@ -281,7 +281,7 @@ var Geocaching = {
 		'autoclean': true,
 		'recalculatedistance': false,
 		'theme': 'palm-default',
-		'logcount': 20,
+		'logcount': 25,
 		'minimalaccuracy': 34,
 		'version': 0,
 		'firstTimeout': 12,
