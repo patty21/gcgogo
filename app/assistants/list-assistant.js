@@ -416,14 +416,6 @@ ListAssistant.prototype.handleCacheListTap = function(event) {
 		var item = event.item;
 		if(item['type'] == 'waypoint') {
 			// Direct to Compass
-			if(Geocaching.settings['defaultnavigation'] == 'googlemaps') {
-				var url = "http://maps.google.com/?q="+ escape(item['latitude'].toFixed(5) +","+ item['longitude'].toFixed(5)) +"("+ escape(item['name']) +")@" + item['latitude'] +","+ item['longitude'] +"&t=h&z=17";
-				this.controller.serviceRequest('palm://com.palm.applicationManager', {
-					'method': 'open',
-					'parameters': {'target': url}
-				});
-				return true;
-			} else
 			if(Geocaching.settings['defaultnavigation'] == 'mappingtool') {
 				var params = Geocaching.format4Maptool([
 					{

@@ -608,15 +608,6 @@ CacheAssistant.prototype.cacheGalleryImages = function(event) {
 }
 
 CacheAssistant.prototype.cacheCompass = function(event) {
-	if(Geocaching.settings['defaultnavigation'] == 'googlemaps') {
-		var url = "http://maps.google.com/?q="+ escape(cache[this.geocode].latitude.toFixed(5) +","+ cache[this.geocode].longitude.toFixed(5)) +"("+ escape(this.geocode) +")@" + cache[this.geocode].latitude +","+ cache[this.geocode].longitude +"&t=h&z=17";
-		this.controller.serviceRequest('palm://com.palm.applicationManager', {
-			'method': 'open',
-			'parameters': {'target': url}
-		});
-		return true;
-	}
-
 	var waypoints = [];
 	waypoints.push({
 		'title': this.geocode,

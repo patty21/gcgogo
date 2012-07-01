@@ -160,16 +160,6 @@ WaypointsAssistant.prototype.handleWaypointListTap = function(event) {
 	if(typeof(event.item['id']) != 'undefined') {
 		var waypoint = this.wpts[event.item['id']];
 		if(typeof(waypoint['latitude'])!='undefined' && typeof(waypoint['longitude'])!='undefined') {
-			if(Geocaching.settings['defaultnavigation'] == 'googlemaps') {
-				var url = "http://maps.google.com/?q="+ escape(waypoint['latitude'].toFixed(5) +","+ waypoint['longitude'].toFixed(5)) +"("+ escape('Waypoint: '+waypoint['name']) +")@" + waypoint['latitude'] +","+ waypoint['longitude'] +"&t=h&z=17";
-				this.controller.serviceRequest('palm://com.palm.applicationManager', {
-					'method': 'open',
-					'parameters': {
-						'target': url
-					}
-				});
-				return true;
-			} else
 			if(Geocaching.settings['defaultnavigation'] == 'mappingtool') {
 				var params = Geocaching.format4Maptool([{
 					'title': $L("Waypoint #{name}").interpolate({'name': waypoint['name']}),

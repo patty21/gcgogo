@@ -112,11 +112,5 @@
     {
         "scenes": "postlog-trackables",
         "source": "app/assistants/postlog-trackables-assistant.js"
-    },
-    {"source": "app/assistants/map-geocacher-assistant.js"},
-    {"source": "app/assistants/map-cache-assistant.js"},
-    {
-        "scenes": "map",
-        "source": "app/assistants/map-assistant.js"
     }
 ]
