@@ -173,10 +173,10 @@ var logTypes = [
 ];
 
 var logTypesTrackable = [
+		{'label': $L("Discovered it"), 'value': 48},
 		{'label': $L("Retrieve from cache"), 'value': 13},
 		{'label': $L("Grab it"), 'value': 19},
-		{'label': $L("Write note"), 'value': 4},
-		{'label': $L("Discovered it"), 'value': 48}
+		{'label': $L("Write note"), 'value': 4}
 ];
 
 var defaultnavigationIcons = {

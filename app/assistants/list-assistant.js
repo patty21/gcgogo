@@ -312,6 +312,7 @@ ListAssistant.prototype.handleCommand = function(event) {
 			   if (this.searchMethod=='coords') {
 			   	Mojo.Controller.getAppController().showBanner({'messageText': $L("Requesting map data ...")}, '', 'nearest');
 			   	var url = "http://gc.yz.to/map.php?lat="+ this.searchParameters['lat'] +"&lon="+ this.searchParameters['lon'];
+				if (Geocaching.login['geid']!=undefined) url+= "&GE="+Geocaching.login['geid'];
 				var upAjax = new Ajax.Request(url, {
 					'method': 'get',
 					'onSuccess': this.mapTool.bind(this),

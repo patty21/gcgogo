@@ -71,7 +71,9 @@ GeocachingCom.prototype.getUID = function(success)
 		'onSuccess': function(r){
 			var reply = r.responseText;
 			var uid = reply.match(/(http:\/\/([\-0-9\.a-z\/]*)?www\.geocaching\.com)?\/profile\/\?guid=([a-z0-9\-]+)/i)[3]
-			success(uid);
+			var geid = reply.match(/googleearthutils\.svc\/kml\/(\w+)\/create/i)[1];
+			geid+= reply.match(/<span id="ctl00_litPMLevel">(\w)\w+ Member<\/span>/i)[1];
+			success(uid,geid);
 		}.bind(this),
 		'onFailure': function(r){
 			Mojo.Log.error('Fail!');

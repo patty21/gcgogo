@@ -79,7 +79,7 @@ StageAssistant.prototype.setup = function() {
 					Geocaching.login['username'] = response.username;
 					Geocaching.login['password'] = response.password;
 					Geocaching.login['uid'] = response.uid;
-
+					Geocaching.login['geid'] = response.geid;
 					if (gblLaunchParams!=undefined && gblLaunchParams['gcid']!=undefined) {
 						this.controller.swapScene('cache',gblLaunchParams['gcid']);
 					} else {
