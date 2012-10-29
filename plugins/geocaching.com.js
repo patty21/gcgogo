@@ -86,7 +86,7 @@ GeocachingCom.prototype.checkLogin = function(page)
 	if(-1 != page.search('<a href="/my/default.aspx"')) {
 		return true;
 	}
-	if(-1 != page.search('You are logged in as')) {
+	if(-1 != page.search('href="../my/default.aspx">')) {
 		return true;
 	}
 	return false;
@@ -763,7 +763,7 @@ GeocachingCom.prototype.loadCache = function(params, success, logsuccess, failur
 				cache[geocode].guid = reply.match(/\?guid=([a-z0-9\-]+)"/i)[1];
 				/* Cache name */
 				cache[geocode].cacheid = reply.match(/(http:\/\/([\-0-9\.a-z\/]*)?www\.geocaching\.com)?\/seek\/log\.aspx\?ID=(\d+)/i)[3];
-				cache[geocode].name = reply.match(/<span id="ctl00_ContentBody_CacheName">([^<]+)<\/span>/)[1];
+				cache[geocode].name = reply.match(/<span id="ctl00_ContentBody_CacheName">(.+)<\/span><\/h2>\s*<div class="minorCacheDetails Clear">/)[1];
 				cache[geocode].type = reply.match(/<img src="(http:\/\/([\-0-9\.a-z\/]*)?www\.geocaching\.com)?\/images\/WptTypes\/\d+.gif" ALT="([^"]+)"/i)[3]
 				cache[geocode].owner = reply.match(/<div id="ctl00_ContentBody_mcd1">[^<]*<a href="[^"]+">([^<]+)<\/a>/i)[1];
 				tmp = reply.match(/<img src="(http:\/\/([\-0-9\.a-z\/]*)?www\.geocaching\.com)?\/images\/icons\/container\/([a-z_]+).gif" alt="Size:/i)[3];
