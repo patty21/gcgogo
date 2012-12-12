@@ -979,13 +979,13 @@ GeocachingCom.prototype.loadCache = function(params, success, logsuccess, failur
 
 			// Cache logs
 			try {
-				cache[geocode].finds = reply.match(/<p class="LogTotals"><.+icon_smile.gif" alt="Found it[^>]+>\s*(\d[\d,]*)/i)[1].replace(/,/g,'');
+				cache[geocode].finds = reply.match(/<p class="LogTotals"><.+\/2.png" alt="Found it[^>]+>\s*(\d[\d,]*)/i)[1].replace(/,/g,'');
 			} catch(e) {
 				cache[geocode].finds = "0";
 				Mojo.Log.error(e);
 			}
 			try {
-				cache[geocode].dnfs = reply.match(/<p class="LogTotals"><.+icon_sad.gif[^>]+>\s([\d,]+)/i)[1].replace(/,/g,'');
+				cache[geocode].dnfs = reply.match(/<p class="LogTotals"><.+\/3.png[^>]+>\s([\d,]+)/i)[1].replace(/,/g,'');
 			} catch(e) {
 				cache[geocode].dnfs = "0";
 			}
@@ -1083,54 +1083,54 @@ GeocachingCom.prototype.parseLogs = function (logs)
 			clog['date'] = '';
 		}
 		try {
-			tmp = wp["LogTypeImage"].match(/([^\.]+)\.gif/)[1];
+			tmp = wp["LogTypeImage"].match(/([^\.]+)\.png/)[1];
 		} catch(e) {
 			tmp = 'note';
 		}
 		switch(tmp) {
-			case 'icon_smile':
+			case '2':
 				clog['icon'] = 'found';
 				break;
-			case 'icon_sad':
+			case '3':
 				clog['icon'] = 'notfound';
 				break;
-			case 'icon_greenlight':
+			case '24':
 				clog['icon'] = 'published';
 				break;
-			case 'icon_redlight':
+			case '25':
 				clog['icon'] = 'unpublished';
 				break;
-			case 'icon_needsmaint':
+			case '45':
 				clog['icon'] = 'needsmaint';
 				break;
-			case 'icon_maint':
+			case '46':
 				clog['icon'] = 'maint';
 				break;
-			case 'icon_disabled':
+			case '22':
 				clog['icon'] = 'disabled';
 				break;
-			case 'icon_enabled':
+			case '23':
 				clog['icon'] = 'enabled';
 				break;
-			case 'coord_update':
+			case '47':
 				clog['icon'] = 'coords';
 				break;
 			case 'big_smile':
 				clog['icon'] = 'reviewernote';
 				break;
-			case 'traffic_cone':
+			case '5':
 				clog['icon'] = 'archive';
 				break;
-			case 'icon_rsvp':
+			case '9':
 				clog['icon'] = 'willattend';
 				break;
-			case 'icon_announcement':
+			case '74':
 				clog['icon'] = 'announcement';
 				break;
-			case 'icon_attended':
+			case '10':
 				clog['icon'] = 'attended';
 				break;
-			case 'icon_note':
+			case '4':
 			default:
 				clog['icon'] = 'note';
 				break;
@@ -1431,26 +1431,26 @@ GeocachingCom.prototype.loadTrackable = function(params, success, failure)
 					}
 
 					try {
-						tmp = wp[0].match(/\/images\/icons\/([^\.]+)\.gif/)[1];
+						tmp = wp[0].match(/images\/logtypes\/([^\.]+)\.png/)[1];
 					} catch(e) {
 						tmp = 'note';
 					}
 
 					switch(tmp)
 					{
-						case 'picked_up':
+						case '13':
 							clog['icon'] = 'picked_up';
 						break;
-						case 'dropped_off':
+						case '14':
 							clog['icon'] = 'dropped_off';
 						break;
-						case 'icon_discovered':
+						case '48':
 							clog['icon'] = 'discovered';
 						break;
-						case 'icon_visited':
+						case '75':
 							clog['icon'] = 'visited';
 						break;
-						case 'icon_note':
+						case '4':
 						default:
 							clog['icon'] = 'note';
 						break;
