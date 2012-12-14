@@ -243,8 +243,8 @@ GeocachingCom.prototype.parseSearch = function(url, reply, list)
 		}
 
 		// Own flag!
-		if(row.indexOf('images/silk/star.png') != -1) {
-			row = row.replace('images/silk/star.png', '');
+		if(row.indexOf('images/icons/16/placed.png') != -1) {
+			row = row.replace('images/icons/16/placed.png', '');
 			listRow['own'] = true;
 		} else { 
 			listRow['own'] = false;
@@ -801,7 +801,7 @@ GeocachingCom.prototype.loadCache = function(params, success, logsuccess, failur
 				Mojo.Log.error(Object.toJSON(e)+tmp);
 			}
 			
-			if(-1 != reply.search('<img src="/images/stockholm/16x16/check.gif"')) {
+			if(-1 != reply.search('<img src="/images/icons/16/check.png"')) {
 				cache[geocode].found = true;
 			} else {
 				cache[geocode].found = false;
@@ -894,14 +894,14 @@ GeocachingCom.prototype.loadCache = function(params, success, logsuccess, failur
 			var spoilerImagesCount = 0;
 			cache[geocode].spoilerImages = new Array();
 			try {
-				tmp = reply.match(/<a href="([^"]+)" rel="lightbox" class="lnk"><img class="StatusIcon" src="(http:\/\/([\-0-9\.a-z\/]*)?www\.geocaching\.com)?\/images\/stockholm\/16x16\/images.gif"[^>]*>\s*<span>([^<]+)<\/span><\/a>/ig);
+				tmp = reply.match(/<a href="([^"]+)" rel="lightbox" class="lnk"><img class="StatusIcon" src=[^>]+>\s*<span>([^<]+)<\/span><\/a>/ig);
 				if(tmp.length>0) {
 					spoilerImagesCount = tmp.length;
 					var imgTmp, img;
 					for(var z=0; z<spoilerImagesCount; z++) {
-						imgTmp = tmp[z].match(/<a href="([^"]+)" rel="lightbox" class="lnk"><img class="StatusIcon" src="(http:\/\/([\-0-9\.a-z\/]*)?www\.geocaching\.com)?\/images\/stockholm\/16x16\/images.gif"[^>]*>\s*<span>([^<]+)<\/span><\/a>/i);
+						imgTmp = tmp[z].match(/<a href="([^"]+)" rel="lightbox" class="lnk"><img class="StatusIcon" src=[^>]+>\s*<span>([^<]+)<\/span><\/a>/i);
 						img = {
-							'name': imgTmp[4],
+							'name': imgTmp[2],
 							'url': imgTmp[1]
 						}
 						cache[geocode].spoilerImages.push(Object.clone(img));
