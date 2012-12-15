@@ -978,13 +978,20 @@ GeocachingCom.prototype.loadCache = function(params, success, logsuccess, failur
 			}
 
 			// Cache logs
+			var ctype=cacheTypesIDs[cache[geocode].type];
 			try {
-				cache[geocode].finds = reply.match(/<p class="LogTotals"><.+\/2.png" alt="Found it[^>]+>\s*(\d[\d,]*)/i)[1].replace(/,/g,'');
+				if (ctype==6 || ctype==13 || ctype==453) // Attends for Events
+				cache[geocode].finds = reply.match(/<p class="LogTotals"><.+\/10.png" alt="[^>]+>\s*(\d[\d,]*)/i)[1].replace(/,/g,'');
+				else
+				cache[geocode].finds = reply.match(/<p class="LogTotals"><.+\/2.png" alt="[^>]+>\s*(\d[\d,]*)/i)[1].replace(/,/g,'');
 			} catch(e) {
 				cache[geocode].finds = "0";
 				Mojo.Log.error(e);
 			}
 			try {
+				if (ctype==6 || ctype==13 || ctype==453) // Will Attend for Events
+				cache[geocode].dnfs = reply.match(/<p class="LogTotals"><.+\/9.png" alt="[^>]+>\s*(\d[\d,]*)/i)[1].replace(/,/g,'');
+				else
 				cache[geocode].dnfs = reply.match(/<p class="LogTotals"><.+\/3.png[^>]+>\s([\d,]+)/i)[1].replace(/,/g,'');
 			} catch(e) {
 				cache[geocode].dnfs = "0";
@@ -1115,7 +1122,7 @@ GeocachingCom.prototype.parseLogs = function (logs)
 			case '47':
 				clog['icon'] = 'coords';
 				break;
-			case 'big_smile':
+			case '68':
 				clog['icon'] = 'reviewernote';
 				break;
 			case '5':

@@ -399,13 +399,15 @@ CacheAssistant.prototype.showCacheDetail = function(geocode) {
 		this.controller.get('cache-trackables').update($L("No trackable"));
 	}
 	delete(trkCount);
-	
-	this.controller.get('cache-logs').update('<img src="images/log_found.gif"> '+cache[this.geocode].finds+
+	var ctype=cacheTypesIDs[cache[this.geocode].type];
+	if (ctype==6 || ctype==13 || ctype==453)
+		this.controller.get('cache-logs').update('<img src="images/log_attended.gif"> '+cache[this.geocode].finds+
+				' &nbsp;&nbsp;&nbsp; <img src="images/log_willattend.gif"> '+cache[this.geocode].dnfs+
+				' &nbsp;&nbsp;&nbsp; <img src="images/favorites.png"> '+cache[this.geocode].favs);
+	else 
+		this.controller.get('cache-logs').update('<img src="images/log_found.gif"> '+cache[this.geocode].finds+
 				' &nbsp;&nbsp;&nbsp; <img src="images/log_notfound.gif"> '+cache[this.geocode].dnfs+
 				' &nbsp;&nbsp;&nbsp; <img src="images/favorites.png"> '+cache[this.geocode].favs);
-	
-
-	
 	var atCount = cache[this.geocode].attrs.length;
 	var attrs = new Array();
 	if(atCount) {
