@@ -225,6 +225,7 @@ OfflineAssistant.prototype.downloadNext = function () {
 			function(geocode) {
 				var ts = Math.round(new Date().getTime() / 1000);
 				cache[geocode].updated = ts;
+				Geocaching.gcids[geocode]=1;
 				this.guid = cache[geocode].guid;
 				var logs=cache[this.geocode].logs;
 				delete(cache[this.geocode].logs);

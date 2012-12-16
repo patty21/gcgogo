@@ -140,7 +140,7 @@ LoginAssistant.prototype.loginClicked = function(event) {
 				function() {
 					Geocaching.accounts['geocaching.com'].getUID(
 						function(uid,geid) {
-							Mojo.Log.info(uid);
+							Mojo.Log.info(uid+" "+geid);
 							Geocaching.login['uid']	= uid;
 							Geocaching.login['geid']= geid;
 							Geocaching.storage.simpleAdd('login', Geocaching.login);

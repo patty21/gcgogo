@@ -64,15 +64,19 @@ GeocachingCom.prototype.doLogin = function(username, password, success, failure)
 
 GeocachingCom.prototype.getUID = function(success)
 {
-	Mojo.Log.error('Getting UID');
+	Mojo.Log.info('Getting UID');
 	var url = "http://www.geocaching.com/my/default.aspx";
 	var userpageAjax = new Ajax.Request(url, {
 		'method': 'get',
 		'onSuccess': function(r){
 			var reply = r.responseText;
+			try {
 			var uid = reply.match(/(http:\/\/([\-0-9\.a-z\/]*)?www\.geocaching\.com)?\/profile\/\?guid=([a-z0-9\-]+)/i)[3]
 			var geid = reply.match(/googleearthutils\.svc\/kml\/(\w+)\/create/i)[1];
-			geid+= reply.match(/<span id="ctl00_litPMLevel">(\w)\w+ Member<\/span>/i)[1];
+			geid+= reply.match(/id="memberStatus">\s*(\w)\w+ Member<br \/>/i)[1];
+			} catch (e) {
+				Mojo.Log.error('UID-e:'+Object.toJSON(e));
+			}
 			success(uid,geid);
 		}.bind(this),
 		'onFailure': function(r){

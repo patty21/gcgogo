@@ -256,7 +256,8 @@ var Geocaching = {
 	'login' : {
 		'username': null,
 		'password': null,
-		'uid': null
+		'uid': null,
+		'geid': null
 	},
 	'accounts': {
 		'geocaching.com': new GeocachingCom,
@@ -300,6 +301,7 @@ var Geocaching = {
 	'lastAjaxId': null,
 	'lastActiveMap': null,
 	'ownfinds': {},
+	'gcids':{},
 	'ajaxRequests': {}
 }
 

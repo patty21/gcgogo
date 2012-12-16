@@ -263,7 +263,8 @@ CacheAssistant.prototype.cleanup = function(event) {
 
 CacheAssistant.prototype.showCacheDetail = function(geocode) {
 	this.geocode = geocode;
-
+	Geocaching.gcids[geocode]=1;
+	
 	if (this.geocode) {
 		this.controller.get('cache-title').update(this.geocode);
 	}

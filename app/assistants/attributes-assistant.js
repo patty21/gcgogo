@@ -18,6 +18,8 @@ AttributesAssistant.prototype.setup = function() {
 		'snowmobiles-yes': $L("Snowmobiles"),
 		'campfires-yes': $L("Campfires"),
 		'horses-yes': $L("Horses"),
+		'rv-yes': $L("Truck Driver/RV"),
+		
 		'dogs-no': $L("No dogs"),
 		'bicycles-no': $L("No bicycles"),
 		'motorcycles-no': $L("No motorcycles"),
@@ -26,6 +28,7 @@ AttributesAssistant.prototype.setup = function() {
 		'snowmobiles-no': $L("No snowmobiles"),
 		'campfires-no': $L("No campfires"),
 		'horses-no': $L("No horses"),
+		'rv-no': $L("No Truck Driver/RV"),
 		
 		'kids-yes': $L("Recommended for kids"),
 		'onehour-yes': $L("Takes less than an hour"),
@@ -39,6 +42,18 @@ AttributesAssistant.prototype.setup = function() {
 		'scenic-yes': $L("Scenic view"),
 		'stealth-yes': $L("Stealth required"),
 		'cow-yes': $L("Watch for livestock"),
+		'field_puzzle-yes': $L("Field Puzzle"),
+		'nightcache-yes': $L("Night Cache"),
+		'parkngrab-yes': $L("Park and Grab"),
+		'AbandonedBuilding-yes': $L("Abandoned Structure"),
+		'hike_short-yes': $L("Short hike"),
+		'hike_med-yes': $L("Medium hike"),
+		'hike_long-yes': $L("Long hike"),
+		'seasonal-yes': $L("Seasonal Access"),
+		'touristOK-yes': $L("Tourist Friendly"),
+		'frontyard-yes': $L("Front Yard"),
+		'teamwork-yes': $L("Teamwork required"),
+		
 		'kids-no': $L("Not recommended for kids"),
 		'onehour-no': $L("Takes more than an hour"),
 		'hiking-no': $L("Not significant hike"),
@@ -48,12 +63,29 @@ AttributesAssistant.prototype.setup = function() {
 		'winter-no': $L("Not available during winter"),
 		'scenic-no': $L("No scenic view"),
 		'stealth-no': $L("Stealth not required"),
+		'field_puzzle-no': $L("No Field Puzzle"),
+		'nightcache-no': $L("No Night Cache"),
+		'parkngrab-no': $L("No Park and Grab"),
+		'AbandonedBuilding-no': $L("No Abandoned Structure"),
+		'hike_short-no': $L("No Short hike"),
+		'hike_med-no': $L("No Medium hike"),
+		'hike_long-no': $L("No Long hike"),
+		'seasonal-no': $L("No Seasonal Access"),
+		'touristOK-no': $L("Not Tourist Friendly"),
+		'frontyard-no': $L("No Front Yard"),
+		'teamwork-no': $L("Teamwork not required"),
 		
 		'fee-yes': $L("Access or parking fee"),
 		'rappelling-yes': $L("Climbing gear"),
 		'boat-yes': $L("Boat"),
 		'scuba-yes': $L("Scuba gear"),
 		'flashlight-yes': $L("Flashlight required"),
+		'UV-yes': $L("UV Light required"),
+		'snowshoes-yes': $L("Snowshoes"),
+		'skiis-yes': $L("Cross Country Skis"),
+		's-tool-yes': $L("Special Tool required"),
+		'wirelessbeacon-yes': $L("Wireless Beacon"),
+		'treeclimbing-yes': $L("Tree Climbing"),
 		
 		'poisonoak-yes': $L("Poison plants"),
 		'snakes-yes': $L("Snakes"),
@@ -74,6 +106,9 @@ AttributesAssistant.prototype.setup = function() {
 		'picnic-yes': $L("Picnic tables nearby"),
 		'camping-yes': $L("Camping available"),
 		'stroller-yes': $L("Stroller accessible"),
+		'fuel-yes': $L("Fuel nearby"),
+		'food-yes': $L("Food nearby"),
+		
 		'wheelchair-no': $L("Wheelchair inaccessible"),
 		'parking-no': $L("Parking not available"),
 		'water-no': $L("Don't drinking water nearby"),
@@ -81,7 +116,9 @@ AttributesAssistant.prototype.setup = function() {
 		'phone-no': $L("No elephone nearby"),
 		'picnic-no': $L("No picnic tables"),
 		'camping-no': $L("Camping not allowed"),
-		'stroller-no': $L("Stroller inaccessible")
+		'stroller-no': $L("Stroller inaccessible"),
+		'fuel-no': $L("No Fuel nearby"),
+		'food-no': $L("No Food nearby")
 	};
 	
 	var attr_list = new Array(), img;

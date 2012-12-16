@@ -193,7 +193,6 @@ ListAssistant.prototype.setup = function() {
 			Mojo.Controller.stageController.popScene();
 		break;
 	}
-
 	// Title
 	this.controller.get('list-title').update(this.sceneTitle);
 }
@@ -547,7 +546,6 @@ ListAssistant.prototype.buildList = function(searchResult) {
 	var cids = new Array();
 	var trackables, trksLen = 0, i;
 	var allCoordsKnown = true;
-	
 	for(z; z<len; z++) {
 		if(typeof(cacheList[z]['cacheid']) != 'undefined') {
 			cids.push(cacheList[z]['cacheid']);
@@ -580,7 +578,8 @@ ListAssistant.prototype.buildList = function(searchResult) {
 			'own': (cacheList[z]['own']?' <img src="images/star.png" />':''),
 			'maintenance': (cacheList[z]['maintenance']?' <img src="images/needsmaint.gif" />':''),
 			'trackables': trackables,
-			'members': (cacheList[z]['members']?' <img src="images/members_small.gif" />':'')
+			'members': (cacheList[z]['members']?' <img src="images/members_small.gif" />':''),
+			'floppy': (Geocaching.gcids[cacheList[z]['gccode']]?' <img src="images/floppy.png" />':'')
 		});
 
 		if(typeof(cacheList[z]['latitude']) == 'undefined' || typeof(cacheList[z]['longitude']) == 'undefined') {
@@ -670,6 +669,18 @@ ListAssistant.prototype.buildList = function(searchResult) {
 			recalculateTimeout = searchResult.recalculateTimeout;
 		}
 		this.recalculateDistanceTimeout = window.setTimeout(this.recalculateDistance.bind(this), recalculateTimeout*1000);
+	}
+	
+	if (Geocaching.login['geid'] == null) {
+		Geocaching.accounts['geocaching.com'].getUID(
+			function(uid,geid) {
+				Mojo.Log.info(uid);
+				Geocaching.login['uid']	= uid;
+				Geocaching.login['geid']= geid;
+				Mojo.Log.error('New UID:'+Object.toJSON(Geocaching.login));
+				Geocaching.storage.simpleAdd('login', Geocaching.login);
+			}.bind(this)
+		);
 	}
 }
 

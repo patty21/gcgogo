@@ -607,7 +607,6 @@ MainAssistant.prototype.setup = function() {
 	}.bind(this), function () {});
 	
 	// Load found & hidden caches
-	
 	Geocaching.storage.simpleGet('ownfinds', function(response) {
 		var size = Object.values(response).size();
 		if(1 <= size) {
@@ -617,6 +616,31 @@ MainAssistant.prototype.setup = function() {
 		}
 		this.inputsLoaded = true;
 	}.bind(this), function () {});
+	
+	// List of caches in DB
+	if (Geocaching.db != null) {
+		Geocaching.db.transaction( 
+			(function (transaction) {
+				transaction.executeSql('select "gccode" from "caches"',[],
+					function(transaction, results) {
+						try {
+							var caches = results.rows.length;
+							for (var i = 0; i < caches; i++) {
+								var item = results.rows.item(i)['gccode'];
+								Geocaching.gcids[item]=1;
+							}
+						} catch(e) {
+							Mojo.Log.error(Object.toJSON(e));
+						}
+						Mojo.Log.info('GCIDs:'+Object.toJSON(Geocaching.gcids));
+					}.bind(this),
+					function(transaction, error) {
+						Mojo.Log.error("No GCIDs"+Object.toJSON(error.message));
+					}.bind(this)
+				);
+			}).bind(this)
+		);
+	}
 	
 	
 
