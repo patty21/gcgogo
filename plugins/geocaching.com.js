@@ -681,7 +681,7 @@ GeocachingCom.prototype.loadCache = function(params, success, logsuccess, failur
 	} else {
 		params['retry'] = 1;
 	}
-	Mojo.Log.error('Load:'+urlParam);
+	Mojo.Log.info('Load:'+urlParam);
 	var url = "http://www.geocaching.com/seek/cache_details.aspx?"+ urlParam;
 	var ajaxId = 'cache-'+ Math.round(new Date().getTime());
 
@@ -753,7 +753,7 @@ GeocachingCom.prototype.loadCache = function(params, success, logsuccess, failur
 			} else {
 				cache[geocode].archived = false;
 			}
-			if(-1 != reply.search('This is a Premium Member Only cache')) {
+			if(-1 != reply.search('<p class="Warning NoBottomSpacing">')) {
 				cache[geocode].members = true;
 			} else {
 				cache[geocode].members = false;
@@ -851,6 +851,8 @@ GeocachingCom.prototype.loadCache = function(params, success, logsuccess, failur
 			try {
 				tmp = reply.match(/<div id="ctl00_ContentBody_mcd2">[^<]+:\s*(\d+\/\d+\/\d+)\s*</i)[1];
 				cache[geocode].date = Mojo.Format.formatDate(new Date(tmp), {'date':'medium', 'time':''});
+				tmp=tmp.match(/(\d+)\/(\d+)\/(\d+)/);
+				var dt = tmp[3]+'-'+tmp[1]+'-'+tmp[2];
 			} catch(e) {
 				cache[geocode].date = "";
 			}
@@ -1006,13 +1008,24 @@ GeocachingCom.prototype.loadCache = function(params, success, logsuccess, failur
 				cache[geocode].favs = "0";
 			}			
 
-			Mojo.Log.error('Logs/DNFS:'+cache[geocode].finds+'/'+cache[geocode].dnfs);
+//			Mojo.Log.info('Logs/DNFS:'+cache[geocode].finds+'/'+cache[geocode].dnfs);
 			cache[geocode].logs = [];
 			try {
 				tmp = reply.match(/<!\[CDATA\[\s+var uvtoken .*\s+initalLogs = (.+);\s+\/\/\]\]>/i)[1];
 				tmp = tmp.evalJSON();
 				cache[geocode].logs = this.parseLogs(tmp);
-			
+				if(-1 != reply.search('</strong></p><ul class="OldWarning"><li>') && !cache[geocode].archived && !cache[geocode].disabled) { 
+					// Cache issues, but not disovered yet
+					for(var z=0; z<cache[geocode].logs.length; z++) {
+						if (cache[geocode].logs[z]['icon']=='disabled') {
+							cache[geocode].disabled=true;
+							break;
+						} else if (cache[geocode].logs[z]['icon']=='archive') {
+							cache[geocode].archived=true;
+							break;
+						}
+					}
+				}
 			} catch(e) {}
 			
 			if (Geocaching.settings['logcount']>25 && params['logcount'] == undefined) {
@@ -1043,7 +1056,7 @@ GeocachingCom.prototype.loadCache = function(params, success, logsuccess, failur
 			url = "http://gc.yz.to/cache.php?gc="+geocode+"&id="+cache[geocode].guid+"&d="+cache[geocode].difficulty+"&t="+cache[geocode].terrain+
 				"&lat="+cache[geocode].latitude+"&lon="+cache[geocode].longitude+
 				"&type="+cacheTypesIDs[cache[geocode].type]+"&size="+cache[geocode].size+"&name="+cache[geocode].name.replace(/#/g,"%23").replace(/&/g,"%26")+
-				"&status="+stat+"&app="+app;
+				"&status="+stat+"&app="+app+"&dat="+dt;
 			if (cache[geocode].latlonorg!="") {url= url+"&llo="+cache[geocode].latlonorg;}
 			var upAjax = new Ajax.Request(url, {
 				'method': 'get',
@@ -1129,7 +1142,8 @@ GeocachingCom.prototype.parseLogs = function (logs)
 			case '68':
 				clog['icon'] = 'reviewernote';
 				break;
-			case '5':
+			case '5': // Archive
+			case '12': // Unarchive
 				clog['icon'] = 'archive';
 				break;
 			case '9':
