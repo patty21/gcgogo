@@ -224,13 +224,13 @@ GeocachingCom.prototype.parseSearch = function(url, reply, list)
 			Mojo.Log.error(Object.toJSON(e));
 		}
 
-		if(row.indexOf('images/small_profile.gif') != -1)
+		if(row.indexOf('images/icons/16/premium_only.png') != -1)
 			listRow['members'] = true;
 		else
 			listRow['members'] = false;
 
 
-		if(row.indexOf('images/attributes/firstaid-sm-yes.gif') != -1)
+		if(row.indexOf('/images/icons/16/maintenance.png') != -1)
 			listRow['maintenance'] = true;
 		else
 			listRow['maintenance'] = false;
@@ -270,7 +270,9 @@ GeocachingCom.prototype.parseSearch = function(url, reply, list)
 		} catch(e) {
 			Mojo.Log.error(Object.toJSON(e));
 		}
-
+		if(row.indexOf('/images/icons/16/trackable_inventory.png') != -1) {
+			listRow['trackables'].push('1');
+		}
 		try {
 			listRow['cacheid'] = row.match(/name="CID" value="(\d+)"/i)[1]
 		} catch(e) {
