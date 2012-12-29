@@ -715,7 +715,7 @@ GeocachingCom.prototype.loadCache = function(params, success, logsuccess, failur
 				failure($L("This cache has not yet been published."));
 				return false;
 			}
-			if(-1 != reply.search('<img src="/images/silk/error.png" height="16" alt="Premium Members only" width="16"')) {
+			if(-1 != reply.search('<p class="TopSpacing PMOWarning">')) {
 				failure($L("This cache is for premium members only."));
 				return false;
 			}
