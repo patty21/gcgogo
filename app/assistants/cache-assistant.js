@@ -268,8 +268,9 @@ CacheAssistant.prototype.showCacheDetail = function(geocode) {
 	if (this.geocode) {
 		this.controller.get('cache-title').update(this.geocode);
 	}
-	
-	this.controller.get('cache-icon').innerHTML = '<img class="gc-icon" src="images/'+ cacheTypes[cache[this.geocode].type] +'.gif" /> ';
+	var cachetype=cacheTypes[cache[this.geocode].type];
+	if (cache[this.geocode].latlonorg!="" && cachetype=="mystery") cachetype+="-solved";
+	this.controller.get('cache-icon').innerHTML = '<img class="gc-icon" src="images/'+ cachetype +'.gif" /> ';
 	this.controller.get('cache-icon').className = 'icon img';
 	this.controller.get('cache-name').update(cache[this.geocode].name);
 	if(cache[this.geocode].found) {
