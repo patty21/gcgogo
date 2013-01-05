@@ -88,7 +88,7 @@ AttributesAssistant.prototype.setup = function() {
 		'treeclimbing-yes': $L("Tree Climbing"),
 		
 		'poisonoak-yes': $L("Poison plants"),
-		'snakes-yes': $L("Snakes"),
+		'dangerousanimals-yes': $L("Dangerous animals"),
 		'ticks-yes': $L("Ticks"),
 		'mine-yes': $L("Abandoned mines"),
 		'cliff-yes': $L("Cliff / falling rocks"),
