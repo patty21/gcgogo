@@ -9,7 +9,7 @@ function AccountsAssistant(params) {
 }
 
 AccountsAssistant.prototype.setup = function() {
-	this.maxAccounts = 2;
+	this.maxAccounts = 1;
 	this.accounts = new Array();
 	this.controller.setupWidget("accounts-list",
 		this.attributes = {

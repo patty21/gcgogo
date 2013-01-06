@@ -109,13 +109,14 @@ StageAssistant.prototype.setup = function() {
 			}.bind(this), function () {});
 		
 			// Twitter account
+/* Disabled -> not working
 			Geocaching.storage.simpleGet('logins-twitter', function(response) {
 				var size = Object.values(response).size();
 				if(1 <= size) {
 					Geocaching.logins['twitter'] = response;
 				}
 			}.bind(this), function () {});
-
+*/
 		}.bind(this),
 		function() {}
 	);
