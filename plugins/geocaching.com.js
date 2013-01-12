@@ -239,7 +239,7 @@ GeocachingCom.prototype.parseSearch = function(url, reply, list)
 		listRow['gccode'] = row.match(/\|\s+(GC[A-Z0-9]+)/)[1]
 		
 		// Found it flag!
-		if(row.indexOf('images/icons/icon_smile.png') != -1) {
+		if(row.indexOf('images/icons/16/found.png') != -1) {
 			row = row.replace('images/icons/icon_smile.png', '');
 			listRow['found'] = true;
 		} else { 
@@ -2269,7 +2269,7 @@ GeocachingCom.prototype.ownedFinds = function(success, failure)
 						foCount = foItems.length-1;
 						for(var z=1; z<=foCount; z++) {
 							try {
-								guid = foItems[z].match(/icon_(attended|smile)\.gif.+cache_details.aspx\?guid=([\w-]+)/)[2];
+								guid = foItems[z].match(/logtypes\/(2|10)\.png.+cache_details.aspx\?guid=([\w-]+)/)[2];
 								Geocaching.ownfinds[guid]=1;
 							} catch(e) {}
 						}
