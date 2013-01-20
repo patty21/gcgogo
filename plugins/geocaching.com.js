@@ -1144,9 +1144,14 @@ GeocachingCom.prototype.parseLogs = function (logs)
 			case '68':
 				clog['icon'] = 'reviewernote';
 				break;
-			case '5': // Archive
-			case '12': // Unarchive
+			case '5':
 				clog['icon'] = 'archive';
+				break;
+			case '12':
+				clog['icon'] = 'unarchive';
+				break;
+			case '7':
+				clog['icon'] = 'needsarchive';
 				break;
 			case '9':
 				clog['icon'] = 'willattend';
