@@ -805,6 +805,7 @@ GeocachingCom.prototype.loadCache = function(params, success, logsuccess, failur
 				} 
 			} catch(e) {
 				Mojo.Log.error(Object.toJSON(e)+tmp);
+				Geocaching.sendReport('CacheCoords_'+url, reply, e);
 			}
 			
 			if(-1 != reply.search('<img src="/images/icons/16/check.png"')) {
@@ -856,6 +857,7 @@ GeocachingCom.prototype.loadCache = function(params, success, logsuccess, failur
 				tmp=tmp.match(/(\d+)\/(\d+)\/(\d+)/);
 				var dt = tmp[3]+'-'+tmp[1]+'-'+tmp[2];
 			} catch(e) {
+				Geocaching.sendReport('CacheDate_'+url, reply, e);
 				cache[geocode].date = "";
 			}
 			// Trackables
