@@ -297,6 +297,8 @@ var Geocaching = {
 		'secondTimeout': 45,
 		'compassInNewCard': false,
 		'magneticcompass': false,
+		'gcvote': true,
+		'fieldnotes': false,
 		'tutorials': {
 			'mappingtool': false,
 			'compass': false

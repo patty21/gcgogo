@@ -454,6 +454,12 @@ MainAssistant.prototype.setup = function() {
 			if(typeof(response.magneticcompass)!='undefined') {
 				Geocaching.settings['magneticcompass'] = response.magneticcompass;
 			}
+			if(typeof(response.gcvote)!='undefined') {
+				Geocaching.settings['gcvote'] = response.gcvote;
+			}
+			if(typeof(response.fieldnotes)!='undefined') {
+				Geocaching.settings['fieldnotes'] = response.fieldnotes;
+			}
 			if(typeof(response.autoclean)!='undefined') {
 				Geocaching.settings['autoclean'] = response.autoclean;
 			}

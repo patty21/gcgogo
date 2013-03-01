@@ -146,7 +146,30 @@ SettingsAssistant.prototype.setup = function() {
 			'disabled': false
 		}
 	);
-
+	this.controller.setupWidget("toggle-gcvote",
+		{
+			'trueValue': true,
+			'trueLabel': $L("Yes"),
+			'falseValue': false,
+			'falseLabel': $L("No")
+		},
+		this.modelGCvote = {
+			'value': Geocaching.settings['gcvote'],
+			'disabled': false
+		}
+	);
+	this.controller.setupWidget("toggle-fieldnotes",
+		{
+			'trueValue': true,
+			'trueLabel': $L("Yes"),
+			'falseValue': false,
+			'falseLabel': $L("No")
+		},
+		this.modelFieldNotes = {
+			'value': Geocaching.settings['fieldnotes'],
+			'disabled': false
+		}
+	);
 	/* Autoclean */
 	this.controller.setupWidget("toggle-autoclean",
 		{
@@ -238,6 +261,8 @@ SettingsAssistant.prototype.setup = function() {
 	Mojo.Event.listen(this.controller.get('builtin-compass'), Mojo.Event.propertyChange, this.actionSave);
 	Mojo.Event.listen(this.controller.get('toggle-compassinnewcard'), Mojo.Event.propertyChange, this.actionSave);
 	Mojo.Event.listen(this.controller.get('toggle-magneticcompass'), Mojo.Event.propertyChange, this.actionSave);
+	Mojo.Event.listen(this.controller.get('toggle-gcvote'), Mojo.Event.propertyChange, this.actionSave);
+	Mojo.Event.listen(this.controller.get('toggle-fieldnotes'), Mojo.Event.propertyChange, this.actionSave);
 	Mojo.Event.listen(this.controller.get('toggle-autoclean'), Mojo.Event.propertyChange, this.actionSave);
 	Mojo.Event.listen(this.controller.get('toggle-recalculatedistance'), Mojo.Event.propertyChange, this.actionSave);
 	Mojo.Event.listen(this.controller.get('toggle-go4cache'), Mojo.Event.propertyChange, this.actionSave);
@@ -263,6 +288,8 @@ SettingsAssistant.prototype.cleanup = function(event) {
 	Mojo.Event.stopListening(this.controller.get('builtin-compass'), Mojo.Event.propertyChange, this.actionSave);
 	Mojo.Event.stopListening(this.controller.get('toggle-compassinnewcard'), Mojo.Event.propertyChange, this.actionSave);
 	Mojo.Event.stopListening(this.controller.get('toggle-magneticcompass'), Mojo.Event.propertyChange, this.actionSave);
+	Mojo.Event.stopListening(this.controller.get('toggle-gcvote'), Mojo.Event.propertyChange, this.actionSave);
+	Mojo.Event.stopListening(this.controller.get('toggle-fieldnotes'), Mojo.Event.propertyChange, this.actionSave);
 	Mojo.Event.stopListening(this.controller.get('toggle-autoclean'), Mojo.Event.propertyChange, this.actionSave);
 	Mojo.Event.stopListening(this.controller.get('toggle-recalculatedistance'), Mojo.Event.propertyChange, this.actionSave);
 	Mojo.Event.stopListening(this.controller.get('toggle-go4cache'), Mojo.Event.propertyChange, this.actionSave);
@@ -278,6 +305,8 @@ SettingsAssistant.prototype.actionSave = function(event) {
 	Geocaching.settings['defaultnavigation'] = this.modelDefaultNavigation.value;
 	Geocaching.settings['compassInNewCard'] = this.modelCompassInNewCard.value;
 	Geocaching.settings['magneticcompass'] = this.modelMagneticCompass.value;
+	Geocaching.settings['gcvote'] = this.modelGCvote.value;
+	Geocaching.settings['fieldnotes'] = this.modelFieldNotes.value;
 	Geocaching.settings['autoclean'] = this.modelAutoclean.value;
 	Geocaching.settings['recalculatedistance'] = this.modelRecalculateDistance.value;
 	Geocaching.settings['logcount'] = this.modelLogCount.value;

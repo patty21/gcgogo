@@ -342,10 +342,15 @@ CacheAssistant.prototype.showCacheDetail = function(geocode) {
 	try {
 		if (typeof(cache[this.geocode].userdata['gcvote'])!=undefined && cache[this.geocode].userdata['gcvote'].cnt>0) {
 			var vote=cache[this.geocode].userdata['gcvote'];
-			this.controller.get('cache-quality-label').update((Math.round(vote.avg*10)/10)+" ("+vote.cnt+" votes)");
+			var votep=vote!=1?"s":"";
+			this.controller.get('cache-quality-label').update((Math.round(vote.avg*10)/10)+" ("+vote.cnt+" vote"+votep+")");
 			this.controller.get('cache-quality').src='images/stars'+ (Math.round(vote.avg*2)/2).toString().replace('.', '_') + '.gif';
 		}
 	} catch (e) {}
+	if (Geocaching.settings['gcvote']) {
+		this.controller.get('label-size').update("size<br>difficulty<br>terrain<br>quality");
+		this.controller.get('row-quality').show();
+	}
 	
 	// Get my position to show map
 	this.controller.serviceRequest('palm://com.palm.location', {
@@ -841,7 +846,7 @@ CacheAssistant.prototype.reloadCache = function() {
 				); 
 				cache[this.geocode].logs=logs;
 				this.showCacheDetail(this.geocode);
-//				Geocaching.accounts['gcvote'].getSingleVote(cache[this.geocode].guid,this.updateVote.bind(this));
+				Geocaching.accounts['gcvote'].getSingleVote(cache[this.geocode].guid,this.updateVote.bind(this));
 			}.bind(this),
 			this.saveLogs.bind(this),
 			function(message) {
@@ -899,7 +904,7 @@ CacheAssistant.prototype.reloadCache = function() {
 				); 
 				cache[this.geocode].logs=logs;
 				this.showCacheDetail(this.geocode);
-//				Geocaching.accounts['gcvote'].getSingleVote(cache[this.geocode].guid,this.updateVote.bind(this));
+				Geocaching.accounts['gcvote'].getSingleVote(cache[this.geocode].guid,this.updateVote.bind(this));
 			}.bind(this),
 			this.saveLogs.bind(this),
 			function(message) {
