@@ -221,7 +221,7 @@ GeocachingCom.prototype.parseSearch = function(url, reply, list)
 			}
 
 		} catch(e) {
-			Mojo.Log.error(Object.toJSON(e));
+			Mojo.error(Object.toJSON(e));
 		}
 
 		if(row.indexOf('images/icons/16/premium_only.png') != -1)
@@ -850,16 +850,32 @@ GeocachingCom.prototype.loadCache = function(params, success, logsuccess, failur
 				cache[geocode].description = '';
 			}
 
-			// Hidden/Event date
+			// Hidden/Event date - Manipulate for all possible date formats
 			try {
-				tmp = reply.match(/<div id="ctl00_ContentBody_mcd2">[^<]+:\s*(\d+\/\d+\/\d+)\s*</i)[1];
-				cache[geocode].date = Mojo.Format.formatDate(new Date(tmp), {'date':'medium', 'time':''});
-				tmp=tmp.match(/(\d+)\/(\d+)\/(\d+)/);
-				var dt = tmp[3]+'-'+tmp[1]+'-'+tmp[2];
+				if (tmp = reply.match(/<div id="ctl00_ContentBody_mcd2">[^<]+:\s*(\d+)\/(\d+)\/(\d+)\s*</i)) {
+					if (tmp[1]>1000) {tmp[4]=tmp[1];tmp[1]=tmp[2];tmp[2]=tmp[3];tmp[3]=tmp[4];}
+					else if (tmp[1]>12) {tmp[4]=tmp[1];tmp[1]=tmp[2];tmp[2]=tmp[4];}
+				} else if (tmp = reply.match(/<div id="ctl00_ContentBody_mcd2">[^<]+:\s*(\d+)\/(\w{3})\/(\d+)\s*</i)) {
+					tmp[4]=tmp[1];tmp[1]=months[tmp[2]];tmp[2]=tmp[4];
+				} else if (tmp = reply.match(/<div id="ctl00_ContentBody_mcd2">[^<]+:\s*(\w{3})\/(\d+)\/(\d+)\s*</i)) {
+					tmp[1]=months[tmp[1]];
+				} else if (tmp = reply.match(/<div id="ctl00_ContentBody_mcd2">[^<]+:\s*(\d+)-(\d+)-(\d+)\s*</i)) {
+					tmp[4]=tmp[1];tmp[1]=tmp[2];tmp[2]=tmp[3];tmp[3]=tmp[4];
+				} else if (tmp = reply.match(/<div id="ctl00_ContentBody_mcd2">[^<]+:\s*(\d+) (\w{3}) (\d+)\s*</i)) {
+					tmp[4]=tmp[1];tmp[1]=months[tmp[2]];tmp[2]=tmp[4];
+				}
 			} catch(e) {
+				Mojo.Log.error('Date'+Object.toJSON(e));
+			}
+			
+			try {
+				cache[geocode].date = Mojo.Format.formatDate(new Date(tmp[1]+'/'+tmp[2]+'/'+tmp[3]), {'date':'medium', 'time':''});
+				var dt = tmp[3]+'-'+tmp[1]+'-'+tmp[2];
+			} catch (e) {
 				Geocaching.sendReport('CacheDate_'+url, reply, e);
 				cache[geocode].date = "";
 			}
+			
 			// Trackables
 			cache[geocode].trackables = new Array();
 			try {
@@ -1015,7 +1031,11 @@ GeocachingCom.prototype.loadCache = function(params, success, logsuccess, failur
 //			Mojo.Log.info('Logs/DNFS:'+cache[geocode].finds+'/'+cache[geocode].dnfs);
 			cache[geocode].logs = [];
 			try {
-				tmp = reply.match(/<!\[CDATA\[\s+var uvtoken .*\s+initalLogs = (.+);\s+\/\/\]\]>/i)[1];
+				wpBegin = reply.search('<p class="span-24 last FooterBottom">');
+				wpList = reply.substr(wpBegin);
+				wpEnd = wpList.search(';//]]>');
+				wpList = wpList.substr(0, wpEnd);
+				tmp = wpList.match(/\s+initalLogs = (\{.+\});\s+\$/i)[1];
 				tmp = tmp.evalJSON();
 				cache[geocode].logs = this.parseLogs(tmp);
 				if(-1 != reply.search('</strong></p><ul class="OldWarning"><li>') && !cache[geocode].archived && !cache[geocode].disabled) { 
@@ -1030,7 +1050,10 @@ GeocachingCom.prototype.loadCache = function(params, success, logsuccess, failur
 						}
 					}
 				}
-			} catch(e) {}
+			} catch(e) {
+//				Geocaching.sendReport('Logs_'+url, tmp, e);
+				Mojo.Log.error(Object.toJSON(e));
+			}
 			
 			if (Geocaching.settings['logcount']>25 && params['logcount'] == undefined) {
 				Mojo.Log.error('Longlogsload:'+geocode);

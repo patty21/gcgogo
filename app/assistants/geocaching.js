@@ -245,6 +245,22 @@ var trackableTemplate = {
 	'logs': []
 };
 
+var months = {
+	'Jan': 1,
+	'Feb': 2,
+	'Mar': 3,
+	'Apr': 4,
+	'May': 5,
+	'Jun': 6,
+	'Jul': 7,
+	'Aug': 8,
+	'Sep': 9,
+	'Oct': 10,
+	'Nov': 11,
+	'Dec': 12
+};
+
+
 var kmInMiles = 1/1.609344;
 var deg2rad = Math.PI/180;
 var rad2deg = 180/Math.PI;
@@ -262,7 +278,8 @@ var Geocaching = {
 	'accounts': {
 		'geocaching.com': new GeocachingCom,
 		'twitter': new Twitter,
-		'go4cache': new Go4Cache
+		'go4cache': new Go4Cache,
+		'gcvote': new GCVote
 	},
 	'logins': {
 		'twitter': {
