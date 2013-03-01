@@ -338,7 +338,15 @@ CacheAssistant.prototype.showCacheDetail = function(geocode) {
 	this.controller.get('cache-latlon').update(Geocaching.toLatLon(cache[this.geocode].latitude,"lat")+"<br>"+Geocaching.toLatLon(cache[this.geocode].longitude,"lon"));
 	this.controller.get('cache-location').update(tmp+cache[this.geocode].location);
 	this.controller.get('cache-description').update(cache[this.geocode].shortdesc != "" ? cache[this.geocode].shortdesc : $L("Tap for full listing"));
-
+	
+	try {
+		if (typeof(cache[this.geocode].userdata['gcvote'])!=undefined && cache[this.geocode].userdata['gcvote'].cnt>0) {
+			var vote=cache[this.geocode].userdata['gcvote'];
+			this.controller.get('cache-quality-label').update((Math.round(vote.avg*10)/10)+" ("+vote.cnt+" votes)");
+			this.controller.get('cache-quality').src='images/stars'+ (Math.round(vote.avg*2)/2).toString().replace('.', '_') + '.gif';
+		}
+	} catch (e) {}
+	
 	// Get my position to show map
 	this.controller.serviceRequest('palm://com.palm.location', {
 		'method': 'getCurrentPosition',
@@ -439,7 +447,24 @@ CacheAssistant.prototype.showCacheDetail = function(geocode) {
 
 	// Show command menu
 	this.controller.setMenuVisible(Mojo.Menu.commandMenu, true);
+	
+	
 }
+
+
+CacheAssistant.prototype.updateVote = function(vote) {
+	if (vote.cnt) {
+		this.controller.get('cache-quality-label').update((Math.round(vote.avg*10)/10)+" ("+vote.cnt+" votes)");
+		this.controller.get('cache-quality').src='images/stars'+ (Math.round(vote.avg*2)/2).toString().replace('.', '_') + '.gif';
+		cache[this.geocode].userdata['gcvote']=vote;
+		Geocaching.db.transaction((function (transaction) { 
+			transaction.executeSql('UPDATE "caches" SET "userdata"=? WHERE "gccode"= ?', [Object.toJSON(cache[this.geocode].userdata), this.geocode],
+				function() {},function() {});
+		}).bind(this));
+	}
+}
+
+
 
 CacheAssistant.prototype.showPopup = function(event, title, message, onChoose) {
 	if(typeof(onChoose) != 'function') {
@@ -820,6 +845,7 @@ CacheAssistant.prototype.reloadCache = function() {
 				); 
 				cache[this.geocode].logs=logs;
 				this.showCacheDetail(this.geocode);
+//				Geocaching.accounts['gcvote'].getSingleVote(cache[this.geocode].guid,this.updateVote.bind(this));
 			}.bind(this),
 			this.saveLogs.bind(this),
 			function(message) {
@@ -877,6 +903,7 @@ CacheAssistant.prototype.reloadCache = function() {
 				); 
 				cache[this.geocode].logs=logs;
 				this.showCacheDetail(this.geocode);
+//				Geocaching.accounts['gcvote'].getSingleVote(cache[this.geocode].guid,this.updateVote.bind(this));
 			}.bind(this),
 			this.saveLogs.bind(this),
 			function(message) {
