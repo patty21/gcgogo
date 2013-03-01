@@ -497,31 +497,24 @@ CacheAssistant.prototype.handleCommand = function(event) {
 				this.controller.stageController.pushScene('cachelogs', this.geocode);
 			break;
 			case 'log':
-				this.controller.popupSubmenu({
-					'onChoose': function(choice) {
-						switch(choice) {
-							case 'website':
-								this.controller.serviceRequest("palm://com.palm.applicationManager", {
-									'method': "open",
-									'parameters': {
-										'id': 'com.palm.app.browser',
-										'params': {
-											'target': "http://www.geocaching.com/seek/log.aspx?ID="+ cache[this.geocode].cacheid
-										}
-									}
-								});
-							break;
-							case 'postlog':
-								this.controller.stageController.pushScene('postlog', this.geocode);
-							break;
-						}
-					}.bind(this),
-					'placeNear': event.originalEvent.target,
-					'items': [
-						{'label': $L("Post log"), 'command': 'postlog'},
-//						{'label': $L("Post log on Geocaching.com"), 'command': 'website'}
-					]
-				});
+				if (Geocaching.settings['fieldnotes']) {
+					this.controller.popupSubmenu({
+						'onChoose': function(choice) {
+							switch(choice) {
+								case 'postlog':
+									this.controller.stageController.pushScene('postlog', this.geocode);
+									break;
+							}
+						}.bind(this),
+						'placeNear': event.originalEvent.target,
+						'items': [
+							{'label': $L("Post log"), 'command': 'postlog'},
+							{'label': $L("Fieldnote"),'disabled':true, 'command': 'fieldnote'}
+						]
+					});
+				} else {
+					this.controller.stageController.pushScene('postlog', this.geocode);
+				}
 			break;
 			case 'findnearby':
 				if(cache[this.geocode].latitude != 0 && cache[this.geocode].longitude != 0) {

@@ -207,34 +207,10 @@ TrackableAssistant.prototype.handleCommand = function(event) {
 				}
 			break;
 			case 'logs':
-				this.trackableLogs();
+				this.controller.stageController.pushScene('trackablelogs', this.params['tbcode']);
 			break;
 			case 'log':
-				this.controller.popupSubmenu({
-					'onChoose': function(choice) {
-						switch(choice) {
-							case 'website':
-								this.controller.serviceRequest("palm://com.palm.applicationManager", {
-									'method': "open",
-									'parameters': {
-										'id': 'com.palm.app.browser',
-										'params': {
-											'target': "http://www.geocaching.com/track/log.aspx?wid="+ trackable[this.params['tbcode']].guid
-										}
-									}
-								});
-							break;
-							case 'postlog':
-								this.controller.stageController.pushScene('postlog-trackables', this.params['tbcode']);
-							break;
-						}
-					}.bind(this),
-					'placeNear': event.originalEvent.target,
-					'items': [
-						{'label': $L("Post log"), 'command': 'postlog'},
-//						{'label': $L("Post log on Geocaching.com"), 'command': 'website'}
-					]
-				});
+				this.controller.stageController.pushScene('postlog-trackables', this.params['tbcode']);
 			break;
 			case 'reloadtrackable':
 				this.reloadTrackable();
@@ -381,9 +357,4 @@ TrackableAssistant.prototype.openMap = function(event) {
 		}
 	});
 };
-
-TrackableAssistant.prototype.trackableLogs = function(event) {
-	this.controller.stageController.pushScene('trackablelogs', this.params['tbcode']);
-};
-
 
