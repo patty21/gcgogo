@@ -227,14 +227,10 @@ TrackableAssistant.prototype.handleCommand = function(event) {
 							case 'postlog':
 								this.controller.stageController.pushScene('postlog-trackables', this.params['tbcode']);
 							break;
-							case 'tweet':
-								this.controller.stageController.pushScene('tweet', $L("I discover #{code} with #GC-gogo. http://coord.info/#{code}").interpolate({'code': this.params['tbcode']}));
-							break;
 						}
 					}.bind(this),
 					'placeNear': event.originalEvent.target,
 					'items': [
-						{'label': $L("Tweet about trackable"), 'disabled': (Geocaching.logins['twitter']['oauth_token'] == null), 'command':'tweet'},
 						{'label': $L("Post log"), 'command': 'postlog'},
 //						{'label': $L("Post log on Geocaching.com"), 'command': 'website'}
 					]

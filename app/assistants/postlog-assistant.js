@@ -12,29 +12,7 @@ PostlogAssistant.prototype.setup = function() {
 	this.trackables = [];
 	this.logTypes = [];
 
-	this.twitts = {
-		2: $L("I found #{code} with #Geocaching for #webOS. http://coord.info/#{code}"),
-		3: $L("I can't find #{code}. http://coord.info/#{code}"),
-		4: $L("I wrote a note to #{code}. http://coord.info/#{code}"),
-		9: $L("I will attend #{code}. http://coord.info/#{code}"),
-		19: $L("I attended #{code}. http://coord.info/#{code}"),
-		23: $L("I enable #{code} with #Geocaching for #webOS.. http://coord.info/#{code}")
-	};
-/*
-	// Set right choices on trackables radio button
-	var fullChoices = [
-		{'label': $L("None"), 'value': ''},
-		{'label': $L("Drop"), 'value': 'DroppedOff'},
-		{'label': $L("Visited"), 'value': 'Visited'}
-	];
 
-	var lessChoices = [
-		{'label': $L("None"), 'value': ''},
-		{'label': $L("Visited"), 'value': 'Visited'}
-	];
-
-	this.trackablesChoices = [];
-*/	
 	switch(cache[this.geocode].type) {
 		case 'Earthcache':
 		case 'Webcam Cache':
@@ -77,15 +55,6 @@ PostlogAssistant.prototype.setup = function() {
 		}
 	);
 
-	this.controller.setupWidget("posttweet",
-	{
-		'trueValue': true,
-		'falseValue': false 
-	},
-	this.postTweetModel = {
-		'value': (Geocaching.logins['twitter']['oauth_token'] != null),
-		'disabled': (Geocaching.logins['twitter']['oauth_token'] == null)
-	});
 	
 	this.controller.setupWidget('send-button',
 		{
@@ -97,16 +66,7 @@ PostlogAssistant.prototype.setup = function() {
 			'disabled': true
 		}
 	);
-/*
-	this.controller.setupWidget('trackable', 
-		{
-			'choices': this.trackablesChoices 
-		}, {
-			'value':'',
-			'disabled': false
-		}
-	);
-*/
+
 	// Trackables
 	this.controller.setupWidget("trackables-list",
 		this.attributes = {
@@ -230,24 +190,8 @@ PostlogAssistant.prototype.submitClicked = function(event) {
 			'trackables': this.trackables
 		},
 		function() {
-			var tweet = this.twitts[this.modelLogType['value']]
-			if (this.postTweetModel['value'] == true && typeof(tweet) != 'undefined') {
-				var tweet = tweet.interpolate({'code': this.geocode});
-				Geocaching.accounts['twitter'].postMessage({
-					'retry': 1,
-					'message': tweet,
-					'latitude': cache[this.geocode].latitude,
-					'longitude': cache[this.geocode].longitude,
-				}, function(){
-					Mojo.Controller.getAppController().showBanner({'messageText': $L("Log and tweet posted.")}, '', 'postlog');
-					this.controller.stageController.popScene('posted');
-				}.bind(this), function(message){
-					Mojo.Controller.getAppController().showBanner({'messageText': $L("Only log posted.")}, '', 'postlog');
-				}.bind(this));
-			} else {
-				Mojo.Controller.getAppController().showBanner({'messageText': $L("Log posted.")}, '', 'postlog');
-				this.controller.stageController.popScene('posted');
-			}
+			Mojo.Controller.getAppController().showBanner({'messageText': $L("Log posted.")}, '', 'postlog');
+			this.controller.stageController.popScene('posted');
 		}.bind(this),
 		function(message) {
 			this.showPopup(null, $L("Problem"), message, function() { 

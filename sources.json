@@ -1,10 +1,6 @@
 [
     {"source": "app/assistants/prototype.js"},
     {"source": "plugins/geocaching.com.js"},
-    {"source": "plugins/sha1.js"},
-    {"source": "plugins/md5.js"},
-    {"source": "plugins/oauth.js"},
-    {"source": "plugins/twitter.js"},
     {"source": "plugins/go4cache.js"},
     {"source": "plugins/gcvote.js"},
     {"source": "app/assistants/geocaching.js"},
@@ -81,14 +77,6 @@
     {
         "scenes": "first",
         "source": "app/assistants/first-assistant.js"
-    },
-    {
-        "scenes": "login-twitter",
-        "source": "app/assistants/login-twitter-assistant.js"
-    },
-    {
-        "scenes": "tweet",
-        "source": "app/assistants/tweet-assistant.js"
     },
     {
         "scenes": "attributes",

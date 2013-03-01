@@ -509,14 +509,10 @@ CacheAssistant.prototype.handleCommand = function(event) {
 							case 'postlog':
 								this.controller.stageController.pushScene('postlog', this.geocode);
 							break;
-							case 'tweet':
-								this.controller.stageController.pushScene('tweet', $L("I recommend #{code}. http://coord.info/#{code}").interpolate({'code': this.geocode}));
-							break;
 						}
 					}.bind(this),
 					'placeNear': event.originalEvent.target,
 					'items': [
-						{'label': $L("Tweet about cache"), 'disabled': (Geocaching.logins['twitter']['oauth_token'] == null), 'command':'tweet'},
 						{'label': $L("Post log"), 'command': 'postlog'},
 //						{'label': $L("Post log on Geocaching.com"), 'command': 'website'}
 					]

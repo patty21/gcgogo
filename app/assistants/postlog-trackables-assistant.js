@@ -11,13 +11,6 @@ PostlogTrackablesAssistant.prototype.setup = function() {
 	this.viewstate1 = [];
 	this.logTypes = [];
 
-	this.twitts = {
-		13: $L("I retrieved #{code} with #Geocaching for #webOS. http://coord.info/#{code}"),
-		19: $L("I grabbed #{code} with #Geocaching for #webOS. http://coord.info/#{code}"),
-		4: $L("I wrote a note to #{code}. http://coord.info/#{code}"),
-		48: $L("I discovered #{code} with #Geocaching for #webOS. http://coord.info/#{code}"),
-		69: $L("I moved #{code} to ma collection with #Geocaching for #webOS. http://coord.info/#{code}"),
-	};
 
 	this.controller.setupWidget('logtype',
 		this.attributesLogType = {
@@ -64,16 +57,6 @@ PostlogTrackablesAssistant.prototype.setup = function() {
 			'disabled': false
 		}
 	);
-
-	this.controller.setupWidget("posttweet",
-	{
-		'trueValue': true,
-		'falseValue': false 
-	},
-	this.postTweetModel = {
-		'value': (Geocaching.logins['twitter']['oauth_token'] != null),
-		'disabled': (Geocaching.logins['twitter']['oauth_token'] == null)
-	});
 	
 	this.controller.setupWidget('send-button',
 		{
@@ -189,24 +172,9 @@ PostlogTrackablesAssistant.prototype.submitClicked = function(event) {
 			'body': body
 		},
 		function() {
-			var tweet = this.twitts[logType]
-			if (this.postTweetModel['value'] == true && typeof(tweet) != 'undefined') {
-				var tweet = tweet.interpolate({'code': this.tbcode});
-				Geocaching.accounts['twitter'].postMessage({
-					'retry': 1,
-					'message': tweet,
-//					'latitude': cache[this.geocode].latitude,
-//					'longitude': cache[this.geocode].longitude,
-				}, function(){
-					Mojo.Controller.getAppController().showBanner({'messageText': $L("Log and tweet posted.")}, '', 'postlog');
-					this.controller.stageController.popScene('posted');
-				}.bind(this), function(message){
-					Mojo.Controller.getAppController().showBanner({'messageText': $L("Only log posted.")}, '', 'postlog');
-				}.bind(this));
-			} else {
-				Mojo.Controller.getAppController().showBanner({'messageText': $L("Log posted.")}, '', 'postlog');
-				this.controller.stageController.popScene('posted');
-			}
+			Mojo.Controller.getAppController().showBanner({'messageText': $L("Log posted.")}, '', 'postlog');
+			this.controller.stageController.popScene('posted');
+
 		}.bind(this),
 		function(message) {
 			this.showPopup(null, $L("Problem"), message, function() { 

@@ -14,15 +14,6 @@ AccountsNewAssistant.prototype.setup = function(widget) {
 		}
 	);
 
-	this.controller.setupWidget('button-twitter', {},
-		{
-			'label': $L("Twitter"),
-			'buttonClass': 'primary no-text-transform',
-			'disabled': (Geocaching.logins['twitter']['oauth_token'] != null)
-		}
-	);
-
-
 	this.controller.setupWidget('button-cancel', {},
 		{
 			'label': $L("Cancel"),
@@ -33,9 +24,6 @@ AccountsNewAssistant.prototype.setup = function(widget) {
 
 	this.geocachingcomTap = this.geocachingcomTap.bind(this);
 	Mojo.Event.listen(this.controller.get('button-geocachingcom'), Mojo.Event.tap, this.geocachingcomTap);
-
-	this.twitterTap = this.twitterTap.bind(this);
-	Mojo.Event.listen(this.controller.get('button-twitter'), Mojo.Event.tap, this.twitterTap);
 
 	this.cancelTap = this.cancelTap.bind(this);
 	Mojo.Event.listen(this.controller.get('button-cancel'), Mojo.Event.tap, this.cancelTap);
@@ -49,16 +37,11 @@ AccountsNewAssistant.prototype.deactivate = function(event) {
 
 AccountsNewAssistant.prototype.cleanup = function(event) {
 	Mojo.Event.stopListening(this.controller.get('button-geocachingcom'), Mojo.Event.tap, this.geocachingcomTap);
-	Mojo.Event.stopListening(this.controller.get('button-twitter'), Mojo.Event.tap, this.twitterTap);
 	Mojo.Event.stopListening(this.controller.get('button-cancel'), Mojo.Event.tap, this.cancelTap);
 }
 
 AccountsNewAssistant.prototype.geocachingcomTap = function(event) {
 	this.controller.stageController.pushScene('login');
-}
-
-AccountsNewAssistant.prototype.twitterTap = function(event) {
-	this.controller.stageController.pushScene('login-twitter');
 }
 
 AccountsNewAssistant.prototype.cancelTap = function(event) {

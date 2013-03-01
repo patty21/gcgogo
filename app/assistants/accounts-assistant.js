@@ -70,14 +70,6 @@ AccountsAssistant.prototype.buildAccountList = function() {
 		});
 	};
 
-	if(Geocaching.logins['twitter']['oauth_token'] != null) {
-		this.accounts.push({
-			'id': 'twitter',
-			'name': 'Twitter',
-			'icon': 'images/account-twitter.png'
-		});
-	};
-
 	this.accountsListModel['items'] = this.accounts;
 	this.controller.modelChanged(this.accountsListModel);
 
@@ -99,9 +91,6 @@ AccountsAssistant.prototype.handleAccountsListTap = function(event) {
 		switch(event.item['id']) {
 			case 'geocaching.com':
 				this.controller.stageController.pushScene('login');
-			break;
-			case 'twitter':
-				this.controller.stageController.pushScene('login-twitter');
 			break;
 		}
 	}

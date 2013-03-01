@@ -277,17 +277,8 @@ var Geocaching = {
 	},
 	'accounts': {
 		'geocaching.com': new GeocachingCom,
-		'twitter': new Twitter,
 		'go4cache': new Go4Cache,
 		'gcvote': new GCVote
-	},
-	'logins': {
-		'twitter': {
-			'oauth_token': null,
-			'oauth_token_secret': null,
-			'user_id': null,
-			'screen_name': null
-		}
 	},
 	'settings' : {
 		'loaded': false,

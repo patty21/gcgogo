@@ -775,13 +775,6 @@ MainAssistant.prototype.showTip = function() {
 			});
 		}
 		
-		if(Geocaching.logins['twitter']['oauth_token'] == null) {
-			userTips.push({
-				'text': $L("Tweet your founds."),
-				'params': {'scene': 'accounts'}
-			});
-		}
-
 		if(Geocaching.settings['minimalaccuracy'] == 34) {
 			userTips.push({
 				'text': $L("You can set minimal GPS accuracy for compass."),
