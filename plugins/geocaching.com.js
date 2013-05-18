@@ -162,42 +162,36 @@ GeocachingCom.prototype.parseSearch = function(url, reply, list)
 		// Cache type
 		listRow['type'] = row.match(/<img src="(http:\/\/([\-0-9\.a-z\/]*)?www\.geocaching\.com)?\/images\/wpttypes\/[^.]+\.gif" alt="([^"]+)" title="([^"]+)" class="SearchResultsWptType"/i)[3]
 		
-	/**
-	* Disabled in 2010-12-22 update
-	*/
-		
 		// Direction and distance (not in all lists)
-		/*try {
+		try {
 			tmp = row.match(/>([SWEN]+)<br[^>]*>([0-9\.a-z]+)/i);
 			listRow['direction'] = tmp[1];
 			listRow['distance'] = tmp[2];
 		} catch(e) {
 			// Possibly is Here or distance is not present
-		}*/
+		}
 		
-		try {
-			listRow['ddattr'] = row.match(/\/ImgGen\/seek\/CacheDir\.ashx\?k=([a-z0-9%]+)/i)[1]
-		} catch(e) { }
-
-	/**
-	* Disabled in 2010-12-22 update
-	*/
-
-		// Cache attributes
 		//try {
-		//	listRow['attribs'] = row.match(/\(([0-9.]+\/[0-9.]+)\)/)[1]
+		//	listRow['ddattr'] = row.match(/\/ImgGen\/seek\/CacheDir\.ashx\?k=([a-z0-9%]+)/i)[1]
 		//} catch(e) { }
 
-		// Cache size
-		//try {
-		//	listRow['size'] = row.match(/<img src="(http:\/\/([\-0-9\.a-z\/]*)?www\.geocaching\.com)?\/images\/icons\/container\/[a-z_]+.gif" alt="Size: ([^"]+)"/i)[3]
-		//} catch(e) {
-		//	listRow['size'] = 'none';
-		//}
-
+	
+		// Cache attributes
 		try {
-			listRow['gsattr'] = row.match(/\/ImgGen\/seek\/CacheInfo\.ashx\?v=([a-z0-9]+)/i)[1]
+			listRow['attribs'] = row.match(/>([0-9.]+\/[0-9.]+)</)[1]
 		} catch(e) { }
+
+		// Cache size
+		try {
+			tmp = row.match(/<img src="\/images\/icons\/container\/([a-z_]+)\.gif" alt/i);
+			listRow['size'] = cacheSizeNo[tmp[1]];
+		} catch(e) {
+			listRow['size'] = 'none';
+		}
+
+		// try {
+		//	listRow['gsattr'] = row.match(/\/ImgGen\/seek\/CacheInfo\.ashx\?v=([a-z0-9]+)/i)[1]
+		//} catch(e) { }
 
 		// GUID and disabled
 		try {
