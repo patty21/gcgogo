@@ -327,32 +327,33 @@ Geocaching.saveSettings = function()
 
 Geocaching.searchAddress = function(address, success, failure)
 {
-	var url = "http://maps.google.com/maps/geo?ouptut=json&oe=utf-8&q="+encodeURIComponent(address);
+	var url = "http://maps.googleapis.com/maps/api/geocode/json?sensor=true&address="+encodeURIComponent(address);
 	var checkAjax = new Ajax.Request(url, {
 		'method': 'get',
-		'evalJSON': 'force',
 		'onSuccess': function(r){
-			if(typeof(r.responseJSON) != 'object') {
-				failure($L("Error occured on address search."));
-				return false;
-			}
-			if(r.responseJSON['Status']['code'] != 200 || r.responseJSON['Placemark'].length < 1) {
+			var a = r.responseText.evalJSON();
+			if(a['status'] == 'ZERO_RESULTS') {
 				failure($L("No address found."));
 				return false;
 			}
+			if(a['status'] != 'OK') {
+				failure($L("Error occured on address search."));
+				return false;
+			}
 			var addresses = new Array();
-			var len = r.responseJSON['Placemark'].length; var address = {};
+			var len=a['results'].length;
+			var address = {};
 			for(var z=0; z<len; z++) {
 				address = {
-					'address': r.responseJSON['Placemark'][z]['address'],
-					'latitude': r.responseJSON['Placemark'][z]['Point']['coordinates'][1],
-					'longitude': r.responseJSON['Placemark'][z]['Point']['coordinates'][0]
+					'address': a['results'][z]['formatted_address'],
+					'latitude': a['results'][z]['geometry']['location']['lat'],
+					'longitude': a['results'][z]['geometry']['location']['lng']
 				};
 				addresses.push(Object.clone(address));
 			}
 			success(addresses);
 		},
-		onFailure: function(r){
+		'onFailure': function(r){
 			failure($L("Error occured on address search."));
 		}
 	});
