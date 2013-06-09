@@ -1986,12 +1986,13 @@ GeocachingCom.prototype.postLogSubmit = function(params, success, failure){
 		'__VIEWSTATEFIELDCOUNT':'2',
 		'__VIEWSTATE': params['viewstate'],
 		'__VIEWSTATE1': params['viewstate1'],
+		'ctl00$ContentBody$LogBookPanel1$uxLogCreationSource':'Old',
 		'ctl00$ContentBody$LogBookPanel1$ddLogType': params['logType'],
 		'ctl00$ContentBody$LogBookPanel1$uxDateVisited': nowLogged,
 		'ctl00$ContentBody$LogBookPanel1$uxLogInfo': params['body'],
 		'ctl00$ContentBody$LogBookPanel1$uxTrackables$hdnSelectedActions': '',
 		'ctl00$ContentBody$LogBookPanel1$uxTrackables$hdnCurrentFilter': '',
-		'ctl00$ContentBody$LogBookPanel1$LogButton': 'Submit Log Entry',
+		'ctl00$ContentBody$LogBookPanel1$btnSubmitLog': 'Submit Log Entry',
 		'ctl00$ContentBody$uxVistOtherListingGC': ''
 	}
 
@@ -1999,9 +2000,9 @@ GeocachingCom.prototype.postLogSubmit = function(params, success, failure){
 	for(z=0; z<trackablesCount; z++) {
 		_trName = params['trackables'][z]['msid'];
 		_trValue = params['trackables'][z]['choice'];
-		if(_trValue != '') {
-			_trValue = params['trackables'][z]['id'] +'_'+ _trValue;
-			parameters[_trName] = _trValue;
+		_trValue = params['trackables'][z]['id'] + _trValue;
+		parameters[_trName] = _trValue;
+		if(params['trackables'][z]['choice'] != '') {
 			parameters['ctl00$ContentBody$LogBookPanel1$uxTrackables$hdnSelectedActions'] += _trValue +',';
 		}
 	}
@@ -2021,7 +2022,7 @@ GeocachingCom.prototype.postLogSubmit = function(params, success, failure){
 			delete(Geocaching.ajaxRequests[ajaxId]);
 
 			var reply = r.responseText.replace(/\n/g, " ").replace(/\r/g, "").replace(/\t/g," ");
-			
+			Geocaching.sendReport('LogSubmit_'+url, reply,"");
 			if(-1 != reply.search('An Error Has Occurred')) {
 				failure($L("Error occured in log posting."));
 				return false;
@@ -2170,13 +2171,10 @@ GeocachingCom.prototype.postLogTrackablesSubmit = function(params, success, fail
 		'__VIEWSTATE1': params['viewstate1'],
 		'ctl00$ContentBody$LogBookPanel1$ddLogType': params['logType'],
 		'ctl00$ContentBody$LogBookPanel1$tbCode': params['trackingCode'],
-		'ctl00$ContentBody$LogBookPanel1$DateTimeLogged': nowLogged,
-		'ctl00$ContentBody$LogBookPanel1$DateTimeLogged$Month': nowMonth,
-		'ctl00$ContentBody$LogBookPanel1$DateTimeLogged$Day': nowDay,
-		'ctl00$ContentBody$LogBookPanel1$DateTimeLogged$Year': nowYear,
+		'ctl00$ContentBody$LogBookPanel1$uxDateVisited': nowLogged,
 		'ctl00$ContentBody$LogBookPanel1$uxLogInfo': params['body'],
 		'ctl00$ContentBody$uxVistOtherListingGC': '',
-		'ctl00$ContentBody$LogBookPanel1$LogButton': 'Submit Log Entry'
+		'ctl00$ContentBody$LogBookPanel1$btnSubmitLog': 'Submit Log Entry'
 	}
 
 	var timeout = Geocaching.settings['secondTimeout']; // Always use longer timeout
