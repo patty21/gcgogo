@@ -141,19 +141,12 @@ OfflineAssistant.prototype.actionByCoordsClicked = function(event) {
 	this.dlnumtotal = this.dlnum;
 	var latitude = Geocaching.parseCoordinate(lat);
 	var longitude = Geocaching.parseCoordinate(lon);
-	if(latitude == false) {
+	if(latitude === false) {
 		this.showPopup(null,$L("Coordinates"),$L("Unknown format of coordinates in Latitude."),null);
 		return false;
 	}
-	if(longitude == false) {
-		this.controller.showAlertDialog({
-			'title': $L("Coordinates"),
-			'message': $L("Unknown format of coordinates in Longitude."),
-			'choices': [{
-				'label': $L("Close"),
-				'type':'primary'
-			}]
-		});
+	if(longitude === false) {
+		this.showPopup(null,$L("Coordinates"),$L("Unknown format of coordinates in Longitude."),null);
 		return false;
 	}
 	this.controller.get('actions').hide();

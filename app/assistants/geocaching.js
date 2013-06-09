@@ -526,7 +526,7 @@ Geocaching.getHumanSpeed = function(speed) {
 Geocaching.parseLatLon = function(latlon) {
 	var tmp = ''; var result = {};
 	latlon = new String(latlon);
-	if(tmp = latlon.match(/^([NS]) (\d+)° (\d+)\.(\d+) ([WE]) (\d+)° (\d+)\.(\d+)$/i)) {
+	if(tmp = latlon.match(/^([NS ]) (\d+)° (\d+)\.(\d+) ([WE ]) (\d+)° (\d+)\.(\d+)$/i)) {
 		result['latitude'] = (tmp[1] == 'N'  ? 1 : -1 ) * ( Number(tmp[2])  + (tmp[3]+"."+tmp[4])/60 );
 		result['longitude'] = (tmp[5] == 'E'  ? 1 : -1 ) * ( Number(tmp[6])  + (tmp[7]+"."+tmp[8])/60 );
 		return result;

@@ -913,7 +913,7 @@ MainAssistant.prototype.actionByCoordsClicked = function(event) {
 	var latitude = Geocaching.parseCoordinate(lat);
 	var longitude = Geocaching.parseCoordinate(lon);
 
-	if(latitude == false) {
+	if(latitude === false) {
 		this.controller.showAlertDialog({
 			'title': $L("Coordinates"),
 			'message': $L("Unknown format of coordinates in Latitude."),
@@ -924,8 +924,7 @@ MainAssistant.prototype.actionByCoordsClicked = function(event) {
 		});
 		return false;
 	}
-
-	if(longitude == false) {
+	if(longitude === false) {
 		this.controller.showAlertDialog({
 			'title': $L("Coordinates"),
 			'message': $L("Unknown format of coordinates in Longitude."),
@@ -936,7 +935,17 @@ MainAssistant.prototype.actionByCoordsClicked = function(event) {
 		});
 		return false;
 	}
-
+	if(latitude==0 && longitude==0) {
+		this.controller.showAlertDialog({
+			'title': $L("Coordinates"),
+			'message': $L("You need to enter valid coordinates. (There are no caches at 0°/0°.)"),
+			'choices': [{
+				'label': $L("Close"),
+				'type':'primary'
+			}]
+		});
+		return false;
+	}
 	this.inputs['bycoordslat'] = latitude;
 	this.inputs['bycoordslon'] = longitude;
 	this.saveInputs();
