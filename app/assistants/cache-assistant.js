@@ -341,10 +341,8 @@ CacheAssistant.prototype.showCacheDetail = function(geocode) {
 	
 	try {
 		if (typeof(cache[this.geocode].userdata['gcvote'])!=undefined && cache[this.geocode].userdata['gcvote'].cnt>0) {
-			var vote=cache[this.geocode].userdata['gcvote'];
-			var votep=vote!=1?"s":"";
-			this.controller.get('cache-quality-label').update((Math.round(vote.avg*10)/10)+" ("+vote.cnt+" vote"+votep+")");
-			this.controller.get('cache-quality').src='images/stars'+ (Math.round(vote.avg*2)/2).toString().replace('.', '_') + '.gif';
+			this.showVote(cache[this.geocode].userdata['gcvote']);
+			
 		}
 	} catch (e) {}
 	if (Geocaching.settings['gcvote']) {
@@ -456,11 +454,17 @@ CacheAssistant.prototype.showCacheDetail = function(geocode) {
 	
 }
 
+CacheAssistant.prototype.showVote = function(vote) {
+	var votep=vote.cnt!=1?"s":"";
+	this.controller.get('cache-quality-label').update((Math.round(vote.avg*10)/10)+" ("+vote.cnt+" vote"+votep+")");
+	this.controller.get('cache-quality').src='images/stars'+ (Math.round(vote.avg*2)/2).toString().replace('.', '_') + '.gif';
+}
+
+
 
 CacheAssistant.prototype.updateVote = function(vote) {
 	if (vote.cnt) {
-		this.controller.get('cache-quality-label').update((Math.round(vote.avg*10)/10)+" ("+vote.cnt+" votes)");
-		this.controller.get('cache-quality').src='images/stars'+ (Math.round(vote.avg*2)/2).toString().replace('.', '_') + '.gif';
+		this.showVote(vote);
 		cache[this.geocode].userdata['gcvote']=vote;
 		Geocaching.db.transaction((function (transaction) { 
 			transaction.executeSql('UPDATE "caches" SET "userdata"=? WHERE "gccode"= ?', [Object.toJSON(cache[this.geocode].userdata), this.geocode],
