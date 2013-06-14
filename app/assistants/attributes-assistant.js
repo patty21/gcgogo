@@ -86,6 +86,7 @@ AttributesAssistant.prototype.setup = function() {
 		's-tool-yes': $L("Special Tool required"),
 		'wirelessbeacon-yes': $L("Wireless Beacon"),
 		'treeclimbing-yes': $L("Tree Climbing"),
+		'treeclimbing-no': $L("No Tree Climbing"),
 		
 		'poisonoak-yes': $L("Poison plants"),
 		'dangerousanimals-yes': $L("Dangerous animals"),
