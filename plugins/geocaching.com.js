@@ -1025,7 +1025,10 @@ GeocachingCom.prototype.loadCache = function(params, success, logsuccess, failur
 //			Mojo.Log.info('Logs/DNFS:'+cache[geocode].finds+'/'+cache[geocode].dnfs);
 			cache[geocode].logs = [];
 			try {
-				wpBegin = reply.search('<p class="span-24 last FooterBottom">');
+				wpBegin = reply.search('<div class="FooterBottom">');
+				if (wpBegin<1) {
+					wpBegin = reply.search('initalLogs = ')-3;
+				}
 				wpList = reply.substr(wpBegin);
 				wpEnd = wpList.search(';//]]>');
 				wpList = wpList.substr(0, wpEnd);
