@@ -230,7 +230,10 @@ CacheAssistant.prototype.activate = function(event) {
 	if(event == 'posted') {
 		this.reloadCache();
 	}
-	var wpCount = cache[this.geocode].waypoints.length;
+	var wpCount = 0;
+	if( cache[this.geocode] ){
+		var wpCount = cache[this.geocode].waypoints.length;
+	}
 	try {
 		wpCount += cache[this.geocode].userdata['waypoints'].length;
 	} catch(e) {}

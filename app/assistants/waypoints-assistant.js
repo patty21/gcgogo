@@ -28,7 +28,7 @@ WaypointsAssistant.prototype.setup = function() {
 	// Add user waypoints
 	try {
 		var userWpts = cache[this.geocode].userdata['waypoints'];
-		var userWptsLen = userWpts.length;
+		var userWptsLen = (typeof userWpts == 'object' ? userWpts.length : 0);
 		if(userWptsLen > 0) {
 			swipe = true;
 			for(z=0; z<userWptsLen; z++) {

@@ -625,11 +625,11 @@ Geocaching.parseFile = function(filename, success, failure)
 				var _cache = {};
 				var ts = Math.round(new Date().getTime() / 1000);
 				for(var z=0; z<wptsLen; z++) {
-					_cache = {};
+					_cache = Object.clone(cacheTemplate);
 					try {
 						wpt = wpts[z];
-						_cache['latitude'] = wpt.getElementsByTagName('coord')[0].getAttribute('lat');
-						_cache['longitude'] = wpt.getElementsByTagName('coord')[0].getAttribute('lon');
+						_cache['latitude'] = parseFloat(wpt.getElementsByTagName('coord')[0].getAttribute('lat'));
+						_cache['longitude'] = parseFloat(wpt.getElementsByTagName('coord')[0].getAttribute('lon'));
 						_cache['geocode'] = wpt.getElementsByTagName('name')[0].getAttribute('id');
 						_cache['name'] = wpt.getElementsByTagName('name')[0].textContent;
 						_cache['found'] = false;
@@ -652,6 +652,7 @@ Geocaching.parseFile = function(filename, success, failure)
 						_cache['updated'] = ts;
 						_cache['waypoints'] = [];
 						_cache['logs'] = [];
+						_cache['trackables'] = [];
 						_caches.push(Object.clone(_cache));
 					} catch(e) { }
 				}
@@ -674,11 +675,11 @@ Geocaching.parseFile = function(filename, success, failure)
 				var wptCache, tmp, logs, logsLen, i, d;
 				var ts = Math.round(new Date().getTime() / 1000);
 				for(var z=0; z<wptsLen; z++) {
-					_cache = {};
+					_cache = Object.clone(cacheTemplate);
 					try {
 						wpt = wpts[z];
-						_cache['latitude'] = wpt.getAttribute('lat');
-						_cache['longitude'] = wpt.getAttribute('lon');
+						_cache['latitude'] = parseFloat(wpt.getAttribute('lat'));
+						_cache['longitude'] = parseFloat(wpt.getAttribute('lon'));
 						_cache['geocode'] = wpt.getElementsByTagName('name')[0].textContent;
 						_cache['found'] = (wpt.getElementsByTagName('sym')[0].textContent.match(/Found/i));
 						wptCache = wpt.getElementsByTagName('cache')[0];
@@ -690,7 +691,7 @@ Geocaching.parseFile = function(filename, success, failure)
 						_cache['description'] = wptCache.getElementsByTagName('long_description')[0].textContent;
 						_cache['difficulty'] = wptCache.getElementsByTagName('difficulty')[0].textContent;
 						_cache['terrain'] = wptCache.getElementsByTagName('terrain')[0].textContent;
-						_cache['size'] = wptCache.getElementsByTagName('container')[0].textContent;
+						_cache['size'] = cacheSizeNo[wptCache.getElementsByTagName('container')[0].textContent.toLowerCase().replace(' ', '_')];
 						_cache['type'] = wptCache.getElementsByTagName('type')[0].textContent;
 						_cache['hint'] = wptCache.getElementsByTagName('encoded_hints')[0].textContent;
 						_cache['owner'] = wptCache.getElementsByTagName('owner')[0].textContent;
@@ -703,6 +704,11 @@ Geocaching.parseFile = function(filename, success, failure)
 						_cache['updated'] = ts;
 						_cache['waypoints'] = [];
 						_cache['logs'] = [];
+						_cache['trackables'] = [];
+						_cache['attrs'] = [];
+
+						var finds = 0; 
+						var dnfs = 0;
 
 						try {
 							tmp = wptCache.getElementsByTagName('logs')[0];
@@ -723,9 +729,11 @@ Geocaching.parseFile = function(filename, success, failure)
 								{
 									case 'Found it':
 										_log['icon'] = 'found';
+										finds++;
 									break;
 									case 'Didn\'t find it':
 										_log['icon'] = 'notfound';
+										dnfs++;
 									break;
 									case 'Published':
 										_log['icon'] = 'published';
@@ -760,10 +768,13 @@ Geocaching.parseFile = function(filename, success, failure)
 							}
 						} catch(e) { }
 
+						_cache['finds'] = finds + '+';
+						_cache['dnfs'] = dnfs + '+';
+						_cache['favs'] = '?';
+
 						_cache['spoilerImages'] = [];
 						_cache['galleryImagesCount'] = 0;
 						_cache['galleryImages'] = [];
-						
 						
 						_cache['guid'] = '';
 						try {
