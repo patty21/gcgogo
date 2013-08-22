@@ -118,7 +118,7 @@ GeocachingCom.prototype.parseSearch = function(url, reply, list)
 		viewstate.push(viewstate1);
 	} catch(e) { }
 	
-	try {
+/*	try {
 		viewstate2 = reply.match(/id="__VIEWSTATE2" value="([^"]+)"/)[1]
 		viewstate.push(viewstate2);
 	} catch(e) { }
@@ -127,7 +127,7 @@ GeocachingCom.prototype.parseSearch = function(url, reply, list)
 		viewstate3 = reply.match(/id="__VIEWSTATE3" value="([^"]+)"/)[1]
 		viewstate.push(viewstate3);
 	} catch(e) { }
-	
+*/	
 	try {
 		var tmp = reply.match(/<td class="PageBuilderWidget"><span>[^<]+<b>[^<]+<\/b>[^<]+<b>(\d+)<\/b>[^<]+<b>(\d+)<\/b>/);
 		pageleft = tmp[2]-tmp[1];
@@ -138,16 +138,15 @@ GeocachingCom.prototype.parseSearch = function(url, reply, list)
 		return false;
 
 	var r = reply.substr(startPos); // Cut on <table
-	
 	startPos = r.indexOf('>');
-	var endPos = r.indexOf('ctl00_ContentBody_UnitTxt');
+	var endPos = r.indexOf('</table>');
 	if(startPos == -1 || endPos == -1)
 		return false;
 
 	r = r.substr(startPos+1, endPos-startPos+1); // Cut between <table> and </table>
 
 	var rows = r.split("</tr>");
-	var rows_count = rows.length;
+	var rows_count = rows.length-1;
 	if (list == null) {list = new Array();}
 
 	for(var z=1; z<rows_count; z++) { try {
@@ -170,7 +169,6 @@ GeocachingCom.prototype.parseSearch = function(url, reply, list)
 		} catch(e) {
 			// Possibly is Here or distance is not present
 		}
-		
 		//try {
 		//	listRow['ddattr'] = row.match(/\/ImgGen\/seek\/CacheDir\.ashx\?k=([a-z0-9%]+)/i)[1]
 		//} catch(e) { }
@@ -188,15 +186,14 @@ GeocachingCom.prototype.parseSearch = function(url, reply, list)
 		} catch(e) {
 			listRow['size'] = 'none';
 		}
-
 		// try {
 		//	listRow['gsattr'] = row.match(/\/ImgGen\/seek\/CacheInfo\.ashx\?v=([a-z0-9]+)/i)[1]
 		//} catch(e) { }
 
 		// GUID and disabled
 		try {
-			tmp = row.match(/guid=([a-z0-9\-]+)" class="lnk([^"]*)"><span>([^<]*)<\/span>/i);
-			listRow['guid'] = tmp[1];
+			tmp = row.match(/geocache\/(GC\w{1,5})_[^"]*" class="lnk([^"]*)"><span>([^<]*)<\/span>/i);
+			listRow['gccode'] = tmp[1];
 			listRow['name'] = tmp[3];
 			if(tmp[2].indexOf("Warning") != -1 && tmp[2].indexOf("Strike") != -1) {
 				listRow['archived'] = true;
@@ -217,7 +214,6 @@ GeocachingCom.prototype.parseSearch = function(url, reply, list)
 		} catch(e) {
 			Mojo.error(Object.toJSON(e));
 		}
-
 		if(row.indexOf('images/icons/16/premium_only.png') != -1)
 			listRow['members'] = true;
 		else
@@ -229,8 +225,6 @@ GeocachingCom.prototype.parseSearch = function(url, reply, list)
 		else
 			listRow['maintenance'] = false;
 
-		
-		listRow['gccode'] = row.match(/\|\s+(GC[A-Z0-9]+)/)[1]
 		
 		// Found it flag!
 		if(row.indexOf('images/icons/16/found.png') != -1) {
@@ -247,7 +241,6 @@ GeocachingCom.prototype.parseSearch = function(url, reply, list)
 		} else { 
 			listRow['own'] = false;
 		}
-
 		// Trackables
 		listRow['trackables'] = new Array();
 		try {
@@ -802,7 +795,7 @@ GeocachingCom.prototype.loadCache = function(params, success, logsuccess, failur
 				Geocaching.sendReport('CacheCoords_'+url, reply, e);
 			}
 			
-			if(-1 != reply.search('<img src="/images/icons/16/check.png"')) {
+			if(-1 != reply.search('<img src="/images/logtypes/48/2.png" id="ctl00_ContentBody_GeoNav_logTypeImage" />')) {
 				cache[geocode].found = true;
 			} else {
 				cache[geocode].found = false;
@@ -1027,12 +1020,12 @@ GeocachingCom.prototype.loadCache = function(params, success, logsuccess, failur
 			try {
 				wpBegin = reply.search('<div class="FooterBottom">');
 				if (wpBegin<1) {
-					wpBegin = reply.search('initalLogs = ')-3;
+					wpBegin = reply.search(/\s+initalLogs = \{/)-3;
 				}
 				wpList = reply.substr(wpBegin);
 				wpEnd = wpList.search(';//]]>');
 				wpList = wpList.substr(0, wpEnd);
-				tmp = wpList.match(/\s+initalLogs = (\{.+\});\s+\$/i)[1];
+				tmp = wpList.match(/\s+initalLogs = (\{.+\});\s+[^}]*$/i)[1];
 				tmp = tmp.evalJSON();
 				cache[geocode].logs = this.parseLogs(tmp);
 				if(-1 != reply.search('</strong></p><ul class="OldWarning"><li>') && !cache[geocode].archived && !cache[geocode].disabled) { 
@@ -1048,7 +1041,7 @@ GeocachingCom.prototype.loadCache = function(params, success, logsuccess, failur
 					}
 				}
 			} catch(e) {
-//				Geocaching.sendReport('Logs_'+url, tmp, e);
+				Geocaching.sendReport('Logs_'+url, tmp, e);
 				Mojo.Log.error(Object.toJSON(e));
 			}
 			
