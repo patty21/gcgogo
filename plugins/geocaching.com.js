@@ -907,12 +907,12 @@ GeocachingCom.prototype.loadCache = function(params, success, logsuccess, failur
 			var spoilerImagesCount = 0;
 			cache[geocode].spoilerImages = new Array();
 			try {
-				tmp = reply.match(/<a href="([^"]+)" rel="lightbox" class="lnk"><img class="StatusIcon" src=[^>]+>\s*<span>([^<]+)<\/span><\/a>/ig);
+				tmp = reply.match(/<li><a href="([^"]+)" rel="lightbox">([^<]+)<\/a>/ig);
 				if(tmp.length>0) {
 					spoilerImagesCount = tmp.length;
 					var imgTmp, img;
 					for(var z=0; z<spoilerImagesCount; z++) {
-						imgTmp = tmp[z].match(/<a href="([^"]+)" rel="lightbox" class="lnk"><img class="StatusIcon" src=[^>]+>\s*<span>([^<]+)<\/span><\/a>/i);
+						imgTmp = tmp[z].match(/<li><a href="([^"]+)" rel="lightbox">([^<]+)<\/a>/i);
 						img = {
 							'name': imgTmp[2],
 							'url': imgTmp[1]
@@ -925,7 +925,7 @@ GeocachingCom.prototype.loadCache = function(params, success, logsuccess, failur
 
 			//  Gallery images count
 			try {
-				cache[geocode].galleryImagesCount = Number(reply.match(/href="gallery\.aspx\?[^"]*">\D+(\d+)[^<]+<\/a>/i)[1])
+				cache[geocode].galleryImagesCount = Number(reply.match(/gallery\.aspx\?[^"]*">\D+(\d+)[^<]+<\/a>/i)[1])
 				cache[geocode].galleryImagesCount -= Number(spoilerImagesCount);
 			} catch(e) {
 				cache[geocode].galleryImagesCount = 0;
