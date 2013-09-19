@@ -679,7 +679,7 @@ GeocachingCom.prototype.loadCache = function(params, success, logsuccess, failur
 		'onSuccess': function(r){
 			Geocaching.lastAjaxId = null;
 			delete(Geocaching.ajaxRequests[ajaxId]);
-
+			var wpList, wpEnd, wpItems, wpCount, wp, waypoint;
 			var tmp, len;
 			var reply = r.responseText.replace(/\n/g, " ").replace(/\r/g, "").replace(/\t/g," ");
 			if(!this.checkLogin(reply)) {
@@ -791,8 +791,8 @@ GeocachingCom.prototype.loadCache = function(params, success, logsuccess, failur
 					cache[geocode].latlonorg=tmp['data']['oldLatLngDisplay'];
 				} 
 			} catch(e) {
-				Mojo.Log.error(Object.toJSON(e)+tmp);
-				Geocaching.sendReport('CacheCoords_'+url, reply, e);
+//				Mojo.Log.error(Object.toJSON(e)+tmp);
+//				Geocaching.sendReport('CacheCoords_'+url, reply, e);
 			}
 			
 			if(-1 != reply.search('<img src="/images/logtypes/48/2.png" id="ctl00_ContentBody_GeoNav_logTypeImage" />')) {
@@ -832,9 +832,15 @@ GeocachingCom.prototype.loadCache = function(params, success, logsuccess, failur
 			}
 
 			try {
-				cache[geocode].description = reply.match(/<span id="ctl00_ContentBody_LongDescription">(.*)<\/span>\s*<\/div>\s*<p>\s*<\/p>\s*<p id="ctl00_ContentBody_hints">\s*<strong>[^<]+<\/strong>/i)[1];
+				//no regxp due to too long descriptions
+				var wpBegin = reply.search('<span id="ctl00_ContentBody_LongDescription">');
+				wpList = reply.substr(wpBegin+45);
+				wpEnd = wpList.search(/<\/span>\s*<\/div>\s*<p>\s*<\/p>\s*<p id="ctl00_ContentBody_hints">\s*<strong>[^<]+<\/strong>/i);
+				wpList = wpList.substr(0, wpEnd);
+				cache[geocode].description = wpList;
 			} catch(e) {
 				cache[geocode].description = '';
+				Mojo.Log.error(Object.toJSON(e));
 			}
 
 			// Hidden/Event date - Manipulate for all possible date formats
@@ -934,7 +940,6 @@ GeocachingCom.prototype.loadCache = function(params, success, logsuccess, failur
 			// Waypoints
 			cache[geocode].waypoints = [];
 			var wpBegin = reply.search('<span id="ctl00_ContentBody_WaypointsInfo"');
-			var wpList, wpEnd, wpItems, wpCount, wp, waypoint;
 			if(-1 != wpBegin) {
 				wpList = reply.substr(wpBegin);
 				wpEnd = wpList.search('</table>');
