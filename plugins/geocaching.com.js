@@ -842,6 +842,18 @@ GeocachingCom.prototype.loadCache = function(params, success, logsuccess, failur
 				cache[geocode].description = '';
 				Mojo.Log.error(Object.toJSON(e));
 			}
+			
+			// Try to retrive personal note (PM feature)
+			// <span id="cache_note" style="background-color: transparent;">
+			try {
+				note = reply.match(/<span id="cache_note"[^>]*>([^<]+)<\/span>/i);
+				//Mojo.Log.error('Note' + note);
+				if( note ){
+					cache[geocode].note = note[1];
+				}
+			} catch(e){
+				Mojo.Log.error(Object.toJSON(e));
+			}
 
 			// Hidden/Event date - Manipulate for all possible date formats
 			try {
