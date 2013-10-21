@@ -341,13 +341,10 @@ CacheAssistant.prototype.showCacheDetail = function(geocode) {
 	this.controller.get('cache-latlon').update(Geocaching.toLatLon(cache[this.geocode].latitude,"lat")+"<br>"+Geocaching.toLatLon(cache[this.geocode].longitude,"lon"));
 	this.controller.get('cache-location').update(tmp+cache[this.geocode].location);
 	this.controller.get('cache-description').update(cache[this.geocode].shortdesc != "" ? cache[this.geocode].shortdesc : $L("Tap for full listing"));
-	if( cache[this.geocode].note != undefined ){
-		this.controller.get('cache-note').update( cache[this.geocode].note.replace(/\n/g, '<br />') );
+	if (cache[this.geocode].note!="") {
+		this.controller.get('cache-note').update(cache[this.geocode].note.replace(/\n/g, '<br />'));
 		this.controller.get('cache-note-row').show();
-	} else {
-		this.controller.get('cache-note-row').hide();
 	}
-	
 	try {
 		if (typeof(cache[this.geocode].userdata['gcvote'])!=undefined && cache[this.geocode].userdata['gcvote'].cnt>0) {
 			this.showVote(cache[this.geocode].userdata['gcvote']);

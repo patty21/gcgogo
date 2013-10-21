@@ -203,6 +203,7 @@ var cacheTemplate = {
 	'latlonorg': "",
 	'shortdesc': "",
 	'description': "",
+	'note': "",
 	'disabled': false,
 	'archived': false,
 	'members': false,
