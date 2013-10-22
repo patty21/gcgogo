@@ -342,7 +342,7 @@ CacheAssistant.prototype.showCacheDetail = function(geocode) {
 	this.controller.get('cache-location').update(tmp+cache[this.geocode].location);
 	this.controller.get('cache-description').update(cache[this.geocode].shortdesc != "" ? cache[this.geocode].shortdesc : $L("Tap for full listing"));
 	if (cache[this.geocode].note!="") {
-		this.controller.get('cache-note').update(cache[this.geocode].note.replace(/\n/g, '<br />'));
+		this.controller.get('cache-note').update(cache[this.geocode].note);
 		this.controller.get('cache-note-row').show();
 	}
 	try {

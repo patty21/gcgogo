@@ -846,10 +846,10 @@ GeocachingCom.prototype.loadCache = function(params, success, logsuccess, failur
 			// Try to retrive personal note (PM feature)
 			// <span id="cache_note" style="background-color: transparent;">
 			try {
-				note = reply.match(/<span id="cache_note"[^>]*>\s*([^<]*)\s*<\/span>/i);
+				note = r.responseText.match(/<span id="cache_note"[^>]*>\s*([^<]*)\s*<\/span>/im);
 				Mojo.Log.error('Note' + note);
 				if( note ){
-					cache[geocode].note = note[1];
+					cache[geocode].note = note[1].replace(/\n/g, '<br>');
 				}
 			} catch(e){
 				Mojo.Log.error(Object.toJSON(e));
