@@ -209,28 +209,30 @@ CacheAssistant.prototype.setup = function() {
 		{'label': 'Favourite', 'icon': 'make-vip', 'command': 'favourite'}
 	]};
 	this.commandMenuItem3 = {'label': $L("Post log"), 'icon': 'send', 'command': 'log'} // Preparation for post log
-	this.commandMenuModel = {
-		'items':	[
-			this.commandMenuItem1 = {items: [
-				{'label': $L("More info"), 'icon': 'info', 'command': 'info'},
-//				{'label':'Users note', 'icon':'attach', 'command':'note', 'disabled': true},
-//				{'label': $L("Logs"), 'icon': 'search', 'command': 'logs'},
-				{'label': $L("Compass"), 'iconPath': defaultnavigationIcons['builtin'], 'command': 'compassbuiltin'},
-				{'label': $L("Compass"), 'iconPath': defaultnavigationIcons['mappingtool'], 'command': 'mappingtool'}
-			]},
-			this.commandMenuItem2,
-			this.commandMenuItem3
-		],
-		'visible': false
-	}
+	
 	if( gcGogo.isTouchpad() ){
 		this.commandMenuModel = {
 			'items':	[
 				this.commandMenuItem0 = {'items': [
-					{'label': $L("Back"), 'iconPath': 'images/menu-icon-back.png', 'command': 'goback'}
+					{'label': $L("Back"), 'icon': 'back', 'command': 'goback'}
 				]},
 				this.commandMenuItem1 = {items: [
 					{'label': $L("More info"), 'icon': 'info', 'command': 'info'},
+					{'label': $L("Compass"), 'iconPath': defaultnavigationIcons['mappingtool'], 'command': 'mappingtool'}
+				]},
+				this.commandMenuItem2,
+				this.commandMenuItem3
+			],
+			'visible': false
+		}
+	} else {
+	
+		this.commandMenuModel = {
+			'items':	[
+				this.commandMenuItem1 = {items: [
+					{'label': $L("More info"), 'icon': 'info', 'command': 'info'},
+	//				{'label':'Users note', 'icon':'attach', 'command':'note', 'disabled': true},
+					{'label': $L("Compass"), 'iconPath': defaultnavigationIcons['builtin'], 'command': 'compassbuiltin'},
 					{'label': $L("Compass"), 'iconPath': defaultnavigationIcons['mappingtool'], 'command': 'mappingtool'}
 				]},
 				this.commandMenuItem2,
@@ -1041,7 +1043,7 @@ CacheAssistant.prototype.actionMyPositionFailed = function(event) {
 		height = 200;
 		this.controller.get('cachemap').addClassName("touchpad");
 	}
-	var url = 'http://maps.google.com/maps/api/staticmap?size='+width+'x1'+height+'&sensor=false&mobile=true&format=png';
+	var url = 'http://maps.google.com/maps/api/staticmap?size='+width+'x'+height+'&sensor=false&mobile=true&format=png';
 	
 	if(cache[this.geocode].waypoints.length > 0) {
 		for(var z in cache[this.geocode].waypoints) {
