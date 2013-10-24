@@ -145,7 +145,25 @@ AttributesAssistant.prototype.setup = function() {
 			'items' : attr_list
 		}
 	);
+	if( gcGogo.isTouchpad() ){
+		this.controller.setupWidget(Mojo.Menu.commandMenu, {'menuClass': 'no-fade'},
+			this.commandMenuModel = {'items': [
+				{'label': $L("Back"), 'iconPath': 'images/menu-icon-back.png', 'command': 'goback'}
+			]});
+	}
 };
+
+AttributesAssistant.prototype.handleCommand = function(event) {
+	if(event.type == Mojo.Event.command) {
+		switch(event.command) {
+			case 'goback':
+				this.controller.stageController.popScene();
+			break;
+			default:
+			break;
+		}
+	}
+}
 
 AttributesAssistant.prototype.activate = function(event) {
 };

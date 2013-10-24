@@ -9,6 +9,7 @@
 	"smallicon": "icon32x32.png",
 	"copyright": "&copy; Copyright 2009 - 2011 Patty21 & Tomas Kopecny aka Georgo.",
 	"noWindow":false,
+	"uiRevision": 2,
 	"support": {
 		"url": "http://gcgogo.yz.to/", 
 		"email": {

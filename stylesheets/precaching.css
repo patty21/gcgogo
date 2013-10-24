@@ -224,9 +224,12 @@
 	height:124px;
 }
 .cachemap img {
-	width:320px;
-	height:120px;
+	width:100%;
+	max-height:100%;
 	border:0;
+}
+.cachemap.touchpad {
+	height: 250px;
 }
 .backgroundmap {
 	display: block;
@@ -237,8 +240,8 @@
 	-webkit-palm-mouse-target: ignore;
 }
 .backgroundmap img {
-	width: 320px;
-	height: 480px;  
+	width: 100%;
+	height: 100%;
 	opacity:0.15;
 }
 .map_info {

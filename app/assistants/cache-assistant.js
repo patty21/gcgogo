@@ -208,21 +208,39 @@ CacheAssistant.prototype.setup = function() {
 	this.commandMenuItem2 = {'label': 'Favourite', 'icon': 'make-vip', 'toggleCmd': 'nofavorite', 'items' :[
 		{'label': 'Favourite', 'icon': 'make-vip', 'command': 'favourite'}
 	]};
-	this.controller.setupWidget(Mojo.Menu.commandMenu, {'menuClass': 'no-fade'},
+	this.commandMenuItem3 = {'label': $L("Post log"), 'icon': 'send', 'command': 'log'} // Preparation for post log
+	this.commandMenuModel = {
+		'items':	[
+			this.commandMenuItem1 = {items: [
+				{'label': $L("More info"), 'icon': 'info', 'command': 'info'},
+//				{'label':'Users note', 'icon':'attach', 'command':'note', 'disabled': true},
+//				{'label': $L("Logs"), 'icon': 'search', 'command': 'logs'},
+				{'label': $L("Compass"), 'iconPath': defaultnavigationIcons['builtin'], 'command': 'compassbuiltin'},
+				{'label': $L("Compass"), 'iconPath': defaultnavigationIcons['mappingtool'], 'command': 'mappingtool'}
+			]},
+			this.commandMenuItem2,
+			this.commandMenuItem3
+		],
+		'visible': false
+	}
+	if( gcGogo.isTouchpad() ){
 		this.commandMenuModel = {
 			'items':	[
+				this.commandMenuItem0 = {'items': [
+					{'label': $L("Back"), 'iconPath': 'images/menu-icon-back.png', 'command': 'goback'}
+				]},
 				this.commandMenuItem1 = {items: [
 					{'label': $L("More info"), 'icon': 'info', 'command': 'info'},
-//					{'label':'Users note', 'icon':'attach', 'command':'note', 'disabled': true},
-//					{'label': $L("Logs"), 'icon': 'search', 'command': 'logs'},
-					{'label': $L("Compass"), 'iconPath': defaultnavigationIcons['builtin'], 'command': 'compassbuiltin'},
 					{'label': $L("Compass"), 'iconPath': defaultnavigationIcons['mappingtool'], 'command': 'mappingtool'}
 				]},
 				this.commandMenuItem2,
-				this.commandMenuItem3 = {'label': $L("Post log"), 'icon': 'send', 'command': 'log'} // Preparation for post log
+				this.commandMenuItem3
 			],
 			'visible': false
 		}
+	}
+	this.controller.setupWidget(Mojo.Menu.commandMenu, {'menuClass': 'no-fade'},
+		this.commandMenuModel
 	);
 }
 
@@ -447,7 +465,10 @@ CacheAssistant.prototype.showCacheDetail = function(geocode) {
 			this.commandMenuItem1,
 			this.commandMenuItem2,
 			this.commandMenuItem3
-		]
+		];
+		if( gcGogo.isTouchpad() ){
+			this.commandMenuModel['items'].unshift(this.commandMenuItem0);
+		}
 		this.controller.modelChanged(this.commandMenuModel);
 	}
 
@@ -582,6 +603,9 @@ CacheAssistant.prototype.handleCommand = function(event) {
 						transaction.executeSql('UPDATE "caches" SET "favourite"='+ favourite +' WHERE "gccode"="'+ escape(this.geocode) +'";', []);
 					}).bind(this)
 				);
+			break;
+			case 'goback':
+				this.controller.stageController.popScene();
 			break;
 			default:
 			break;
@@ -956,7 +980,14 @@ CacheAssistant.prototype.actionMyPositionSuccess = function(event) {
 		markerSize = 'small';
 	}
 	var target = '';
-	var url = 'http://maps.google.com/maps/api/staticmap?size=320x120&sensor=false&mobile=true&format=jpg';
+	var width = 320;
+	var height = 120;
+	if( gcGogo.isTouchpad() ){
+		width = Mojo.Environment.DeviceInfo.screenWidth;
+		height = 200;
+		this.controller.get('cachemap').addClassName("touchpad");
+	}
+	var url = 'http://maps.google.com/maps/api/staticmap?size='+width+'x'+height+'&sensor=false&mobile=true&format=jpg';
 	
 	if(distance < 5) {
 		if(cache[this.geocode].waypoints.length > 0) {
@@ -1003,7 +1034,14 @@ CacheAssistant.prototype.actionMyPositionFailed = function(event) {
 	}	
 	
 	var icon = 'http://www.geocaching.com/images/wpttypes/sm/'+ cacheTypesIDs[cache[this.geocode].type] +'.gif';
-	var url = 'http://maps.google.com/maps/api/staticmap?size=320x120&sensor=false&mobile=true&format=png';
+	var width = 320;
+	var height = 120;
+	if( gcGogo.isTouchpad() ){
+		width = Mojo.Environment.DeviceInfo.screenWidth;
+		height = 200;
+		this.controller.get('cachemap').addClassName("touchpad");
+	}
+	var url = 'http://maps.google.com/maps/api/staticmap?size='+width+'x1'+height+'&sensor=false&mobile=true&format=png';
 	
 	if(cache[this.geocode].waypoints.length > 0) {
 		for(var z in cache[this.geocode].waypoints) {

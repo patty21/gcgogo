@@ -267,6 +267,25 @@ SettingsAssistant.prototype.setup = function() {
 	Mojo.Event.listen(this.controller.get('toggle-recalculatedistance'), Mojo.Event.propertyChange, this.actionSave);
 	Mojo.Event.listen(this.controller.get('toggle-go4cache'), Mojo.Event.propertyChange, this.actionSave);
 	Mojo.Event.listen(this.controller.get('toggle-debug'), Mojo.Event.propertyChange, this.actionSave);
+
+	if( gcGogo.isTouchpad() ){
+		this.controller.setupWidget(Mojo.Menu.commandMenu, {'menuClass': 'no-fade'},
+			this.commandMenuModel = {'items': [
+				{'label': $L("Back"), 'iconPath': 'images/menu-icon-back.png', 'command': 'goback'}
+			]});
+	}
+}
+
+SettingsAssistant.prototype.handleCommand = function(event) {
+	if(event.type == Mojo.Event.command) {
+		switch(event.command) {
+			case 'goback':
+				this.controller.stageController.popScene();
+			break;
+			default:
+			break;
+		}
+	}
 }
 
 SettingsAssistant.prototype.activate = function(event) {

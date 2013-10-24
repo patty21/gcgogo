@@ -75,7 +75,26 @@ ImportAssistant.prototype.setup = function() {
 
 	this.cancelImport = this.cancelImport.bind(this);
 	Mojo.Event.listen(this.controller.get('action-cancel'), Mojo.Event.tap, this.cancelImport);
-}
+
+	if( gcGogo.isTouchpad() ){
+		this.controller.setupWidget(Mojo.Menu.commandMenu, {'menuClass': 'no-fade'},
+			this.commandMenuModel = {'items': [
+				{'label': $L("Back"), 'iconPath': 'images/menu-icon-back.png', 'command': 'goback'}
+			]});
+	}
+};
+
+ImportAssistant.prototype.handleCommand = function(event) {
+	if(event.type == Mojo.Event.command) {
+		switch(event.command) {
+			case 'goback':
+				this.controller.stageController.popScene();
+			break;
+			default:
+			break;
+		}
+	}
+};
 
 ImportAssistant.prototype.activate = function(event) {
 }

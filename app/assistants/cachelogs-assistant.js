@@ -18,6 +18,25 @@ CachelogsAssistant.prototype.setup = function() {
 			'items': cache[this.geocode].logs
 		}
 	);
+	
+	if( gcGogo.isTouchpad() ){
+		this.controller.setupWidget(Mojo.Menu.commandMenu, {'menuClass': 'no-fade'},
+			this.commandMenuModel = {'items': [
+				{'label': $L("Back"), 'iconPath': 'images/menu-icon-back.png', 'command': 'goback'}
+			]});
+	}
+}
+
+CachelogsAssistant.prototype.handleCommand = function(event) {
+	if(event.type == Mojo.Event.command) {
+		switch(event.command) {
+			case 'goback':
+				this.controller.stageController.popScene();
+			break;
+			default:
+			break;
+		}
+	}
 }
 
 CachelogsAssistant.prototype.activate = function(event) {

@@ -46,3 +46,13 @@ AppAssistant.prototype.handleLaunch = function(params) {
       this.controller.createStageWithCallback(stageArguments, pushMainScene, "card");
   }
 };
+
+
+
+var gcGogo = {};
+gcGogo.isTouchpad = function(){
+	if(Mojo.Environment.DeviceInfo.modelNameAscii.indexOf("ouch")>-1){ return true; }
+	if(Mojo.Environment.DeviceInfo.screenWidth==1024){ return true; }
+	if(Mojo.Environment.DeviceInfo.screenHeight==1024){ return true; }
+	return false;
+};

@@ -44,19 +44,26 @@ TrackableAssistant.prototype.setup = function() {
 	this.commandMenuItem2 = {'label': 'Favourite', 'icon': 'make-vip', 'toggleCmd': 'nofavorite', 'items' :[
 		{'label': 'Favourite', 'icon': 'make-vip', 'command': 'favourite'}
 	]};
+	this.commandMenuModel = {
+		'items':	[
+			this.commandMenuItem0 = {'items': [
+				{'label': $L("Back"), 'iconPath': 'images/menu-icon-back.png', 'command': 'goback'}
+			]},
+			this.commandMenuItem1 = {items: [
+				{'label': $L("More info"), 'icon': 'info', 'command': 'info'},
+//				{label:'Users note', icon:'attach', command:'note', disabled: true},
+				{'label': $L("Logs"), 'icon': 'search', 'command': 'logs'}
+			]},
+			this.commandMenuItem2,
+			this.commandMenuItem3 = {'label': $L("Post log"), 'icon': 'send', 'command': 'log'} // Preparation for post log
+		],
+		'visible': false
+	}
+	if( ! gcGogo.isTouchpad() ){
+		this.commandMenuModel.items.shift();
+	}
 	this.controller.setupWidget(Mojo.Menu.commandMenu, {'menuClass': 'no-fade'},
-		this.commandMenuModel = {
-			'items':	[
-				this.commandMenuItem1 = {items: [
-					{'label': $L("More info"), 'icon': 'info', 'command': 'info'},
-//					{label:'Users note', icon:'attach', command:'note', disabled: true},
-					{'label': $L("Logs"), 'icon': 'search', 'command': 'logs'}
-				]},
-				this.commandMenuItem2,
-				this.commandMenuItem3 = {'label': $L("Post log"), 'icon': 'send', 'command': 'log'} // Preparation for post log
-			],
-			'visible': false
-		}
+		this.commandMenuModel
 	);
 	
 	if (Geocaching.db != null) {
@@ -172,7 +179,10 @@ TrackableAssistant.prototype.showTrackableDetail = function() {
 			this.commandMenuItem1,
 			this.commandMenuItem2,
 			this.commandMenuItem3
-		]
+		];
+		if( gcGogo.isTouchpad() ){
+			this.commandMenuModel['items'].unshift(this.commandMenuItem0);
+		}
 		this.controller.modelChanged(this.commandMenuModel);
 	}
 	
@@ -230,6 +240,9 @@ TrackableAssistant.prototype.handleCommand = function(event) {
 						transaction.executeSql('UPDATE "trackables" SET "favourite"=? WHERE "tbcode"=?;', [favourite, this.params['tbcode']]);
 					}).bind(this)
 				);
+			break;
+			case 'goback':
+				this.controller.stageController.popScene();
 			break;
 			default:
 			break;

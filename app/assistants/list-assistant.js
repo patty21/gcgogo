@@ -65,6 +65,10 @@ ListAssistant.prototype.setup = function() {
 	this.controller.setupWidget(Mojo.Menu.commandMenu, {'menuClass': 'no-fade'},
 		this.commandMenuModel = {
 			'items':	[
+				( gcGogo.isTouchpad() ? 
+					{'items': [
+						{'label': $L("Back"), 'iconPath': 'images/menu-icon-back.png', 'command': 'goback'}
+					]} : {}),
 				{}, // Empty
 				{'items': [
 					{'label': $L("Show on map"), 'iconPath': defaultnavigationIcons['mappingtool'], 'command': 'mappingtool'}
@@ -392,6 +396,9 @@ ListAssistant.prototype.handleCommand = function(event) {
 						'longitude': this.searchParameters['lon']
 					}
 				);
+			break;
+			case 'goback':
+				this.controller.stageController.popScene();
 			break;
 			default:
 				break;
@@ -882,7 +889,9 @@ ListAssistant.prototype.generateBackgroundMap = function()
 	if(this.backgroundMapGenerated === false)  {
 		this.backgroundMapGenerated = true;
 		var showMap = false;
-		var backgroundMapUrl = 'http://maps.google.com/maps/api/staticmap?size=320x480&sensor=false&mobile=true&format=jpg';	
+		var width = Mojo.Environment.DeviceInfo.screenWidth;
+		var height = Mojo.Environment.DeviceInfo.screenHeight;
+		var backgroundMapUrl = 'http://maps.google.com/maps/api/staticmap?size='+width+'x'+height+'&sensor=false&mobile=true&format=jpg';	
 		var cacheList = this.searchResult.cacheList;
 		var len = cacheList.length;
 		for(var z = 0; z<len; z++) {
@@ -899,6 +908,7 @@ ListAssistant.prototype.generateBackgroundMap = function()
 		try {
 			if (showMap) {
 				this.controller.get('backgroundmap').update(new String('<img src="#{url}" />').interpolate({'url': backgroundMapUrl}));
+				Mojo.Log.error(backgroundMapUrl);
 			}
 		} catch(e) {
 			Mojo.Log.error(Object.toJSON(e));

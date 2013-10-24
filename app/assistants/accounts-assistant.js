@@ -40,7 +40,26 @@ AccountsAssistant.prototype.setup = function() {
 
 	this.addAccountClicked = this.addAccountClicked.bind(this);
 	Mojo.Event.listen(this.controller.get('addaccount-button'), Mojo.Event.tap, this.addAccountClicked);
+	
+	if( gcGogo.isTouchpad() ){
+		this.controller.setupWidget(Mojo.Menu.commandMenu, {'menuClass': 'no-fade'},
+			this.commandMenuModel = {'items': [
+				{'label': $L("Back"), 'iconPath': 'images/menu-icon-back.png', 'command': 'goback'}
+			]});
+	}
 };
+
+AccountsAssistant.prototype.handleCommand = function(event) {
+	if(event.type == Mojo.Event.command) {
+		switch(event.command) {
+			case 'goback':
+				this.controller.stageController.popScene();
+			break;
+			default:
+			break;
+		}
+	}
+}
 
 AccountsAssistant.prototype.activate = function(event) {
 	if (event != undefined) {

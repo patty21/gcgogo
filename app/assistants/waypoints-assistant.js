@@ -118,6 +118,9 @@ WaypointsAssistant.prototype.setup = function() {
 //				]},
 //				this.commandMenuItem2,
 				this.commandMenuItem3 = {items: [
+					(gcGogo.isTouchpad() ?
+						{'label': $L("Back"), 'iconPath': 'images/menu-icon-back.png', 'command': 'goback'}
+						: {}),
 					{'label': $L("Add"), 'icon': 'new', 'command': 'addwp'}, // Add a WP
 					{'label': $L("WP"), 'iconPath': 'images/icon-projection.png' , 'command': 'wpproj'} // WP Projection
 					]}
@@ -136,7 +139,7 @@ WaypointsAssistant.prototype.setup = function() {
 	this.handleDeleteWaypoint = this.handleDeleteWaypoint.bind(this);
 	Mojo.Event.listen(this.controller.get('waypoints-list'),Mojo.Event.listDelete, this.handleDeleteWaypoint);
 
-}
+};
 
 WaypointsAssistant.prototype.activate = function(event) {
 	try{
@@ -288,6 +291,9 @@ WaypointsAssistant.prototype.handleCommand = function(event) {
 			break;
 		case "wpproj":
 			this.controller.stageController.pushScene('wpprojection', this.geocode,this.wpts);
+		break;
+		case 'goback':
+			this.controller.stageController.popScene();
 		break;
 		}
 	}
