@@ -110,16 +110,9 @@ WaypointsAssistant.prototype.setup = function() {
 	this.controller.setupWidget(Mojo.Menu.commandMenu, {'menuClass': 'no-fade'},
 		this.commandMenuModel = {
 			'items':	[
-//				this.commandMenuItem1 = {items: [
-//					{'label': $L("More info"), 'icon': 'info', 'command': 'info'},
-//					{'label':'Users note', 'icon':'attach', 'command':'note', 'disabled': true},
-//					{'label': $L("Logs"), 'icon': 'search', 'command': 'logs'},
-//					{'label': $L("Compass"), 'iconPath': defaultnavigationIcons[Geocaching.settings['defaultnavigation']], 'command': 'compass'}
-//				]},
-//				this.commandMenuItem2,
 				this.commandMenuItem3 = {items: [
 					(gcGogo.isTouchpad() ?
-						{'label': $L("Back"), 'iconPath': 'images/menu-icon-back.png', 'command': 'goback'}
+						{'label': $L("Back"), 'icon': 'back', 'command': 'goback'}
 						: {}),
 					{'label': $L("Add"), 'icon': 'new', 'command': 'addwp'}, // Add a WP
 					{'label': $L("WP"), 'iconPath': 'images/icon-projection.png' , 'command': 'wpproj'} // WP Projection
@@ -133,9 +126,7 @@ WaypointsAssistant.prototype.setup = function() {
 	this.handleWaypointListTap = this.handleWaypointListTap.bindAsEventListener(this);
 	Mojo.Event.listen(this.controller.get('waypoints-list'), Mojo.Event.listTap, this.handleWaypointListTap);
 	
-//	this.handleWaypointListAdd = this.handleWaypointListAdd.bind(this);
-//	Mojo.Event.listen(this.controller.get('waypoints-list'),Mojo.Event.listAdd, this.handleWaypointListAdd);
-	
+
 	this.handleDeleteWaypoint = this.handleDeleteWaypoint.bind(this);
 	Mojo.Event.listen(this.controller.get('waypoints-list'),Mojo.Event.listDelete, this.handleDeleteWaypoint);
 

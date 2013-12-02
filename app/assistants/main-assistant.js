@@ -648,45 +648,18 @@ MainAssistant.prototype.setup = function() {
 		);
 	}
 	
-	
+
+
+	if (gcGogo.isTouchpad()) { // No compass on touchpad
+		this.controller.get('action-button-compass').hide();
+		this.controller.get('action-button-compass-tp').show();
+	}
 
 	if(typeof(Geocaching.login['uid']) != 'undefined' && Geocaching.login['uid'] != null) {
 		this.controller.get('statsimg').update('<img src="http://img.geocaching.com/stats/img.aspx?txt=Your+statistics&uid='+ Geocaching.login['uid'] +'" />');
 	}
 	
-	
-/*
-	var ts = Math.round(new Date().getTime() / 1000);
-	if(ts > 1263510000) { // January, 15th, 2010
-		var ExpireDialogAssistant = Class.create({
-			initialize: function(sceneAssistant) {
-				this.sceneAssistant = sceneAssistant;
-				this.controller = sceneAssistant.controller;
-			},
 
-			setup : function(widget) {
-				this.widget = widget;
-				this.controller.setupWidget('expire-dialog-close', {},
-					{
-						label: $L("Close"),
-						class: "palm-button primary",
-						disabled: false
-					}
-				);
-				this.controller.get('expire-dialog-close').addEventListener(Mojo.Event.tap, this.handleClose.bindAsEventListener(this));
-			},
-
-			handleClose: function() {
-				this.widget.mojo.close();
-			}
-		});
-
-		var dialog = this.controller.showDialog({
-			template: 'main/expire-dialog',
-			assistant: new ExpireDialogAssistant(this)
-		});
-	}
-*/
 }
 
 MainAssistant.prototype.activate = function(event) {
@@ -769,7 +742,7 @@ MainAssistant.prototype.keyDown = function(event) {
 };
 
 MainAssistant.prototype.showTip = function() {
-	var showTipRand = Math.floor(Math.random()*3+1);
+	var showTipRand = Math.floor(Math.random()*10+1);
 	
 	if(showTipRand == 3) {
 		// User tips

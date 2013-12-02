@@ -97,8 +97,13 @@ OfflineAssistant.prototype.setup = function() {
 			}
 		}
 	}.bind(this), function () {});
-	
-	
+
+	if( gcGogo.isTouchpad() ){
+		this.controller.setupWidget(Mojo.Menu.commandMenu, {'menuClass': 'no-fade'},
+			this.commandMenuModel = {'items': [
+				{'label': $L("Back"), 'icon': 'back', 'command': 'goback'}
+			]});
+	}
 }
 
 
@@ -331,4 +336,16 @@ OfflineAssistant.prototype.showPopup = function(event, title, message, onChoose)
 		'message': message,
 		'choices':[ {'label':$L("Close"), 'value':'close', 'type':'negative'} ]
 	});
+}
+
+OfflineAssistant.prototype.handleCommand = function(event) {
+	if(event.type == Mojo.Event.command) {
+		switch(event.command) {
+			case 'goback':
+				this.controller.stageController.popScene();
+			break;
+			default:
+			break;
+		}
+	}
 }

@@ -211,35 +211,27 @@ CacheAssistant.prototype.setup = function() {
 	this.commandMenuItem3 = {'label': $L("Post log"), 'icon': 'send', 'command': 'log'} // Preparation for post log
 	
 	if( gcGogo.isTouchpad() ){
-		this.commandMenuModel = {
-			'items':	[
-				this.commandMenuItem0 = {'items': [
-					{'label': $L("Back"), 'icon': 'back', 'command': 'goback'}
-				]},
-				this.commandMenuItem1 = {items: [
+		this.commandMenuItem1 = {items: [
+					{'label': $L("Back"), 'icon': 'back', 'command': 'goback'},
 					{'label': $L("More info"), 'icon': 'info', 'command': 'info'},
 					{'label': $L("Compass"), 'iconPath': defaultnavigationIcons['mappingtool'], 'command': 'mappingtool'}
-				]},
-				this.commandMenuItem2,
-				this.commandMenuItem3
-			],
-			'visible': false
-		}
+				]};
 	} else {
-	
-		this.commandMenuModel = {
-			'items':	[
-				this.commandMenuItem1 = {items: [
+		this.commandMenuItem1 = {items: [
 					{'label': $L("More info"), 'icon': 'info', 'command': 'info'},
 	//				{'label':'Users note', 'icon':'attach', 'command':'note', 'disabled': true},
 					{'label': $L("Compass"), 'iconPath': defaultnavigationIcons['builtin'], 'command': 'compassbuiltin'},
 					{'label': $L("Compass"), 'iconPath': defaultnavigationIcons['mappingtool'], 'command': 'mappingtool'}
-				]},
-				this.commandMenuItem2,
-				this.commandMenuItem3
-			],
-			'visible': false
-		}
+				]};
+	}
+		
+	this.commandMenuModel = {
+			'items':	[
+			this.commandMenuItem1,
+			this.commandMenuItem2,
+			this.commandMenuItem3
+		],
+		'visible': false
 	}
 	this.controller.setupWidget(Mojo.Menu.commandMenu, {'menuClass': 'no-fade'},
 		this.commandMenuModel
@@ -468,9 +460,6 @@ CacheAssistant.prototype.showCacheDetail = function(geocode) {
 			this.commandMenuItem2,
 			this.commandMenuItem3
 		];
-		if( gcGogo.isTouchpad() ){
-			this.commandMenuModel['items'].unshift(this.commandMenuItem0);
-		}
 		this.controller.modelChanged(this.commandMenuModel);
 	}
 

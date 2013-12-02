@@ -72,6 +72,13 @@ LoginAssistant.prototype.setup = function() {
 
 	this.registerClicked = this.registerClicked.bind(this);
 	Mojo.Event.listen(this.controller.get('register-button'), Mojo.Event.tap, this.registerClicked);
+	
+	if( gcGogo.isTouchpad() ){
+		this.controller.setupWidget(Mojo.Menu.commandMenu, {'menuClass': 'no-fade'},
+			this.commandMenuModel = {'items': [
+				{'label': $L("Back"), 'icon': 'back', 'command': 'goback'}
+			]});
+	}
 }
 
 LoginAssistant.prototype.activate = function(event) {
@@ -174,4 +181,16 @@ LoginAssistant.prototype.registerClicked = function(event) {
 			}
 		}
 	});
+}
+
+LoginAssistant.prototype.handleCommand = function(event) {
+	if(event.type == Mojo.Event.command) {
+		switch(event.command) {
+			case 'goback':
+				this.controller.stageController.popScene();
+			break;
+			default:
+			break;
+		}
+	}
 }

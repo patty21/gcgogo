@@ -6,7 +6,10 @@ SpoilerimagesAssistant.prototype.setup = function() {
 	this.controller.get('icon').innerHTML = '<img class="gc-icon" src="images/'+ cacheTypes[cache[this.geocode].type] +'.gif" /> ';
 	this.controller.get('icon').className = 'icon img';
 	this.controller.get('title').update(this.geocode);
-
+/*	var spimg=cache[this.geocode].spoilerImages;
+	for (var z=0;z<spimg.length; z++) {
+		spimg[z]['width']=Mojo.Environment.DeviceInfo.screenWidth;
+	}*/
 	this.controller.setupWidget('spoilerImages',
 		{
 			'itemTemplate': 'spoilerimages/spoilerimages-list-item',
@@ -25,7 +28,7 @@ SpoilerimagesAssistant.prototype.setup = function() {
 	if( gcGogo.isTouchpad() ){
 		this.controller.setupWidget(Mojo.Menu.commandMenu, {'menuClass': 'no-fade'},
 			this.commandMenuModel = {'items': [
-				{'label': $L("Back"), 'iconPath': 'images/menu-icon-back.png', 'command': 'goback'}
+				{'label': $L("Back"), 'icon': 'back', 'command': 'goback'}
 			]});
 	}
 };

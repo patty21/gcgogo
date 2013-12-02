@@ -60,22 +60,18 @@ ListAssistant.prototype.setup = function() {
 		]
 	};
 	this.controller.setupWidget(Mojo.Menu.appMenu, {'omitDefaultItems': true}, this.appMenuModel);
-	var vis = false;
-	if (this.searchMethod == 'coords' || this.searchMethod == 'favourite') { vis = true; }
 	this.controller.setupWidget(Mojo.Menu.commandMenu, {'menuClass': 'no-fade'},
 		this.commandMenuModel = {
 			'items':	[
 				( gcGogo.isTouchpad() ? 
 					{'items': [
-						{'label': $L("Back"), 'iconPath': 'images/menu-icon-back.png', 'command': 'goback'}
+						{'label': $L("Back"), 'icon': 'back', 'command': 'goback'}
 					]} : {}),
-				{}, // Empty
+				((this.searchMethod == 'coords' || this.searchMethod == 'favourite')?
 				{'items': [
 					{'label': $L("Show on map"), 'iconPath': defaultnavigationIcons['mappingtool'], 'command': 'mappingtool'}
-				]}
-			],
-			'visible': vis
-		}
+				]} : {})
+			]}
 	);
 	
 	/* add event handlers to listen to events from widgets */

@@ -75,6 +75,13 @@ WpprojectionAssistant.prototype.setup = function() {
 	this.actionSubmitClicked = this.actionSubmitClicked.bind(this);
 	Mojo.Event.listen(this.controller.get('submit'), Mojo.Event.tap, this.actionSubmitClicked);
 	
+	if( gcGogo.isTouchpad() ){
+		this.controller.setupWidget(Mojo.Menu.commandMenu, {'menuClass': 'no-fade'},
+			this.commandMenuModel = {'items': [
+				{'label': $L("Back"), 'icon': 'back', 'command': 'goback'}
+			]});
+	}
+	
 }
 
 WpprojectionAssistant.prototype.cleanup = function(event) {
@@ -127,4 +134,17 @@ WpprojectionAssistant.prototype.actionSubmitClicked = function(event) {
 	var result = Geocaching.simpleProjection(lat,lon,angle,dist,unit);
 	result['wpname'] = wpname;
 	this.controller.stageController.popScene(result);
+}
+
+
+WpprojectionAssistant.prototype.handleCommand = function(event) {
+	if(event.type == Mojo.Event.command) {
+		switch(event.command) {
+			case 'goback':
+				this.controller.stageController.popScene();
+			break;
+			default:
+			break;
+		}
+	}
 }

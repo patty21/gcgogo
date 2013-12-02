@@ -271,7 +271,7 @@ SettingsAssistant.prototype.setup = function() {
 	if( gcGogo.isTouchpad() ){
 		this.controller.setupWidget(Mojo.Menu.commandMenu, {'menuClass': 'no-fade'},
 			this.commandMenuModel = {'items': [
-				{'label': $L("Back"), 'iconPath': 'images/menu-icon-back.png', 'command': 'goback'}
+				{'label': $L("Back"), 'icon': 'back', 'command': 'goback'}
 			]});
 	}
 }

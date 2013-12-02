@@ -44,23 +44,22 @@ TrackableAssistant.prototype.setup = function() {
 	this.commandMenuItem2 = {'label': 'Favourite', 'icon': 'make-vip', 'toggleCmd': 'nofavorite', 'items' :[
 		{'label': 'Favourite', 'icon': 'make-vip', 'command': 'favourite'}
 	]};
-	this.commandMenuModel = {
-		'items':	[
-			this.commandMenuItem0 = {'items': [
-				{'label': $L("Back"), 'iconPath': 'images/menu-icon-back.png', 'command': 'goback'}
-			]},
-			this.commandMenuItem1 = {items: [
+	this.commandMenuItem1 = {items: [
+				{'label': $L("Back"), 'icon': 'back', 'command': 'goback'},
 				{'label': $L("More info"), 'icon': 'info', 'command': 'info'},
 //				{label:'Users note', icon:'attach', command:'note', disabled: true},
 				{'label': $L("Logs"), 'icon': 'search', 'command': 'logs'}
-			]},
+	]};
+	if( ! gcGogo.isTouchpad() ){
+		this.commandMenuItem1.items.shift();
+	}
+	this.commandMenuModel = {
+		'items':	[
+			this.commandMenuItem1,
 			this.commandMenuItem2,
 			this.commandMenuItem3 = {'label': $L("Post log"), 'icon': 'send', 'command': 'log'} // Preparation for post log
 		],
 		'visible': false
-	}
-	if( ! gcGogo.isTouchpad() ){
-		this.commandMenuModel.items.shift();
 	}
 	this.controller.setupWidget(Mojo.Menu.commandMenu, {'menuClass': 'no-fade'},
 		this.commandMenuModel
@@ -154,7 +153,7 @@ TrackableAssistant.prototype.showTrackableDetail = function() {
 		if(trackable[this.params['tbcode']].updated < tsExpired) {
 			this.controller.get('cache-title').innerHTML += ' <img src="images/outdated.png" />';
 		}
-} catch(e) { }
+	} catch(e) { }
 
 	this.controller.get('trackable-owner').update(trackable[this.params['tbcode']].owner);
 	this.controller.get('trackable-released').update(trackable[this.params['tbcode']].released);
@@ -164,7 +163,7 @@ TrackableAssistant.prototype.showTrackableDetail = function() {
 	this.controller.get('trackable-goal').update(trackable[this.params['tbcode']].goal);
 
 	if(trackable[this.params['tbcode']].image) {
-		this.controller.get('trackable-image').update('<img src="'+ trackable[this.params['tbcode']].image +'" />');
+		this.controller.get('trackable-image').update('<img src="'+ trackable[this.params['tbcode']].image +'" style="max-width:100%" />');
 	} else {
 		this.controller.get('trackable-image').update($L("No images"));
 	}

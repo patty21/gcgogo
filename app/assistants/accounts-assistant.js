@@ -44,22 +44,10 @@ AccountsAssistant.prototype.setup = function() {
 	if( gcGogo.isTouchpad() ){
 		this.controller.setupWidget(Mojo.Menu.commandMenu, {'menuClass': 'no-fade'},
 			this.commandMenuModel = {'items': [
-				{'label': $L("Back"), 'iconPath': 'images/menu-icon-back.png', 'command': 'goback'}
+				{'label': $L("Back"), 'icon': 'back', 'command': 'goback'}
 			]});
 	}
 };
-
-AccountsAssistant.prototype.handleCommand = function(event) {
-	if(event.type == Mojo.Event.command) {
-		switch(event.command) {
-			case 'goback':
-				this.controller.stageController.popScene();
-			break;
-			default:
-			break;
-		}
-	}
-}
 
 AccountsAssistant.prototype.activate = function(event) {
 	if (event != undefined) {
@@ -114,3 +102,15 @@ AccountsAssistant.prototype.handleAccountsListTap = function(event) {
 		}
 	}
 };
+
+AccountsAssistant.prototype.handleCommand = function(event) {
+	if(event.type == Mojo.Event.command) {
+		switch(event.command) {
+			case 'goback':
+				this.controller.stageController.popScene();
+			break;
+			default:
+			break;
+		}
+	}
+}
