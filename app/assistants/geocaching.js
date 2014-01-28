@@ -287,7 +287,7 @@ var Geocaching = {
 		'units': 'metric',
 		'detectunits': true,
 		'cachetype': cacheIDs['all'],
-		'defaultnavigation': 'builtin',
+		'defaultnavigation': 'mappingtool',
 		'autoclean': true,
 		'recalculatedistance': false,
 		'theme': 'palm-default',
