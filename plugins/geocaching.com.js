@@ -150,6 +150,7 @@ GeocachingCom.prototype.parseSearch = function(url, reply, list)
 	if (list == null) {list = new Array();}
 
 	for(var z=1; z<rows_count; z++) { try {
+		Mojo.Log.error(z);
 		var row = rows[z];
 		var listRow = {}
 		var tmp;
@@ -159,7 +160,8 @@ GeocachingCom.prototype.parseSearch = function(url, reply, list)
 		}
 
 		// Cache type
-		listRow['type'] = row.match(/<img src="(http:\/\/([\-0-9\.a-z\/]*)?www\.geocaching\.com)?\/images\/wpttypes\/[^.]+\.gif" alt="([^"]+)" title="([^"]+)" class="SearchResultsWptType"/i)[3]
+		listRow['type'] = row.match(/<img src="(http:\/\/([\-0-9\.a-z\/]*)?www\.geocaching\.com)?\/images\/wpttypes\/[^.]+\.gif" alt="([^"]+)" title="([^"]+)" class="SearchResultsWptType"/i)[3];
+		if (listRow['type']=='Earthcache') listRow['type']='EarthCache';
 		
 		// Direction and distance (not in all lists)
 		try {
@@ -190,9 +192,9 @@ GeocachingCom.prototype.parseSearch = function(url, reply, list)
 		//	listRow['gsattr'] = row.match(/\/ImgGen\/seek\/CacheInfo\.ashx\?v=([a-z0-9]+)/i)[1]
 		//} catch(e) { }
 
-		// GUID and disabled
+		// GUID and disabled		
 		try {
-			tmp = row.match(/geocache\/(GC\w{1,5})_[^"]*" class="lnk([^"]*)"><span>([^<]*)<\/span>/i);
+			tmp = row.match(/geocache\/(GC\w{1,5})[^"]*" class="lnk([^"]*)"><span>([^<]*)<\/span>/i);
 			listRow['gccode'] = tmp[1];
 			listRow['name'] = tmp[3];
 			if(tmp[2].indexOf("Warning") != -1 && tmp[2].indexOf("Strike") != -1) {
@@ -214,6 +216,7 @@ GeocachingCom.prototype.parseSearch = function(url, reply, list)
 		} catch(e) {
 			Mojo.error(Object.toJSON(e));
 		}
+		
 		if(row.indexOf('images/icons/16/premium_only.png') != -1)
 			listRow['members'] = true;
 		else
@@ -757,7 +760,7 @@ GeocachingCom.prototype.loadCache = function(params, success, logsuccess, failur
 				/* Cache name */
 				cache[geocode].cacheid = reply.match(/(http:\/\/([\-0-9\.a-z\/]*)?www\.geocaching\.com)?\/seek\/log\.aspx\?ID=(\d+)/i)[3];
 				cache[geocode].name = reply.match(/<span id="ctl00_ContentBody_CacheName">(.+)<\/span>\s*<\/h2>\s*<div class="minorCacheDetails Clear">/)[1];
-				cache[geocode].type = reply.match(/<img src="(http:\/\/([\-0-9\.a-z\/]*)?www\.geocaching\.com)?\/images\/WptTypes\/\d+.gif" ALT="([^"]+)"/i)[3]
+				cache[geocode].type = reply.match(/<img src="(http:\/\/([\-0-9\.a-z\/]*)?www\.geocaching\.com)?\/images\/WptTypes\/\d+.gif" ALT="([^"]+)"/i)[3];
 				cache[geocode].owner = reply.match(/<div id="ctl00_ContentBody_mcd1">[^<]*<a href="[^"]+">([^<]+)<\/a>/i)[1];
 				tmp = reply.match(/<img src="(http:\/\/([\-0-9\.a-z\/]*)?www\.geocaching\.com)?\/images\/icons\/container\/([a-z_]+).gif" alt="Size:/i)[3];
 				cache[geocode].size = cacheSizeNo[tmp];
