@@ -40,7 +40,7 @@ var cacheTypes = {
 	'Letterbox Hybrid': 'letterbox',
 	'Event Cache': 'event',
 	'Mega-Event Cache': 'mega-event',
-	'Earthcache': 'earth',
+	'EarthCache': 'earth',
 	'Cache In Trash Out Event': 'cito',
 	'Webcam Cache': 'webcam',
 	'Virtual Cache': 'virtual-cache',
