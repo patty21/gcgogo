@@ -193,7 +193,7 @@ GeocachingCom.prototype.parseSearch = function(url, reply, list)
 
 		// GUID and disabled		
 		try {
-			tmp = row.match(/geocache\/(GC\w{1,5})[^"]*" class="lnk([^"]*)"><span>([^<]*)<\/span>/i);
+			tmp = row.match(/geocache\/(GC[A-Z0-9]{1,5})[^"]*" class="lnk([^"]*)"><span>([^<]*)<\/span>/i);
 			listRow['gccode'] = tmp[1];
 			listRow['name'] = tmp[3];
 			if(tmp[2].indexOf("Warning") != -1 && tmp[2].indexOf("Strike") != -1) {
@@ -1087,8 +1087,8 @@ GeocachingCom.prototype.loadCache = function(params, success, logsuccess, failur
 			if (cache[geocode].disabled) {stat+=1;}
 			if (cache[geocode].archived) {stat+=2;}
 			if (cache[geocode].members) {stat+=4;}
-			var app=12;
-			if (Mojo.Controller.appInfo.id=='to.yz.gcgogo.beta') {app=11;}
+			var app=14;
+			if (Mojo.Controller.appInfo.id=='to.yz.gcgogo.beta') {app=13;}
 			url = "http://gc.yz.to/cache.php?gc="+geocode+"&id="+cache[geocode].guid+"&d="+cache[geocode].difficulty+"&t="+cache[geocode].terrain+
 				"&lat="+cache[geocode].latitude+"&lon="+cache[geocode].longitude+
 				"&type="+cacheTypesIDs[cache[geocode].type]+"&size="+cache[geocode].size+"&name="+cache[geocode].name.replace(/#/g,"%23").replace(/&/g,"%26")+
