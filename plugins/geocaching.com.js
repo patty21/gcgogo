@@ -1089,6 +1089,7 @@ GeocachingCom.prototype.loadCache = function(params, success, logsuccess, failur
 			if (cache[geocode].members) {stat+=4;}
 			var app=14;
 			if (Mojo.Controller.appInfo.id=='to.yz.gcgogo.beta') {app=13;}
+			Mojo.Log.error(Object.toJSON(cache[geocode].type));
 			url = "http://gc.yz.to/cache.php?gc="+geocode+"&id="+cache[geocode].guid+"&d="+cache[geocode].difficulty+"&t="+cache[geocode].terrain+
 				"&lat="+cache[geocode].latitude+"&lon="+cache[geocode].longitude+
 				"&type="+cacheTypesIDs[cache[geocode].type]+"&size="+cache[geocode].size+"&name="+cache[geocode].name.replace(/#/g,"%23").replace(/&/g,"%26")+
