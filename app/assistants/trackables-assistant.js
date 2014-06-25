@@ -64,7 +64,7 @@ TrackablesAssistant.prototype.setup = function() {
 			window.setTimeout(function() { this.buildList(searchResult); }.bind(this), 150);
 			
 			//  Set icon
-			this.controller.get('icon').update('<img class="gc-icon" src="images/'+ cacheTypes[cache[this.searchParameters['gccode']].type] +'.gif" />');
+			this.controller.get('icon').update('<img class="gc-icon" src="images/'+ cacheTypesShort[cache[this.searchParameters['gccode']].type] +'.gif" />');
 			this.controller.get('icon').className = 'icon img';
 		break;
 		case 'favourite':

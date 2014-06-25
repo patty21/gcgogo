@@ -118,11 +118,11 @@ GeocachingCom.prototype.parseSearch = function(url, reply, list)
 		viewstate.push(viewstate1);
 	} catch(e) { }
 	
-/*	try {
+	try {
 		viewstate2 = reply.match(/id="__VIEWSTATE2" value="([^"]+)"/)[1]
 		viewstate.push(viewstate2);
 	} catch(e) { }
-
+/*
 	try {
 		viewstate3 = reply.match(/id="__VIEWSTATE3" value="([^"]+)"/)[1]
 		viewstate.push(viewstate3);
@@ -2044,8 +2044,8 @@ GeocachingCom.prototype.postLogSubmit = function(params, success, failure){
 			delete(Geocaching.ajaxRequests[ajaxId]);
 
 			var reply = r.responseText.replace(/\n/g, " ").replace(/\r/g, "").replace(/\t/g," ");
-			Geocaching.sendReport('LogSubmit_'+url, reply,"");
 			if(-1 != reply.search('An Error Has Occurred')) {
+				Geocaching.sendReport('LogSubmit_'+url, reply,"");
 				failure($L("Error occured in log posting."));
 				return false;
 			}
