@@ -31,38 +31,14 @@ var cacheSizeNo = {
 
 
 
-
-
-var cacheTypes = {
-	'Traditional Cache': 'traditional',
-	'Multi-cache': 'multi',
-	'Unknown Cache': 'mystery',
-	'Letterbox Hybrid': 'letterbox',
-	'Event Cache': 'event',
-	'Mega-Event Cache': 'mega-event',
-	'Giga-Event Cache': 'giga-event',
-	'EarthCache': 'earth',
-	'Cache In Trash Out Event': 'cito',
-	'Webcam Cache': 'webcam',
-	'Virtual Cache': 'virtual-cache',
-	'Wherigo Cache': 'whereigo',
-	'Waypoint': 'waypoint',
-	'Geocache': 'geocache',
-	'Groundspeak HQ': 'groundspeakhq',
-	'Project APE Cache': 'projectape',
-	'Lost and Found Event Cache': 'lostfoundevent',
-	'Groundspeak Lost and Found Celebration': 'lostfoundcelebration',
-	'GPS Adventures Exhibit': 'gpsadventures'
-};
-
-var cacheTypesNumbers = {
+var cacheTypesShort = {
 	'2': 'traditional',
 	'3': 'multi',
 	'8': 'mystery',
 	'5': 'letterbox',
 	'6': 'event',
 	'453': 'mega-event', 
-	'7005': 'mega-event', 
+	'7005': 'giga-event', 
 	'137': 'earth',
 	'13': 'cito',
 	'11': 'webcam',
@@ -72,47 +48,47 @@ var cacheTypesNumbers = {
 	'9': 'projectape',
 	'3653': 'lostfoundevent',
 	'3774': 'lostfoundcelebration',
-	'maze': 'gpsadventures'
+	'1304': 'gpsadventures'
 };
 
-var cacheTypesIDs = {
-	'Traditional Cache': '2',
-	'Multi-cache': '3',
-	'Unknown Cache': '8',
-	'Letterbox Hybrid': '5',
-	'Event Cache': '6',
-	'Mega-Event Cache': '453',
-	'Giga-Event Cache': '7005',
-	'EarthCache': '137',
-	'Cache In Trash Out Event': '13',
-	'Webcam Cache': '11',
-	'Virtual Cache': '4',
-	'Wherigo Cache': '1858',
-	'Groundspeak HQ': '3773',
-	'Project APE Cache': '9',
-	'Lost and Found Event Cache': '3653',
-	'Groundspeak Lost and Found Celebration': '3774',
-	'GPS Adventures Exhibit': 'maze'
+var cacheTypes = {
+	'2':	'Traditional Cache',
+	'3': 	'Multi-cache',
+	'8': 	'Unknown Cache',
+	'5':	'Letterbox Hybrid',
+	'6':	'Event Cache',
+	'453':	'Mega-Event Cache',
+	'7005':	'Giga-Event Cache',
+	'137':	'EarthCache',
+	'13':	'Cache In Trash Out Event',
+	'11':	'Webcam Cache',
+	'4':	'Virtual Cache',
+	'1858':	'Wherigo Cache',
+	'3773':	'Groundspeak HQ',
+	'9':	'Project APE Cache',
+	'3653':	'Lost and Found Event Cache',
+	'3774':	'Groundspeak Lost and Found Celebration',
+	'1304':	'GPS Adventures Exhibit'
 };
 
 var cacheTypesColors = {
-	'Traditional Cache': 'green',
-	'Multi-cache': 'yellow',
-	'Unknown Cache': 'blue',
-	'Letterbox Hybrid': 'gray',
-	'Event Cache': 'white',
-	'Mega-Event Cache': 'white',
-	'Giga-Event Cache': 'white',
-	'EarthCache': 'orange',
-	'Cache In Trash Out Event': 'orange',
-	'Webcam Cache': 'gray',
-	'Virtual Cache': 'gray',
-	'Wherigo Cache': 'blue',
-	'Groundspeak HQ': 'green',
-	'Project APE Cache': 'green',
-	'Lost and Found Event Cache': 'green',
-	'Groundspeak Lost and Found Celebration': 'white',
-	'GPS Adventures Exhibit': 'white'
+	'2':	'green',
+	'3':	'yellow',
+	'8':	'blue',
+	'5':	'gray',
+	'6':	'white',
+	'453':	'white',
+	'7005':	'white',
+	'137':	'orange',
+	'13':	'orange',
+	'11':	'gray',
+	'4':	'gray',
+	'1858':	'blue',
+	'3773':	'green',
+	'9':	'green',
+	'3653':	'green',
+	'3774':	'white',
+	'1304':	'white'
 };
 
 var cacheIDs = {
@@ -123,7 +99,7 @@ var cacheIDs = {
 	'letterbox': '4bdd8fb2-d7bc-453f-a9c5-968563b15d24',
 	'event': '69eb8534-b718-4b35-ae3c-a856a55b0874',
 	'mega-event': '69eb8535-b718-4b35-ae3c-a856a55b0874',
-	'giga-event': 'a758f253-4f6c-4d07-88c5-bbf3776a4456',
+	'giga-event': '51420629-5739-4945-8bdd-ccfd434c0ead',
 	'earth': 'c66f5cf3-9523-4549-b8dd-759cd2f18db8',
 	'cito': '57150806-bc1a-42d6-9cf0-538d171a2d22',
 	'webcam': '31d2ae3c-c358-4b5f-8dcd-2185bf472d3d',
@@ -382,7 +358,7 @@ Geocaching.format4Maptool = function(waypoints) {
 		switch(_waypoint['wptType'])
 		{
 			case 'cache':
-				item['image'] = 'http://www.geocaching.com/images/WptTypes/sm/'+cacheTypesIDs[_waypoint['type']]+'.gif';
+				item['image'] = 'http://www.geocaching.com/images/WptTypes/sm/'+_waypoint['type']+'.gif';
 			break;
 			case 'waypoint':
 				item['image'] = 'http://www.geocaching.com/images/wpttypes/sm/'+_waypoint['type']+'.jpg';

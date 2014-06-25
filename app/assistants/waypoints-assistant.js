@@ -4,7 +4,7 @@ function WaypointsAssistant(gccode) {
 
 WaypointsAssistant.prototype.setup = function() {
 	this.controller.get('title').update($L("#{geocode}'s waypoints").interpolate({'geocode': this.geocode}));
-	this.controller.get('icon').update('<img class="gc-icon" src="images/'+ cacheTypes[cache[this.geocode].type] +'.gif" />');
+	this.controller.get('icon').update('<img class="gc-icon" src="images/'+ cacheTypesShort[cache[this.geocode].type] +'.gif" />');
 	this.controller.get('icon').className = 'icon img';
 
 	var items = [];

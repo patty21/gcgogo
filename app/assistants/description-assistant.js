@@ -3,7 +3,7 @@ function DescriptionAssistant(gccode) {
 }
 
 DescriptionAssistant.prototype.setup = function() {
-	this.controller.get('icon').innerHTML = '<img class="gc-icon" src="images/'+ cacheTypes[cache[this.geocode].type] +'.gif" /> ';
+	this.controller.get('icon').innerHTML = '<img class="gc-icon" src="images/'+ cacheTypesShort[cache[this.geocode].type] +'.gif" /> ';
 	this.controller.get('icon').className = 'icon img';
 	this.controller.get('title').update(this.geocode);
 	this.controller.get('full-description').innerHTML = cache[this.geocode].description;

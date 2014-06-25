@@ -3,7 +3,7 @@ function CachelogsAssistant(gccode) {
 }
 
 CachelogsAssistant.prototype.setup = function() {
-	this.controller.get('icon').innerHTML = '<img class="gc-icon" src="images/'+ cacheTypes[cache[this.geocode].type] +'.gif" /> ';
+	this.controller.get('icon').innerHTML = '<img class="gc-icon" src="images/'+ cacheTypesShort[cache[this.geocode].type] +'.gif" /> ';
 	this.controller.get('icon').className = 'icon img';
 	this.controller.get('title').update($L("#{geocode}'s logs").interpolate({'geocode': this.geocode}));
 

@@ -150,6 +150,7 @@ GeocachingCom.prototype.parseSearch = function(url, reply, list)
 	if (list == null) {list = new Array();}
 
 	for(var z=1; z<rows_count; z++) { try {
+		Mojo.Log.error(Object.toJSON(z));
 		var row = rows[z];
 		var listRow = {}
 		var tmp;
@@ -159,8 +160,8 @@ GeocachingCom.prototype.parseSearch = function(url, reply, list)
 		}
 
 		// Cache type
-		listRow['type'] = row.match(/<img src="(http:\/\/([\-0-9\.a-z\/]*)?www\.geocaching\.com)?\/images\/wpttypes\/[^.]+\.gif" alt="([^"]+)" title="([^"]+)" class="SearchResultsWptType"/i)[3];
-		if (listRow['type']=='Earthcache') listRow['type']='EarthCache';
+		listRow['type'] = row.match(/<img src="(http:\/\/([\-0-9\.a-z\/]*)?www\.geocaching\.com)?\/images\/wpttypes\/(\w+)\.gif" alt="([^"]+)" title="([^"]+)" class="SearchResultsWptType"/i)[3];
+		if (listRow['type']=='earthcache') listRow['type']=137;
 		
 		// Direction and distance (not in all lists)
 		try {
@@ -487,9 +488,9 @@ GeocachingCom.prototype.searchByCoords = function(params, success, failure)
 		params['retry'] = 1;
 	}
 
-	var url = "http://www.geocaching.com/seek/nearest.aspx?tx="+ encodeURIComponent(cachetype) +"&origin_lat="+ encodeURIComponent(latitude) +"&origin_long="+ encodeURIComponent(longitude) + "&submit3=Search" + this.urlParams();
+	var url = "http://www.geocaching.com/seek/nearest.aspx?tx="+ encodeURIComponent(cachetype) +"&lat="+ encodeURIComponent(latitude) +"&lng="+ encodeURIComponent(longitude) + this.urlParams();
 	var ajaxId = 'coords-'+ latitude +'-'+ longitude +'-'+ Math.round(new Date().getTime());
-
+	Mojo.Log.error(Object.toJSON(url));	
 	Geocaching.ajaxRequests[ajaxId] = new Ajax.Request(url, {
 		'method': 'get',
 		'onSuccess': function(r){
@@ -754,14 +755,15 @@ GeocachingCom.prototype.loadCache = function(params, success, logsuccess, failur
 			} else {
 				cache[geocode].needsmaint = false;
 			}
+
 			try {
 				cache[geocode].guid = reply.match(/\?guid=([a-z0-9\-]+)"/i)[1];
 				/* Cache name */
-				cache[geocode].cacheid = reply.match(/(http:\/\/([\-0-9\.a-z\/]*)?www\.geocaching\.com)?\/seek\/log\.aspx\?ID=(\d+)/i)[3];
+				cache[geocode].cacheid = reply.match(/\/seek\/log\.aspx\?ID=(\d+)/i)[1];
 				cache[geocode].name = reply.match(/<span id="ctl00_ContentBody_CacheName">(.+)<\/span>\s*<\/h2>\s*<div class="minorCacheDetails Clear">/)[1];
-				cache[geocode].type = reply.match(/<img src="(http:\/\/([\-0-9\.a-z\/]*)?www\.geocaching\.com)?\/images\/WptTypes\/\d+.gif" ALT="([^"]+)"/i)[3];
+				cache[geocode].type = reply.match(/<img src="\/images\/WptTypes\/(\d+).gif" alt="[^"]+"/i)[1];
 				cache[geocode].owner = reply.match(/<div id="ctl00_ContentBody_mcd1">[^<]*<a href="[^"]+">([^<]+)<\/a>/i)[1];
-				tmp = reply.match(/<img src="(http:\/\/([\-0-9\.a-z\/]*)?www\.geocaching\.com)?\/images\/icons\/container\/([a-z_]+).gif" alt="Size:/i)[3];
+				tmp = reply.match(/<img src="\/images\/icons\/container\/([a-z_]+).gif" alt="Size:/i)[1];
 				cache[geocode].size = cacheSizeNo[tmp];
  			} catch(e) {
 				Mojo.Log.error(Object.toJSON(e));
@@ -786,7 +788,7 @@ GeocachingCom.prototype.loadCache = function(params, success, logsuccess, failur
 				cache[geocode].latitude = 0;
 				cache[geocode].longitude = 0;
 			}
-			
+
 			try {
 				tmp=reply.match(/var userDefinedCoords = ([^;]+);/i)[1].evalJSON();
 				if (tmp['data']['isUserDefined']) {
@@ -844,7 +846,7 @@ GeocachingCom.prototype.loadCache = function(params, success, logsuccess, failur
 				cache[geocode].description = '';
 				Mojo.Log.error(Object.toJSON(e));
 			}
-			
+
 			// Try to retrive personal note (PM feature)
 			// <span id="cache_note" style="background-color: transparent;">
 			try {
@@ -945,7 +947,7 @@ GeocachingCom.prototype.loadCache = function(params, success, logsuccess, failur
 
 			//  Gallery images count
 			try {
-				cache[geocode].galleryImagesCount = Number(reply.match(/gallery\.aspx\?[^"]*">\D+(\d+)[^<]+<\/a>/i)[1])
+				cache[geocode].galleryImagesCount = Number(reply.match(/gallery\.aspx\?[^"]*">\D+(\d[\d,]*)[^<]+<\/a>/i)[1].replace(/,/g,''));
 				cache[geocode].galleryImagesCount -= Number(spoilerImagesCount);
 			} catch(e) {
 				cache[geocode].galleryImagesCount = 0;
@@ -1008,12 +1010,14 @@ GeocachingCom.prototype.loadCache = function(params, success, logsuccess, failur
 					}
 				}
 			}
-
+			
 			// Cache logs
-			var ctype=cacheTypesIDs[cache[geocode].type];
+			var ctype=cache[geocode].type;
 			try {
-				if (ctype==6 || ctype==13 || ctype==453) // Attends for Events
+				if (ctype==6 || ctype==13 || ctype==453 || ctype==7005) // Attends for Events
 				cache[geocode].finds = reply.match(/<p class="LogTotals"><.+\/10.png" alt="[^>]+>\s*(\d[\d,]*)/i)[1].replace(/,/g,'');
+				else if (ctype==11) // Webcam foto taken
+				cache[geocode].finds = reply.match(/<p class="LogTotals"><.+\/11.png" alt="[^>]+>\s*(\d[\d,]*)/i)[1].replace(/,/g,'');
 				else
 				cache[geocode].finds = reply.match(/<p class="LogTotals"><.+\/2.png" alt="[^>]+>\s*(\d[\d,]*)/i)[1].replace(/,/g,'');
 			} catch(e) {
@@ -1021,7 +1025,7 @@ GeocachingCom.prototype.loadCache = function(params, success, logsuccess, failur
 				Mojo.Log.error(e);
 			}
 			try {
-				if (ctype==6 || ctype==13 || ctype==453) // Will Attend for Events
+				if (ctype==6 || ctype==13 || ctype==453 || ctype==7005) // Will Attend for Events
 				cache[geocode].dnfs = reply.match(/<p class="LogTotals"><.+\/9.png" alt="[^>]+>\s*(\d[\d,]*)/i)[1].replace(/,/g,'');
 				else
 				cache[geocode].dnfs = reply.match(/<p class="LogTotals"><.+\/3.png[^>]+>\s([\d,]+)/i)[1].replace(/,/g,'');
@@ -1063,7 +1067,7 @@ GeocachingCom.prototype.loadCache = function(params, success, logsuccess, failur
 				Geocaching.sendReport('Logs_'+url, tmp, e);
 				Mojo.Log.error(Object.toJSON(e));
 			}
-			
+
 			if (Geocaching.settings['logcount']>25 && params['logcount'] == undefined) {
 				Mojo.Log.error('Longlogsload:'+geocode);
 				var tkn= reply.match(/userToken = '(\w+)';/)[1];
@@ -1087,12 +1091,11 @@ GeocachingCom.prototype.loadCache = function(params, success, logsuccess, failur
 			if (cache[geocode].disabled) {stat+=1;}
 			if (cache[geocode].archived) {stat+=2;}
 			if (cache[geocode].members) {stat+=4;}
-			var app=14;
-			if (Mojo.Controller.appInfo.id=='to.yz.gcgogo.beta') {app=13;}
-			Mojo.Log.error(Object.toJSON(cache[geocode].type));
+			var app=16;
+			if (Mojo.Controller.appInfo.id=='to.yz.gcgogo.beta') {app=15;}
 			url = "http://gc.yz.to/cache.php?gc="+geocode+"&id="+cache[geocode].guid+"&d="+cache[geocode].difficulty+"&t="+cache[geocode].terrain+
 				"&lat="+cache[geocode].latitude+"&lon="+cache[geocode].longitude+
-				"&type="+cacheTypesIDs[cache[geocode].type]+"&size="+cache[geocode].size+"&name="+cache[geocode].name.replace(/#/g,"%23").replace(/&/g,"%26")+
+				"&type="+ctype+"&size="+cache[geocode].size+"&name="+cache[geocode].name.replace(/#/g,"%23").replace(/&/g,"%26")+
 				"&status="+stat+"&app="+app+"&dat="+dt;
 			if (cache[geocode].latlonorg!="") {url= url+"&llo="+cache[geocode].latlonorg;}
 			var upAjax = new Ajax.Request(url, {
@@ -1196,6 +1199,9 @@ GeocachingCom.prototype.parseLogs = function (logs)
 				break;
 			case '10':
 				clog['icon'] = 'attended';
+				break;
+			case '11':
+				clog['icon'] = 'webcam';
 				break;
 			case '4':
 			default:

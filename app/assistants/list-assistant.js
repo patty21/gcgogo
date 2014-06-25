@@ -569,7 +569,7 @@ ListAssistant.prototype.buildList = function(searchResult) {
 			'guid': cacheList[z]['guid'],
 			'name': cacheList[z]['name'],
 			'gccode': cacheList[z]['gccode'],
-			'type': cacheTypes[cacheList[z]['type']],
+			'type': cacheTypesShort[cacheList[z]['type']],
 			'attrs': (cacheList[z]['attribs']?'<img src="images/'+cacheSizeImages[cacheList[z]['size']]+'.gif" /> ('+cacheList[z]['attribs']+')':'<img src="http://www.geocaching.com/ImgGen/seek/CacheInfo.ashx?v='+cacheList[z]['gsattr']+'" />'),
 			'latitude': cacheList[z]['latitude'],
 			'longitude': cacheList[z]['longitude'],	

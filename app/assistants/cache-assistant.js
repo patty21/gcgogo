@@ -262,7 +262,7 @@ CacheAssistant.prototype.showCacheDetail = function(geocode) {
 	if (this.geocode) {
 		this.controller.get('cache-title').update(this.geocode);
 	}
-	var cachetype=cacheTypes[cache[this.geocode].type];
+	var cachetype=cacheTypesShort[cache[this.geocode].type];
 	if (cache[this.geocode].latlonorg!="" && cachetype=="mystery") cachetype+="-solved";
 	this.controller.get('cache-icon').innerHTML = '<img class="gc-icon" src="images/'+ cachetype +'.gif" /> ';
 	this.controller.get('cache-icon').className = 'icon img';
@@ -320,7 +320,7 @@ CacheAssistant.prototype.showCacheDetail = function(geocode) {
 	} catch(e) { }
 	var tmp="";
 	if (cache[this.geocode].latlonorg!="") tmp=$L('Corrected from ')+cache[this.geocode].latlonorg+'<br>';
-	this.controller.get('cache-type').update(cache[this.geocode].type);
+	this.controller.get('cache-type').update(cacheTypes[cache[this.geocode].type]);
 	this.controller.get('cache-owner').update(cache[this.geocode].owner);
 	this.controller.get('cache-hint').update(cache[this.geocode].hint);
 	this.controller.get('cache-size').src='images/'+ (cacheSizeImages[cache[this.geocode].size]?cacheSizeImages[cache[this.geocode].size]:'other') + '.gif';
@@ -409,12 +409,16 @@ CacheAssistant.prototype.showCacheDetail = function(geocode) {
 		this.controller.get('cache-trackables').update($L("No trackable"));
 	}
 	delete(trkCount);
-	var ctype=cacheTypesIDs[cache[this.geocode].type];
-	if (ctype==6 || ctype==13 || ctype==453)
+	var ctype=cache[this.geocode].type;
+	if (ctype==6 || ctype==13 || ctype==453 || ctype==7005)
 		this.controller.get('cache-logs').update('<img src="images/log_attended.gif"> '+cache[this.geocode].finds+
 				' &nbsp;&nbsp;&nbsp; <img src="images/log_willattend.gif"> '+cache[this.geocode].dnfs+
 				' &nbsp;&nbsp;&nbsp; <img src="images/favorites.png"> '+cache[this.geocode].favs);
-	else 
+	else if (ctype==11) 
+		this.controller.get('cache-logs').update('<img src="images/log_webcam.gif"> '+cache[this.geocode].finds+
+				' &nbsp;&nbsp;&nbsp; <img src="images/log_notfound.gif"> '+cache[this.geocode].dnfs+
+				' &nbsp;&nbsp;&nbsp; <img src="images/favorites.png"> '+cache[this.geocode].favs);
+	else
 		this.controller.get('cache-logs').update('<img src="images/log_found.gif"> '+cache[this.geocode].finds+
 				' &nbsp;&nbsp;&nbsp; <img src="images/log_notfound.gif"> '+cache[this.geocode].dnfs+
 				' &nbsp;&nbsp;&nbsp; <img src="images/favorites.png"> '+cache[this.geocode].favs);
@@ -555,7 +559,7 @@ CacheAssistant.prototype.handleCommand = function(event) {
 					this.controller.stageController.pushScene('list', 'coords', {
 						'lat': cache[this.geocode].latitude,
 						'lon': cache[this.geocode].longitude,
-						'tx': cacheIDs[cacheTypes[cache[this.geocode].type]]
+						'tx': cacheIDs[cacheTypesShort[cache[this.geocode].type]]
 					});
 				}
 			break;			
@@ -686,7 +690,8 @@ CacheAssistant.prototype.cacheCompass = function(event) {
 	// Add user waypoints
 	try {
 		var userWpts = cache[this.geocode].userdata['waypoints'];
-		var userWptsLen = userWpts.length;
+		var userWptsLen = 0;
+		if (userWpts!=undefined) userWptsLen = userWpts.length;
 		if(userWptsLen > 0) {
 			for(z=0; z<userWptsLen; z++) {
 				var wp = cache[this.geocode].userdata['waypoints'][z];
@@ -1013,7 +1018,7 @@ CacheAssistant.prototype.actionMyPositionSuccess = function(event) {
 	}
 
 	// Finally, add position and target
-	url += '&markers='+ encodeURIComponent('color:blue|size:'+ markerSize +'|'+ latitude +','+ longitude) + '&markers='+ encodeURIComponent('icon:http://www.geocaching.com/images/wpttypes/sm/'+ cacheTypesIDs[cache[this.geocode].type] +'.gif|'+ cache[this.geocode].latitude.toFixed(5) +','+ cache[this.geocode].longitude.toFixed(5));
+	url += '&markers='+ encodeURIComponent('color:blue|size:'+ markerSize +'|'+ latitude +','+ longitude) + '&markers='+ encodeURIComponent('icon:http://www.geocaching.com/images/wpttypes/sm/'+ cache[this.geocode].type +'.gif|'+ cache[this.geocode].latitude.toFixed(5) +','+ cache[this.geocode].longitude.toFixed(5));
 
 	Mojo.Log.info('Minimap with user position url: %s', url);
 
@@ -1027,7 +1032,7 @@ CacheAssistant.prototype.actionMyPositionFailed = function(event) {
 		Geocaching.accounts['go4cache'].sendLocation(cache[this.geocode].latitude, cache[this.geocode].longitude, 'discovering');
 	}	
 	
-	var icon = 'http://www.geocaching.com/images/wpttypes/sm/'+ cacheTypesIDs[cache[this.geocode].type] +'.gif';
+	var icon = 'http://www.geocaching.com/images/wpttypes/sm/'+ cache[this.geocode].type +'.gif';
 	var width = 320;
 	var height = 120;
 	if( gcGogo.isTouchpad() ){
