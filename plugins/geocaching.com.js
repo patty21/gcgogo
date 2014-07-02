@@ -2279,7 +2279,7 @@ GeocachingCom.prototype.ownedFinds = function(success, failure)
 				return false;
 			}
 			
-			var owBegin = reply.search('<table class="Table">');
+			var owBegin = reply.search('<table class="MyOwnedCachesTable SearchResultsTable Table">');
 			var owList, owEnd, owItems, owCount, guid;
 			if(-1 != owBegin) {
 				owList = reply.substr(owBegin);
