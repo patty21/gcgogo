@@ -675,7 +675,7 @@ Geocaching.parseFile = function(filename, success, failure)
 						_cache['difficulty'] = wptCache.getElementsByTagName('difficulty')[0].textContent;
 						_cache['terrain'] = wptCache.getElementsByTagName('terrain')[0].textContent;
 						_cache['size'] = cacheSizeNo[wptCache.getElementsByTagName('container')[0].textContent.toLowerCase().replace(' ', '_')];
-						_cache['type'] = wptCache.getElementsByTagName('type')[0].textContent;
+						_cache['type'] = getKeyByValue( cacheTypes, wptCache.getElementsByTagName('type')[0].textContent );
 						_cache['hint'] = wptCache.getElementsByTagName('encoded_hints')[0].textContent;
 						_cache['owner'] = wptCache.getElementsByTagName('owner')[0].textContent;
 						_cache['location'] = (wptCache.getElementsByTagName('state')[0].textContent ? wptCache.getElementsByTagName('state')[0].textContent + ", " : "");
@@ -694,6 +694,7 @@ Geocaching.parseFile = function(filename, success, failure)
 						var dnfs = 0;
 
 						try {
+							cacheLogs = [];
 							tmp = wptCache.getElementsByTagName('logs')[0];
 							logs = tmp.getElementsByTagName('log');
 							logsLen = logs.length;
@@ -747,8 +748,9 @@ Geocaching.parseFile = function(filename, success, failure)
 										_log['icon'] = 'note';
 									break;
 								}
-								_cache['logs'].push(Object.clone(_log));
+								cacheLogs.push(Object.clone(_log));
 							}
+							_cache['logs'] = cacheLogs;
 						} catch(e) { }
 
 						_cache['finds'] = finds + '+';
@@ -867,4 +869,14 @@ String.prototype.trim = function()
 String.prototype.stripTags = function()
 {
 	return this.replace(/<\/?[^>]+>/gi, '');
+}
+
+getKeyByValue = function( obj, value )
+{
+	for( var k in obj ){
+		if( obj[k] == value ){
+			return k;
+		}
+	}
+	return null;
 }

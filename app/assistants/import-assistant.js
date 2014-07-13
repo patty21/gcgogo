@@ -166,13 +166,16 @@ ImportAssistant.prototype.generateList = function(cacheList) {
 				'guid': cacheList[z]['guid'],
 				'name': cacheList[z]['name'],
 				'gccode': cacheList[z]['geocode'],
-				'type': cacheTypes[cacheList[z]['type']],
-				'size': (cacheSizeNo[cacheList[z]['size']]?cacheSizeNo[cacheList[z]['size']]:'6'),
-				'attribs': cacheList[z]['difficulty'] +"/"+ cacheList[z]['terrain'],
+				'type': cacheTypesShort[cacheList[z]['type']],
+				'attrs': (cacheList[z]['difficulty']
+					?'<img src="images/'+cacheSizeImages[cacheList[z]['size']]+'.gif" /> ('+cacheList[z]['difficulty']+'/'+cacheList[z]['terrain']+')'
+					:'<img src="http://www.geocaching.com/ImgGen/seek/CacheInfo.ashx?v='+cacheList[z]['gsattr']+'" />'),
 				'distance': '',
 				'direction': '',
 				'disabled': (cacheList[z]['archived']?' gc-archived':(cacheList[z]['disabled']?' gc-disabled':'')),
 				'found': (cacheList[z]['found']?' <img src="images/found.png" />':''),
+				'own': (cacheList[z]['own']?' <img src="images/star.png" />':''),
+				'maintenance': (cacheList[z]['maintenance']?' <img src="images/needsmaint.png" />':''),
 				'members': (cacheList[z]['members']?' <img src="images/members_small.gif" />':'')
 			});
 		}
@@ -203,13 +206,14 @@ ImportAssistant.prototype.listDelete = function(event) {
 ImportAssistant.prototype.importItem = function(item) {
 	Geocaching.db.transaction( 
 		(function (transaction) {
-			var query = 'INSERT INTO "caches"("gccode", "favourite", "found", "updated", "latitude", "longitude", "json") VALUES ("'+
+			var query = 'INSERT INTO "caches"("gccode", "favourite", "found", "updated", "latitude", "longitude", "json", "logs") VALUES ("'+
 				escape(item['geocode']) + '", 1, ' + 
 				escape(item['found']?1:0) + ', ' + 
 				escape(item['updated']) + ', ' +
 				escape(item['latitude']) + ', ' +
 				escape(item['longitude']) + ', "' +  
-				escape(Object.toJSON(item)) +'"); GO;';
+				escape(Object.toJSON(item)) + '", "' +
+				escape(Object.toJSON(item['logs'])) +'"); GO;';
 			transaction.executeSql(query, [], 
 				function() {
 					this.importCount++;
@@ -224,6 +228,7 @@ ImportAssistant.prototype.importItem = function(item) {
 							'"updated"="'+ escape(item['updated']) +'", '+
 							'"latitude"='+ escape(item['latitude']) +', '+
 							'"longitude"='+ escape(item['longitude']) +' '+
+							'"logs"="'+ escape(Object.toJSON(item['logs'])) +'" '+
 							' WHERE "gccode"="'+ escape(item['geocode']) +'"; GO; ', []
 						);
 						this.importCount++;						
@@ -280,6 +285,7 @@ ImportAssistant.prototype.progressUpdate = function() {
 	this.progress = (this.importCount / this.imported.length);
 
 	if(this.progress >= 1) {
+		Mojo.Log.error(this.importCount);
 		this.controller.showAlertDialog({
 				'onChoose': function(value) {
 					Mojo.Controller.stageController.popScene();
