@@ -850,9 +850,9 @@ GeocachingCom.prototype.loadCache = function(params, success, logsuccess, failur
 			// Try to retrive personal note (PM feature)
 			// <span id="cache_note" style="background-color: transparent;">
 			try {
-				note = r.responseText.match(/<span id="cache_note"[^>]*>\s*([^<]*\S)?\s*<\/span>/im);
+				var note = r.responseText.match(/<span id="cache_note"[^>]*>\s*([^<]*\S)?\s*<\/span>/im);
 //				Mojo.Log.error('Note:' + note+':');
-				if( note ){
+				if(note[1] != undefined){
 					cache[geocode].note = note[1].replace(/\n/g, '<br>');
 				}
 			} catch(e){
@@ -940,6 +940,7 @@ GeocachingCom.prototype.loadCache = function(params, success, logsuccess, failur
 							'url': imgTmp[1]
 						}
 						cache[geocode].spoilerImages.push(Object.clone(img));
+						this.loadSpoiler(imgTmp[1],geocode,z,function() {}, function() {});
 					}
 					delete(img); delete(imgTmp); delete(len);
 				}
@@ -1223,6 +1224,32 @@ GeocachingCom.prototype.parseLogs = function (logs)
 	}
 	return lg;
 }
+
+GeocachingCom.prototype.loadSpoiler = function(url,geocode,num, success, failure) {
+	var targetdir = ImageDir+geocode.substr(0,4)+"/"+geocode+"/";;
+	var targetname = geocode+"-"+num+".jpg";
+	Mojo.Log.error("Spoiler:"+url+" to "+targetdir+targetname);
+	var obj = new Mojo.Service.Request('palm://com.palm.downloadmanager/', {
+		method: 'download', 
+		parameters: {
+			target: url,
+			targetDir: targetdir,
+			targetFilename: targetname,
+			subscribe: true
+		},
+		onSuccess: function(result) {
+			Mojo.Log.error("SpoilerCompleted"+JSON.stringify(result));
+			if (result.completed) {
+				success();
+			}
+		}.bind(this),
+		onFailure: function(result) {
+			Mojo.Log.error("SpoilerFailure:"+JSON.stringify(result));
+			failure();
+		}.bind(this)
+	});
+}
+
 
 
 GeocachingCom.prototype.loadImages = function(params, success, failure) 

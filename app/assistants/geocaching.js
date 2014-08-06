@@ -243,6 +243,7 @@ var months = {
 	'Dec': 12
 };
 
+var ImageDir="/media/internal/.gcgogo/";
 
 var kmInMiles = 1/1.609344;
 var deg2rad = Math.PI/180;
