@@ -852,7 +852,11 @@ GeocachingCom.prototype.loadCache = function(params, success, logsuccess, failur
 			try {
 				var note = r.responseText.match(/<span id="cache_note"[^>]*>\s*([^<]*\S)?\s*<\/span>/im);
 //				Mojo.Log.error('Note:' + note+':');
+<<<<<<< HEAD
 				if(note[1] != undefined){
+=======
+				if( note && note[1] ){
+>>>>>>> 8596e4906e107c7055b240b55aebecc3cb60e348
 					cache[geocode].note = note[1].replace(/\n/g, '<br>');
 				}
 			} catch(e){
