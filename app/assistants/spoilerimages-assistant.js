@@ -3,13 +3,10 @@ function SpoilerimagesAssistant(gccode) {
 }
 
 SpoilerimagesAssistant.prototype.setup = function() {
-	this.controller.get('icon').innerHTML = '<img class="gc-icon" src="images/'+ cacheTypesShort[cache[this.geocode].type] +'.gif" /> ';
-	this.controller.get('icon').className = 'icon img';
-	this.controller.get('title').update(this.geocode);
 	this.photos=cache[this.geocode].spoilerImages;
 	this.num=0;
 	this.idx=0;
-	
+	this.urls=[];
 	this.leftHandler = this.onLeft.bind(this);
 	this.rightHandler = this.onRight.bind(this);
 
@@ -27,6 +24,15 @@ SpoilerimagesAssistant.prototype.setup = function() {
 		}
 	);
 
+	this.appMenuModel = {
+		'visible': true,
+		'items': [
+//			{'label': $L("Reload images"), 'command': 'reloadcache' },
+			{'label': $L("Load image from web"), 'command': 'web' },
+		]
+	};
+	this.controller.setupWidget(Mojo.Menu.appMenu, {'omitDefaultItems': true}, this.appMenuModel);
+
 
 	this.checkImage();
 
@@ -41,6 +47,7 @@ SpoilerimagesAssistant.prototype.checkImage = function() {
         	onSuccess: function(r) {
 			if (r.status==200) {
 				Mojo.Log.info("Image "+this.num+": local");
+				this.urls[this.num]=this.photos[this.num]['url'];
 				this.photos[this.num]['url']=ImageDir+this.geocode.substr(0,4)+"/"+this.geocode+"/"+this.geocode+"-"+this.num+".jpg";
 			} else {
 				Mojo.Log.info("Image "+this.num+": web");
@@ -99,7 +106,11 @@ SpoilerimagesAssistant.prototype.updateImages = function() {
 			this.imageView.mojo.leftUrlProvided("");
 		}
 		this.imageView.mojo.centerUrlProvided(this.photos[this.idx].url);
-		this.controller.get("title").innerHTML = (this.idx+1) + "/" + this.photos.length + " " + this.photos[this.idx].name;
+		if (this.photos[this.idx].url.substr(0,ImageDir.length)==ImageDir) {
+			this.controller.get("title").innerHTML = "["+(this.idx+1) + "] "+this.photos[this.idx].name;
+		} else {
+			this.controller.get("title").innerHTML = "("+(this.idx+1) + ") "+this.photos[this.idx].name;
+		}
 		if (this.idx < (this.photos.length-1)) {
 			this.imageView.mojo.rightUrlProvided(this.photos[this.idx+1].url);
 		} else {
@@ -113,8 +124,6 @@ SpoilerimagesAssistant.prototype.updateImages = function() {
 			var img = new Image();
 			img.src = this.photos[this.idx+2].url;
 		}
-//		this.modelCommand.items[0].label = this.photos[this.idx].button;
-//		this.controller.modelChanged( this.modelCommand, this );
 	} catch (ex) {
 		Mojo.Log.error(ex);
 	}
@@ -139,6 +148,12 @@ SpoilerimagesAssistant.prototype.handleCommand = function(event) {
 			case 'goback':
 				this.controller.stageController.popScene();
 			break;
+			case 'web':
+				if (this.urls[this.idx]!=undefined) {
+					this.photos[this.idx]['url']=this.urls[this.idx];
+				}
+				Mojo.Log.info("Reset"+JSON.stringify(this.photos));
+				this.updateImages();
 			default:
 			break;
 		}
@@ -149,7 +164,6 @@ SpoilerimagesAssistant.prototype.activate = function(event) {
 }
 
 SpoilerimagesAssistant.prototype.deactivate = function(event) {
-	Mojo.Event.stopListening(this.controller.get('spoilerImages'),Mojo.Event.listTap, this.openImage);
 }
 
 SpoilerimagesAssistant.prototype.cleanup = function(event) {
