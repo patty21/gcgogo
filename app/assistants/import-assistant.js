@@ -285,7 +285,7 @@ ImportAssistant.prototype.progressUpdate = function() {
 	this.progress = (this.importCount / this.imported.length);
 
 	if(this.progress >= 1) {
-		Mojo.Log.error(this.importCount);
+		Mojo.Log.error("Imported " + this.importCount + " caches.");
 		this.controller.showAlertDialog({
 				'onChoose': function(value) {
 					Mojo.Controller.stageController.popScene();
