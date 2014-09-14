@@ -3,6 +3,7 @@ function ImportAssistant(gccode) {
 	this.importing = false;
 	this.imported = new Array();
 	this.importCount = 0;
+	this.importFailures = 0;
 	this.progress = 0;
 }
 
@@ -227,13 +228,22 @@ ImportAssistant.prototype.importItem = function(item) {
 							'"favourite"=1, '+
 							'"updated"="'+ escape(item['updated']) +'", '+
 							'"latitude"='+ escape(item['latitude']) +', '+
-							'"longitude"='+ escape(item['longitude']) +' '+
+							'"longitude"='+ escape(item['longitude']) +', '+
 							'"logs"="'+ escape(Object.toJSON(item['logs'])) +'" '+
-							' WHERE "gccode"="'+ escape(item['geocode']) +'"; GO; ', []
+							' WHERE "gccode"="'+ escape(item['geocode']) +'"; GO; ', [],
+							function() {
+								this.importCount++;
+							}.bind(this),
+							function(transaction, error) {
+								Mojo.Log.info("Failed to update cache " + item['geocode'] + ". Error: " + error.message);
+								this.importFailures++;
+							}.bind(this)
 						);
-						this.importCount++;						
-						this.progressUpdate();
+					} else {
+						Mojo.Log.info("Failed to insert cache " + item['geocode'] + ". Error: " + error.message);
+						this.importFailures++;
 					}
+					this.progressUpdate();
 				}.bind(this)
 			);
 		}).bind(this)
@@ -273,6 +283,7 @@ ImportAssistant.prototype.startImport = function(event) {
 ImportAssistant.prototype.cancelImport = function(event) {
 	this.imported = new Array();
 	this.importCount = 0;
+	this.importFailures = 0;
 
 	this.controller.get('list').hide();
 	this.controller.get('picker').show();
@@ -282,10 +293,10 @@ ImportAssistant.prototype.cancelImport = function(event) {
 }
 
 ImportAssistant.prototype.progressUpdate = function() {
-	this.progress = (this.importCount / this.imported.length);
+	this.progress = ((this.importCount+this.importFailures) / this.imported.length);
 
 	if(this.progress >= 1) {
-		Mojo.Log.error("Imported " + this.importCount + " caches.");
+		Mojo.Log.error("Imported " + this.importCount + " caches. Failed: " + this.importFailures);
 		this.controller.showAlertDialog({
 				'onChoose': function(value) {
 					Mojo.Controller.stageController.popScene();

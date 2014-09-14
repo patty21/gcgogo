@@ -904,7 +904,6 @@ ListAssistant.prototype.generateBackgroundMap = function()
 		try {
 			if (showMap) {
 				this.controller.get('backgroundmap').update(new String('<img src="#{url}" />').interpolate({'url': backgroundMapUrl}));
-				Mojo.Log.error(backgroundMapUrl);
 			}
 		} catch(e) {
 			Mojo.Log.error(Object.toJSON(e));
