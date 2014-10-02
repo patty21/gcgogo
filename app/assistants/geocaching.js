@@ -282,6 +282,7 @@ var Geocaching = {
 		'compassInNewCard': false,
 		'magneticcompass': false,
 		'gcvote': true,
+		'spoilers': true,
 		'fieldnotes': false,
 		'tutorials': {
 			'mappingtool': false,

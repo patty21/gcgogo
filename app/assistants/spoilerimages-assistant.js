@@ -39,16 +39,24 @@ SpoilerimagesAssistant.prototype.setup = function() {
 };
 
 SpoilerimagesAssistant.prototype.checkImage = function() {
-//	Mojo.Log.error("Check_Image:"+this.num);
 	var targetdir = ImageDir+this.geocode.substr(0,4)+"/"+this.geocode+"/";
-	var targetfile = this.geocode+"-"+this.num+".jpg";
+	var targetfile = this.photos[this.num]['url'].substr(this.photos[this.num]['url'].length-40,40);
+	Mojo.Log.error("Check_Image:"+this.num+' '+targetdir+targetfile);
+	this.purl=targetdir+targetfile;
 	var request = new Ajax.Request(targetdir+targetfile, {
         	method: "get",
         	onSuccess: function(r) {
 			if (r.status==200) {
-				Mojo.Log.info("Image "+this.num+": local");
-				this.urls[this.num]=this.photos[this.num]['url'];
-				this.photos[this.num]['url']=ImageDir+this.geocode.substr(0,4)+"/"+this.geocode+"/"+this.geocode+"-"+this.num+".jpg";
+				var img= new Image();
+				img.src=this.purl;
+				if (img.width>0) {
+					Mojo.Log.info("Image "+this.num+": local - "+img.width+"x"+img.height);
+					this.urls[this.num]=this.photos[this.num]['url'];
+					this.photos[this.num]['url']=this.purl;
+				} else {
+					Mojo.Log.info("Image "+this.num+": screwed - "+img.width+"x"+img.height);
+				}
+				delete(img);
 			} else {
 				Mojo.Log.info("Image "+this.num+": web");
 			}

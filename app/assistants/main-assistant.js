@@ -457,6 +457,9 @@ MainAssistant.prototype.setup = function() {
 			if(typeof(response.gcvote)!='undefined') {
 				Geocaching.settings['gcvote'] = response.gcvote;
 			}
+			if(typeof(response.spoiler)!='undefined') {
+				Geocaching.settings['spoiler'] = response.spoiler;
+			}
 			if(typeof(response.fieldnotes)!='undefined') {
 				Geocaching.settings['fieldnotes'] = response.fieldnotes;
 			}

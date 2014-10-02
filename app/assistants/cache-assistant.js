@@ -872,7 +872,8 @@ CacheAssistant.prototype.reloadCache = function() {
 				); 
 				cache[this.geocode].logs=logs;
 				this.showCacheDetail(this.geocode);
-				Geocaching.accounts['gcvote'].getSingleVote(cache[this.geocode].guid,this.updateVote.bind(this));
+				if (Geocaching.settings['gcvote']) Geocaching.accounts['gcvote'].getSingleVote(cache[this.geocode].guid,this.updateVote.bind(this));
+				if (Geocaching.settings['spoiler']) this.checkSpoilers(this.geocode);
 			}.bind(this),
 			this.saveLogs.bind(this),
 			function(message) {
@@ -930,7 +931,8 @@ CacheAssistant.prototype.reloadCache = function() {
 				); 
 				cache[this.geocode].logs=logs;
 				this.showCacheDetail(this.geocode);
-				Geocaching.accounts['gcvote'].getSingleVote(cache[this.geocode].guid,this.updateVote.bind(this));
+				if (Geocaching.settings['gcvote']) Geocaching.accounts['gcvote'].getSingleVote(cache[this.geocode].guid,this.updateVote.bind(this));
+				if (Geocaching.settings['spoiler']) this.checkSpoilers(this.geocode);
 			}.bind(this),
 			this.saveLogs.bind(this),
 			function(message) {
@@ -957,6 +959,23 @@ CacheAssistant.prototype.saveLogs = function(geocode) {
 	);
 }
 
+CacheAssistant.prototype.checkSpoilers = function(geocode) {
+	var targetdir = ImageDir+this.geocode.substr(0,4)+"/"+this.geocode+"/";
+	this.photos=cache[geocode].spoilerImages;
+	img=new Image();
+	var ok=0;
+	for (var i=0; i<this.photos.length;i++) {
+		var targetfile = this.photos[i]['url'].substr(this.photos[i]['url'].length-40,40);	
+		img.src=targetdir+targetfile;
+		if (img.width>0) { //Imgage ok
+			Mojo.Log.info("Image "+targetfile+" ok "+img.width+"x"+img.height);
+			ok++;
+		} else { // Image not ok -> Download
+			Mojo.Log.info("Image "+targetfile+" download");
+			Geocaching.accounts['geocaching.com'].loadSpoiler(this.photos[i]['url'],geocode,function() {}, function() {});
+		}
+	}
+}
 
 CacheAssistant.prototype.actionMyPositionSuccess = function(event) {
 	var accuracy = event.horizAccuracy;

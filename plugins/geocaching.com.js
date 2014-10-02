@@ -940,7 +940,6 @@ GeocachingCom.prototype.loadCache = function(params, success, logsuccess, failur
 							'url': imgTmp[1]
 						}
 						cache[geocode].spoilerImages.push(Object.clone(img));
-						this.loadSpoiler(imgTmp[1],geocode,z,function() {}, function() {});
 					}
 					delete(img); delete(imgTmp); delete(len);
 				}
@@ -1225,9 +1224,9 @@ GeocachingCom.prototype.parseLogs = function (logs)
 	return lg;
 }
 
-GeocachingCom.prototype.loadSpoiler = function(url,geocode,num, success, failure) {
-	var targetdir = ImageDir+geocode.substr(0,4)+"/"+geocode+"/";;
-	var targetname = geocode+"-"+num+".jpg";
+GeocachingCom.prototype.loadSpoiler = function(url,geocode,success,failure) {
+	var targetdir = ImageDir+geocode.substr(0,4)+"/"+geocode+"/";
+	var targetname = url.substr(url.length-40,40);
 	Mojo.Log.error("Spoiler:"+url+" to "+targetdir+targetname);
 	var obj = new Mojo.Service.Request('palm://com.palm.downloadmanager/', {
 		method: 'download', 

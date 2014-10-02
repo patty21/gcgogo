@@ -158,6 +158,18 @@ SettingsAssistant.prototype.setup = function() {
 			'disabled': false
 		}
 	);
+	this.controller.setupWidget("toggle-spoiler",
+		{
+			'trueValue': true,
+			'trueLabel': $L("Yes"),
+			'falseValue': false,
+			'falseLabel': $L("No")
+		},
+		this.modelSpoiler = {
+			'value': Geocaching.settings['spoiler'],
+			'disabled': false
+		}
+	);
 	this.controller.setupWidget("toggle-fieldnotes",
 		{
 			'trueValue': true,
@@ -262,6 +274,7 @@ SettingsAssistant.prototype.setup = function() {
 	Mojo.Event.listen(this.controller.get('toggle-compassinnewcard'), Mojo.Event.propertyChange, this.actionSave);
 	Mojo.Event.listen(this.controller.get('toggle-magneticcompass'), Mojo.Event.propertyChange, this.actionSave);
 	Mojo.Event.listen(this.controller.get('toggle-gcvote'), Mojo.Event.propertyChange, this.actionSave);
+	Mojo.Event.listen(this.controller.get('toggle-spoiler'), Mojo.Event.propertyChange, this.actionSave);
 	Mojo.Event.listen(this.controller.get('toggle-fieldnotes'), Mojo.Event.propertyChange, this.actionSave);
 	Mojo.Event.listen(this.controller.get('toggle-autoclean'), Mojo.Event.propertyChange, this.actionSave);
 	Mojo.Event.listen(this.controller.get('toggle-recalculatedistance'), Mojo.Event.propertyChange, this.actionSave);
@@ -308,6 +321,7 @@ SettingsAssistant.prototype.cleanup = function(event) {
 	Mojo.Event.stopListening(this.controller.get('toggle-compassinnewcard'), Mojo.Event.propertyChange, this.actionSave);
 	Mojo.Event.stopListening(this.controller.get('toggle-magneticcompass'), Mojo.Event.propertyChange, this.actionSave);
 	Mojo.Event.stopListening(this.controller.get('toggle-gcvote'), Mojo.Event.propertyChange, this.actionSave);
+	Mojo.Event.stopListening(this.controller.get('toggle-spoiler'), Mojo.Event.propertyChange, this.actionSave);
 	Mojo.Event.stopListening(this.controller.get('toggle-fieldnotes'), Mojo.Event.propertyChange, this.actionSave);
 	Mojo.Event.stopListening(this.controller.get('toggle-autoclean'), Mojo.Event.propertyChange, this.actionSave);
 	Mojo.Event.stopListening(this.controller.get('toggle-recalculatedistance'), Mojo.Event.propertyChange, this.actionSave);
@@ -324,7 +338,8 @@ SettingsAssistant.prototype.actionSave = function(event) {
 	Geocaching.settings['defaultnavigation'] = this.modelDefaultNavigation.value;
 	Geocaching.settings['compassInNewCard'] = this.modelCompassInNewCard.value;
 	Geocaching.settings['magneticcompass'] = this.modelMagneticCompass.value;
-	Geocaching.settings['gcvote'] = this.modelGCvote.value;
+	Geocaching.settings['gcvote'] = this.modelGCvote.value;	
+	Geocaching.settings['spoiler'] = this.modelSpoiler.value;
 	Geocaching.settings['fieldnotes'] = this.modelFieldNotes.value;
 	Geocaching.settings['autoclean'] = this.modelAutoclean.value;
 	Geocaching.settings['recalculatedistance'] = this.modelRecalculateDistance.value;

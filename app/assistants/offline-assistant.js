@@ -244,6 +244,7 @@ OfflineAssistant.prototype.downloadNext = function () {
 						transaction.executeSql(query, [], 
 							function() {
 								// Success - Next Cache
+								if (Geocaching.settings['spoiler']) this.downloadSpoilers(cache[this.geocode].spoilerImages,this.geocode);
 								this.downloadNext();
 							}.bind(this),
 							function(transaction, error) {
@@ -258,6 +259,7 @@ OfflineAssistant.prototype.downloadNext = function () {
 										'"longitude"='+ escape(cache[this.geocode].longitude) +' '+
 										' WHERE "gccode"="'+ escape(this.geocode) +'"; GO; ', []);
 								}
+								if (Geocaching.settings['spoiler']) this.downloadSpoilers(cache[this.geocode].spoilerImages,this.geocode);
 								this.downloadNext();
 							}.bind(this)
 						);
@@ -293,6 +295,12 @@ OfflineAssistant.prototype.downloadNext = function () {
 		return;
 	}
 };
+
+OfflineAssistant.prototype.downloadSpoilers = function(photos,geocode) {
+	for (var i=0; i<photos.length;i++) {
+		Geocaching.accounts['geocaching.com'].loadSpoiler(photos[i]['url'],geocode,function() {}, function() {});
+	}
+}
 
 
 OfflineAssistant.prototype.actionOwnfindsClicked = function(event) {
