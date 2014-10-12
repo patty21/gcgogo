@@ -278,7 +278,7 @@ ListAssistant.prototype.mapTool = function(res) {
 			'method': 'launch',
 			'parameters': {
 				'id': 'de.metaviewsoft.maptoolpro',
-				'params': params
+				'params': Object.toJSON(params)
 			},
 			'onFailure': function(text, value) {
 			// Now try Map Tool Free
@@ -319,7 +319,10 @@ ListAssistant.prototype.handleCommand = function(event) {
 				});
 			   } else {
 
-				var params = new Array();
+				var params = {
+					'app': Mojo.Controller.appInfo.id
+				};
+				params['targets'] = new Array();
 				var cacheList = this.searchResult.cacheList;
 				var len = cacheList.length;
 				var _cache, item = {};
@@ -331,7 +334,7 @@ ListAssistant.prototype.handleCommand = function(event) {
 								'lat': _cache['latitude'],
 								'lon': _cache['longitude'],
 								'name': _cache['name'],
-								'image': 'http://www.geocaching.com/images/WptTypes/sm/'+cacheTypesIDs[_cache['type']]+'.gif'
+								'image': 'http://www.geocaching.com/images/WptTypes/sm/'+_cache['type']+'.gif'
 							};
 							// Special icons
 							if(_cache['found']) {
@@ -340,7 +343,7 @@ ListAssistant.prototype.handleCommand = function(event) {
 							if(_cache['disabled'] || _cache['archived']) {
 								item['image'] = 'http://www.geocaching.com/images/icons/icon_disabled.gif';
 							}
-							params.push(Object.clone(item));
+							params['targets'].push(Object.clone(item));
 						}
 					} catch(e) { }
 				};
@@ -611,7 +614,7 @@ ListAssistant.prototype.buildList = function(searchResult) {
 	}
 
 	// Visibility of "Next page"
-	Mojo.Log.error('Pageleft:'+searchResult['pageleft']);
+	Mojo.Log.error('Pageleft:'+searchResult['pageleft']+" nextPage:"+searchResult['nextPage']);
 	if(searchResult['pageleft']==0) {
 		this.controller.get('cache-list').mojo.showAddItem(searchResult.nextPage);
 	}
@@ -742,7 +745,8 @@ ListAssistant.prototype.loadFavourites = function(params, success, failure) {
 								'url': '-favourites-'+page,
 								'viewstate': '',
 								'cacheList': list,
-								'nextPage': (Geocaching.settings['recalculatedistance'] && caches < page*20?false:true),
+								'pageleft': Math.max(caches - page*20,0),
+								'nextPage': (caches < page*20?false:true),
 								'offset': (Geocaching.settings['recalculatedistance']?(page-1)*20:undefined),
 								'limit': (Geocaching.settings['recalculatedistance']?20:undefined)
 							}
