@@ -233,17 +233,20 @@ ImportAssistant.prototype.importItem = function(item) {
 							' WHERE "gccode"="'+ escape(item['geocode']) +'"; GO; ', [],
 							function() {
 								this.importCount++;
+								Mojo.Log.info("Imported cache " + item['geocode'] + ". Progress: " + this.importCount);
+								this.progressUpdate();
 							}.bind(this),
 							function(transaction, error) {
 								Mojo.Log.info("Failed to update cache " + item['geocode'] + ". Error: " + error.message);
 								this.importFailures++;
+								this.progressUpdate();
 							}.bind(this)
 						);
 					} else {
 						Mojo.Log.info("Failed to insert cache " + item['geocode'] + ". Error: " + error.message);
 						this.importFailures++;
+						this.progressUpdate();
 					}
-					this.progressUpdate();
 				}.bind(this)
 			);
 		}).bind(this)
