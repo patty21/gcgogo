@@ -23,7 +23,8 @@ OfflineAssistant.prototype.setup = function() {
 			'textFieldName':  'name',
 			'multiline':              false,
 			'textReplacement': false,
-			'maxLength': 20
+			'maxLength': 20,
+			'modifierState': Mojo.Widget.numLock
 		},
 		this.modelActionByCoorsLat = {
 			'value' : '',
@@ -37,7 +38,8 @@ OfflineAssistant.prototype.setup = function() {
 			'textFieldName':  'name',
 			'multiline':              false,
 			'textReplacement': false,
-			'maxLength': 20
+			'maxLength': 20,
+			'modifierState': Mojo.Widget.numLock
 		},
 		this.modelActionByCoorsLon = {
 			'value' : '',
@@ -50,7 +52,8 @@ OfflineAssistant.prototype.setup = function() {
 			'textFieldName':  'name',
 			'multiline':              false,
 			'textReplacement': false,
-			'maxLength': 4
+			'maxLength': 4,
+			'modifierState': Mojo.Widget.numLock
 		},
 		this.modelActionByCoordsNum = {
 			'value' : '',

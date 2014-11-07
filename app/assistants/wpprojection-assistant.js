@@ -50,14 +50,18 @@ WpprojectionAssistant.prototype.setup = function() {
 		}
 	);
 	this.controller.setupWidget('angle',
-		this.attributesAngle = {},
+		this.attributesAngle = {
+			'modifierState': Mojo.Widget.numLock
+		},
 		this.modelAngle = {
 			'value': '',
 			'disabled': false
 		}
 	);	
 	this.controller.setupWidget('distance',
-		this.attributesDistance = {},
+		this.attributesDistance = {
+			'modifierState': Mojo.Widget.numLock
+		},
 		this.modelDistance = {
 			'value': '',
 			'disabled': false
