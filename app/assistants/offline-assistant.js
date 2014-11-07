@@ -50,11 +50,17 @@ OfflineAssistant.prototype.setup = function() {
 			'textFieldName':  'name',
 			'multiline':              false,
 			'textReplacement': false,
-			'maxLength': 3
+			'maxLength': 4
 		},
 		this.modelActionByCoordsNum = {
 			'value' : '',
 			'disabled': false
+		}
+	);
+	this.controller.setupWidget('checkbox-spoilers',
+		{},
+		this.modelCheckboxSpoilers = {
+		'value': Geocaching.settings['spoiler']
 		}
 	);
 	this.controller.setupWidget('action-button-bycoords', {},
@@ -143,6 +149,8 @@ OfflineAssistant.prototype.actionByCoordsClicked = function(event) {
 	var lat = this.controller.get('action-bycoordslat').mojo.getValue();
 	var lon = this.controller.get('action-bycoordslon').mojo.getValue();
 	this.dlnum = this.controller.get('action-bycoordsnum').mojo.getValue();
+	this.loadspoilers = this.modelCheckboxSpoilers.value;
+	Mojo.Log.error('Spoilers:'+this.loadspoilers);
 	this.dlnumtotal = this.dlnum;
 	var latitude = Geocaching.parseCoordinate(lat);
 	var longitude = Geocaching.parseCoordinate(lon);
@@ -244,7 +252,7 @@ OfflineAssistant.prototype.downloadNext = function () {
 						transaction.executeSql(query, [], 
 							function() {
 								// Success - Next Cache
-								if (Geocaching.settings['spoiler']) this.downloadSpoilers(cache[this.geocode].spoilerImages,this.geocode);
+								if (this.loadspoilers) this.downloadSpoilers(cache[this.geocode].spoilerImages,this.geocode);
 								this.downloadNext();
 							}.bind(this),
 							function(transaction, error) {
@@ -259,7 +267,7 @@ OfflineAssistant.prototype.downloadNext = function () {
 										'"longitude"='+ escape(cache[this.geocode].longitude) +' '+
 										' WHERE "gccode"="'+ escape(this.geocode) +'"; GO; ', []);
 								}
-								if (Geocaching.settings['spoiler']) this.downloadSpoilers(cache[this.geocode].spoilerImages,this.geocode);
+								if (this.loadspoilers) this.downloadSpoilers(cache[this.geocode].spoilerImages,this.geocode);
 								this.downloadNext();
 							}.bind(this)
 						);

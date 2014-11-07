@@ -150,7 +150,7 @@ GeocachingCom.prototype.parseSearch = function(url, reply, list)
 	if (list == null) {list = new Array();}
 
 	for(var z=1; z<rows_count; z++) { try {
-		Mojo.Log.error(Object.toJSON(z));
+//		Mojo.Log.info(Object.toJSON(z));
 		var row = rows[z];
 		var listRow = {}
 		var tmp;

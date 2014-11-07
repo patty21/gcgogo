@@ -27,8 +27,8 @@ SpoilerimagesAssistant.prototype.setup = function() {
 	this.appMenuModel = {
 		'visible': true,
 		'items': [
-//			{'label': $L("Reload images"), 'command': 'reloadcache' },
-			{'label': $L("Load image from web"), 'command': 'web' },
+			{'label': $L("(Re-)save image"), 'command': 'save' },
+			{'label': $L("Show image from web"), 'command': 'web' },
 		]
 	};
 	this.controller.setupWidget(Mojo.Menu.appMenu, {'omitDefaultItems': true}, this.appMenuModel);
@@ -42,6 +42,7 @@ SpoilerimagesAssistant.prototype.checkImage = function() {
 	var targetdir = ImageDir+this.geocode.substr(0,4)+"/"+this.geocode+"/";
 	var targetfile = this.photos[this.num]['url'].substr(this.photos[this.num]['url'].length-40,40);
 	Mojo.Log.error("Check_Image:"+this.num+' '+targetdir+targetfile);
+	this.urls[this.num]=this.photos[this.num]['url'];
 	this.purl=targetdir+targetfile;
 	var request = new Ajax.Request(targetdir+targetfile, {
         	method: "get",
@@ -51,7 +52,6 @@ SpoilerimagesAssistant.prototype.checkImage = function() {
 				img.src=this.purl;
 				if (img.width>0) {
 					Mojo.Log.info("Image "+this.num+": local - "+img.width+"x"+img.height);
-					this.urls[this.num]=this.photos[this.num]['url'];
 					this.photos[this.num]['url']=this.purl;
 				} else {
 					Mojo.Log.info("Image "+this.num+": screwed - "+img.width+"x"+img.height);
@@ -162,6 +162,11 @@ SpoilerimagesAssistant.prototype.handleCommand = function(event) {
 				}
 				Mojo.Log.info("Reset"+JSON.stringify(this.photos));
 				this.updateImages();
+			break;
+			case 'save':
+				Geocaching.accounts['geocaching.com'].loadSpoiler(this.urls[this.idx],this.geocode,function() {}, function() {});
+				Mojo.Log.info("Resave:"+JSON.stringify(this.urls[this.idx]));
+			break;
 			default:
 			break;
 		}
