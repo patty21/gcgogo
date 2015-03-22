@@ -471,9 +471,6 @@ MainAssistant.prototype.setup = function() {
 			if(typeof(response.recalculatedistance)!='undefined') {
 				Geocaching.settings['recalculatedistance'] = response.recalculatedistance;
 			}
-			if(typeof(response.go4cache)!='undefined') {
-				Geocaching.settings['go4cache'] = response.go4cache;
-			}
 			if(typeof(response.debug)!='undefined') {
 				Geocaching.settings['debug'] = response.debug;
 			}
@@ -752,13 +749,6 @@ MainAssistant.prototype.showTip = function() {
 	if(showTipRand == 3) {
 		// User tips
 		var userTips = new Array();
-		if(!Geocaching.settings['go4cache']) {
-			userTips.push({
-				'text': $L("Share location with others..."),
-				'params': {'scene': 'settings'}
-			});
-		}
-		
 		if(Geocaching.settings['minimalaccuracy'] == 34) {
 			userTips.push({
 				'text': $L("You can set minimal GPS accuracy for compass."),
@@ -928,11 +918,6 @@ MainAssistant.prototype.actionByCoordsClicked = function(event) {
 	this.inputs['bycoordslon'] = longitude;
 	this.saveInputs();
 
-	// Share GPS location
-	if(Geocaching.settings['go4cache']) {
-		Geocaching.accounts['go4cache'].sendLocation(lat, lon, 'discovering');
-	}
-	
 	this.controller.stageController.pushScene('list', 'coords', {
 		'lat': latitude,
 		'lon': longitude,
@@ -1006,11 +991,6 @@ MainAssistant.prototype.actionNearestMapSuccess = function(event) {
 		}, '', 'nearest');
 	this.controller.get('action-bycoordslat').mojo.setValue(Geocaching.toLatLon(latitude,'lat'));
 	this.controller.get('action-bycoordslon').mojo.setValue(Geocaching.toLatLon(longitude,'lon'));
-
-	// Share GPS location
-	if(Geocaching.settings['go4cache']) {
-		Geocaching.accounts['go4cache'].sendLocation(latitude, longitude, 'pending');
-	}
 
 	this.inputs['bycoordslat'] = latitude;
 	this.inputs['bycoordslon'] = longitude;
@@ -1150,11 +1130,6 @@ MainAssistant.prototype.actionByAddressClicked = function(event) {
 				Mojo.Controller.getAppController().removeBanner('search');
 				Mojo.Controller.getAppController().showBanner({'messageText': $L("Found: ")+addresses[0]['address'] }, '', 'search');
 				
-				// Share GPS location
-				if(Geocaching.settings['go4cache']) {
-					Geocaching.accounts['go4cache'].sendLocation(addresses[0]['latitude'], addresses[0]['longitude'], 'discovering');
-				}
-				
 				this.controller.stageController.pushScene('list', 'coords', {
 					'lat': addresses[0]['latitude'],
 					'lon': addresses[0]['longitude'],
@@ -1168,11 +1143,6 @@ MainAssistant.prototype.actionByAddressClicked = function(event) {
 						addresses,
 						this,
 						function(latitude, longitude) {
-							// Share GPS location
-							if(Geocaching.settings['go4cache']) {
-								Geocaching.accounts['go4cache'].sendLocation(latitude, longitude, 'discovering');
-							}
-							
 							this.controller.stageController.pushScene('list', 'coords', {
 								'lat': latitude,
 								'lon': longitude,

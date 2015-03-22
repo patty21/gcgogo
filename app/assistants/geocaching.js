@@ -261,7 +261,6 @@ var Geocaching = {
 	},
 	'accounts': {
 		'geocaching.com': new GeocachingCom,
-		'go4cache': new Go4Cache,
 		'gcvote': new GCVote
 	},
 	'settings' : {
@@ -288,7 +287,6 @@ var Geocaching = {
 			'mappingtool': false,
 			'compass': false
 		},
-		'go4cache': false,
 		'debug': true
 	},
 	'storage': null,

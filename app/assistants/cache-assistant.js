@@ -987,11 +987,6 @@ CacheAssistant.prototype.actionMyPositionSuccess = function(event) {
 	var latitude = event.latitude.toFixed(5);
 	var longitude = event.longitude.toFixed(5);
 
-	// Share GPS location
-	if(Geocaching.settings['go4cache']) {
-		Geocaching.accounts['go4cache'].sendLocation(latitude, longitude, this.geocode);
-	}
-	
 	var distance = Geocaching.getDistance(latitude, longitude, cache[this.geocode].latitude, cache[this.geocode].longitude);	
 	var markerSize = 'tiny';
 	if(distance > 5) {
@@ -1045,11 +1040,6 @@ CacheAssistant.prototype.actionMyPositionSuccess = function(event) {
 };
 
 CacheAssistant.prototype.actionMyPositionFailed = function(event) {
-	
-	// Share GPS location
-	if(Geocaching.settings['go4cache']) {
-		Geocaching.accounts['go4cache'].sendLocation(cache[this.geocode].latitude, cache[this.geocode].longitude, 'discovering');
-	}	
 	
 	var icon = 'http://www.geocaching.com/images/wpttypes/sm/'+ cache[this.geocode].type +'.gif';
 	var width = 320;

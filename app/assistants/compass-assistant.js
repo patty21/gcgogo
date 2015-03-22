@@ -209,13 +209,6 @@ CompassAssistant.prototype.renderCompass = function() {
 		if(this.accuracy <= Geocaching.settings['minimalaccuracy']) {
 			badFix = false;
 		}
-
-		if(typeof(this.parameters['latitude']) != 'undefined' && typeof(this.parameters['longitude']) != 'undefined') {
-			// Share GPS location
-			if(Geocaching.settings['go4cache']) {
-				Geocaching.accounts['go4cache'].sendLocation(this.latitude, this.longitude, this.parameters['title']);
-			}
-		}
 	}
 	
 	if(this.accuracy) {

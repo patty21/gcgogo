@@ -210,20 +210,6 @@ SettingsAssistant.prototype.setup = function() {
 		}
 	);
 
-	/* Share location */
-	this.controller.setupWidget('toggle-go4cache',
-		{
-			'trueValue': true,
-			'trueLabel': $L("Yes"),
-			'falseValue': false,
-			'falseLabel': $L("No")
-		},
-		this.modelGo4Cache = {
-			'value': Geocaching.settings['go4cache'],
-			'disabled': false
-		}
-	);
-
 	/* Debugging */
 	this.controller.setupWidget('toggle-debug',
 		{

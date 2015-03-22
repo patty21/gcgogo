@@ -1,7 +1,6 @@
 [
     {"source": "app/assistants/prototype.js"},
     {"source": "plugins/geocaching.com.js"},
-    {"source": "plugins/go4cache.js"},
     {"source": "plugins/gcvote.js"},
     {"source": "app/assistants/geocaching.js"},
     {"source": "app/assistants/app-assistant.js"},
