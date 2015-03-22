@@ -8,6 +8,51 @@ function CacheAssistant(gccode) {
 	}
 }
 
+CacheAssistant.prototype.prepareCacheDB = function(results) {
+	var item = [];
+	try {
+		var caches = results.rows.length;
+		if(caches == 0) throw("Not in database");
+		delete(caches);
+
+		item = results.rows.item(0);
+
+		this.geocode = item['gccode'];
+		cache[this.geocode] = unescape(item['json']).evalJSON();
+
+		try {
+			cache[this.geocode].userdata = unescape(item['userdata']).evalJSON();
+		} catch(e) {
+			cache[this.geocode].userdata = {};
+		}
+
+		try {
+			if(item['found'] == 1)
+				cache[this.geocode].found = true;
+		} catch(e) {}
+
+		try {
+			if(item['favourite'] == 1)
+				cache[this.geocode].favourite = true;
+		} catch(e) {}
+		try {
+			cache[this.geocode].logs = unescape(item['logs']).evalJSON();
+		} catch(e) {
+			cache[this.geocode].logs = {};
+		}
+
+		cache[this.geocode].updated = item['updated'];
+
+		if(typeof(cache[this.geocode].guid) == 'undefined')
+			throw("loadit")
+
+		this.showCacheDetail(this.geocode);
+	} catch(e) {
+		Mojo.Log.error(Object.toJSON(e));
+		this.reloadCache();
+	}
+}
+
 CacheAssistant.prototype.setup = function() {
 	//this.controller.stageController.setWindowOrientation('free');
 	if (this.geocode) {
@@ -57,52 +102,13 @@ CacheAssistant.prototype.setup = function() {
 	);
 
 	if(this.geocode !== false) {
+		Mojo.Log.info('CacheAssistant.setup: Loading cache by gccode: '+this.geocode);
 		if (Geocaching.db != null) {
-			var item = [];
 			Geocaching.db.transaction( 
 				(function (transaction) {
 					transaction.executeSql('select * from "caches" where "gccode"= ?;', [this.geocode],
 						function(transaction, results) {
-							try {
-								var caches = results.rows.length;
-								if(caches == 0) throw("Not in database");
-								delete(caches);
-
-								item = results.rows.item(0);
-
-								cache[this.geocode] = unescape(item['json']).evalJSON();
-
-								try {
-									cache[this.geocode].userdata = unescape(item['userdata']).evalJSON();
-								} catch(e) {
-									cache[this.geocode].userdata = {};
-								}
-								
-								try {
-									if(item['found'] == 1)
-										cache[this.geocode].found = true;
-								} catch(e) {}
-
-								try {
-									if(item['favourite'] == 1)
-										cache[this.geocode].favourite = true;
-								} catch(e) {}
-								try {
-									cache[this.geocode].logs = unescape(item['logs']).evalJSON();
-								} catch(e) {
-									cache[this.geocode].logs = {};
-								}
-
-								cache[this.geocode].updated = item['updated'];
-
-								if(typeof(cache[this.geocode].guid) == 'undefined')
-									throw("loadit")
-
-								this.showCacheDetail(this.geocode);
-							} catch(e) {
-								Mojo.Log.error(Object.toJSON(e));
-								this.reloadCache();
-							}
+							this.prepareCacheDB(results);
 						}.bind(this)
 					); 
 				}).bind(this) 
@@ -121,57 +127,14 @@ CacheAssistant.prototype.setup = function() {
 			);
 		}
 	} else {
-		Mojo.Log.info('Loading by guid: '+this.guid);
+		Mojo.Log.info('CacheAssistant.setup: Loading by guid: '+this.guid);
 		//  Load cache by guid
 		if (Geocaching.db != null) {
-			var item = [];
 			Geocaching.db.transaction( 
 				(function (transaction) {
 					transaction.executeSql('select * from "caches" where "guid"= ?;', [this.guid],
 						function(transaction, results) {
-							try {
-								var caches = results.rows.length;
-								if(caches == 0) throw("Not in database");
-								delete(caches);
-
-								item = results.rows.item(0);
-
-								this.geocode = item['gccode'];
-								cache[this.geocode] = unescape(item['json']).evalJSON();
-
-								try {
-									cache[this.geocode].userdata = unescape(item['userdata']).evalJSON();
-								} catch(e) {
-									cache[this.geocode].userdata = {};
-								}
-
-								try {
-									if(item['found'] == 1)
-										cache[this.geocode].found = true;
-								} catch(e) {}
-
-								try {
-									if(item['favourite'] == 1)
-										cache[this.geocode].favourite = true;
-								} catch(e) {}
-								
-								try {
-									cache[this.geocode].logs = unescape(item['logs']).evalJSON();
-								} catch(e) {
-									cache[this.geocode].logs = {};
-								}
-
-
-								cache[this.geocode].updated = item['updated'];
-
-								if(typeof(cache[this.geocode].guid) == 'undefined')
-									throw("loadit")
-
-								this.showCacheDetail(this.geocode);
-							} catch(e) {
-								Mojo.Log.error(Object.toJSON(e));
-								this.reloadCache();
-							}
+							this.prepareCacheDB(results);
 						}.bind(this)
 					); 
 				}).bind(this) 
@@ -795,6 +758,53 @@ CacheAssistant.prototype.cacheAttributes = function(event) {
 	}
 }
 
+CacheAssistant.prototype.updateDB = function(item) {
+	Mojo.Log.info('CacheAssistant.updateDB: Updating cache DB: '+this.geocode);
+	try {
+		if(item['found'] == 1)
+			cache[this.geocode].found = true;
+	} catch(e) {}
+	var ts = Math.round(new Date().getTime() / 1000);
+	cache[this.geocode].updated = ts;
+	var logs=cache[this.geocode].logs;
+	delete(cache[this.geocode].logs);
+	var query = 'INSERT INTO "caches"("gccode", "guid", "updated", "found", "latitude", "longitude", "json", "logs") VALUES ("'+
+		escape(this.geocode) + '", "' +
+		escape(this.guid) + '", ' +
+		escape(ts) + ', ' +
+		escape(cache[this.geocode].found?1:0) + ', ' +
+		escape(cache[this.geocode].latitude) + ', ' +
+		escape(cache[this.geocode].longitude) + ', "' +
+		escape(Object.toJSON(cache[this.geocode])) +'","'+
+		escape(Object.toJSON(logs))+ '"); GO;';
+
+	Geocaching.db.transaction(
+		(function (transaction) {
+			transaction.executeSql(query, [],
+				function() {},
+				function(transaction, error) {
+					if(error['code'] == 1) {
+						transaction.executeSql('UPDATE "caches" SET '+
+							'"guid"="'+ escape(cache[this.geocode].guid) +'", '+
+							'"json"="'+ escape(Object.toJSON(cache[this.geocode])) +'", '+
+							'"logs"="'+ escape(Object.toJSON(logs)) +'", '+
+							'"updated"="'+ escape(ts) +'", '+
+							'"found"="'+ escape(cache[this.geocode].found?1:0) +'", '+
+							'"latitude"='+ escape(cache[this.geocode].latitude) +', '+
+							'"longitude"='+ escape(cache[this.geocode].longitude) +' '+
+							' WHERE "gccode"="'+ escape(this.geocode) +'"; GO; ', []);
+					}
+				}.bind(this)
+			);
+		}).bind(this)
+	);
+	cache[this.geocode].userdata = item['userdata'];
+	cache[this.geocode].logs=logs;
+	this.showCacheDetail(this.geocode);
+	if (Geocaching.settings['gcvote']) Geocaching.accounts['gcvote'].getSingleVote(cache[this.geocode].guid,this.updateVote.bind(this));
+	if (Geocaching.settings['spoiler']) this.checkSpoilers(this.geocode);
+}
+
 CacheAssistant.prototype.reloadCache = function() {
 	if (this.geocode) {
 		this.controller.get('cache-title').update(this.geocode);
@@ -824,56 +834,14 @@ CacheAssistant.prototype.reloadCache = function() {
 	}
 
 	if(this.geocode !== false) {
+		Mojo.Log.info('CacheAssistant.reloadCache: Reloading cache by gccode: '+this.geocode);
 		Geocaching.accounts['geocaching.com'].loadCache({
 				'geocode': this.geocode
 			},
 			function() {
-				try {
-					if(item['found'] == 1)
-						cache[this.geocode].found = true;
-				} catch(e) {}
-				cache[this.geocode].userdata = item['userdata'];
-
-				var ts = Math.round(new Date().getTime() / 1000);
-				cache[this.geocode].updated = ts;
-				var logs=cache[this.geocode].logs;
-				delete(cache[this.geocode].logs);
 				this.guid = cache[this.geocode].guid;
+				this.updateDB(item);
 
-				var query = 'INSERT INTO "caches"("gccode", "guid", "updated", "found", "latitude", "longitude", "json", "logs") VALUES ("'+
-					escape(this.geocode) + '", "' + 
-					escape(this.guid) + '", ' + 
-					escape(ts) + ', ' +
-					escape(cache[this.geocode].found?1:0) + ', ' +
-					escape(cache[this.geocode].latitude) + ', ' +
-					escape(cache[this.geocode].longitude) + ', "' +  
-					escape(Object.toJSON(cache[this.geocode])) +'","'+
-					escape(Object.toJSON(logs))+ '"); GO;';
-
-				Geocaching.db.transaction( 
-					(function (transaction) { 
-						transaction.executeSql(query, [], 
-							function() {},
-							function(transaction, error) {
-								if(error['code'] == 1) {
-									transaction.executeSql('UPDATE "caches" SET '+
-										'"guid"="'+ escape(cache[this.geocode].guid) +'", '+
-										'"json"="'+ escape(Object.toJSON(cache[this.geocode])) +'", '+
-										'"logs"="'+ escape(Object.toJSON(logs)) +'", '+
-										'"updated"="'+ escape(ts) +'", '+
-										'"found"="'+ escape(cache[this.geocode].found?1:0) +'", '+
-										'"latitude"='+ escape(cache[this.geocode].latitude) +', '+
-										'"longitude"='+ escape(cache[this.geocode].longitude) +' '+
-										' WHERE "gccode"="'+ escape(this.geocode) +'"; GO; ', []);
-								}
-							}.bind(this)
-						);
-					}).bind(this) 
-				); 
-				cache[this.geocode].logs=logs;
-				this.showCacheDetail(this.geocode);
-				if (Geocaching.settings['gcvote']) Geocaching.accounts['gcvote'].getSingleVote(cache[this.geocode].guid,this.updateVote.bind(this));
-				if (Geocaching.settings['spoiler']) this.checkSpoilers(this.geocode);
 			}.bind(this),
 			this.saveLogs.bind(this),
 			function(message) {
@@ -885,54 +853,14 @@ CacheAssistant.prototype.reloadCache = function() {
 		);
 	} else {
 		// Load by GUID
+		Mojo.Log.info('CacheAssistant.reloadCache: Reloading cache by guid: '+this.guid);
 		Geocaching.accounts['geocaching.com'].loadCache({
 				'guid': this.guid
 			},
 			function(geocode) {
 				this.geocode = geocode;
-				try {
-					if(item['found'] == 1)
-						cache[this.geocode].found = true;
-				} catch(e) {}
+				this.updateDB(item);
 
-				var ts = Math.round(new Date().getTime() / 1000);
-				cache[this.geocode].updated = ts;
-				var logs=cache[this.geocode].logs;
-				delete(cache[this.geocode].logs);
-				var query = 'INSERT INTO "caches"("gccode", "guid", "updated", "found", "latitude", "longitude", "json", "logs") VALUES ("'+
-					escape(this.geocode) + '", "' + 
-					escape(this.guid) + '", ' + 
-					escape(ts) + ', ' +
-					escape(cache[this.geocode].found?1:0) + ', ' +
-					escape(cache[this.geocode].latitude) + ', ' +
-					escape(cache[this.geocode].longitude) + ', "' +  
-					escape(Object.toJSON(cache[this.geocode])) +'","'+
-					escape(Object.toJSON(logs))+ '"); GO;';
-					
-				Geocaching.db.transaction( 
-					(function (transaction) { 
-						transaction.executeSql(query, [], 
-							function() {},
-							function(transaction, error) {
-								if(error['code'] == 1) {
-									transaction.executeSql('UPDATE "caches" SET '+
-										'"guid"="'+ escape(cache[this.geocode].guid) +'", '+
-										'"json"="'+ escape(Object.toJSON(cache[this.geocode])) +'", '+
-										'"logs"="'+ escape(Object.toJSON(logs)) +'", '+
-										'"updated"="'+ escape(ts) +'", '+
-										'"found"="'+ escape(cache[this.geocode].found?1:0) +'", '+
-										'"latitude"='+ escape(cache[this.geocode].latitude) +', '+
-										'"longitude"='+ escape(cache[this.geocode].longitude) +' '+
-										' WHERE "gccode"="'+ escape(this.geocode) +'"; GO; ', []);
-								}
-							}.bind(this)
-						);
-					}).bind(this) 
-				); 
-				cache[this.geocode].logs=logs;
-				this.showCacheDetail(this.geocode);
-				if (Geocaching.settings['gcvote']) Geocaching.accounts['gcvote'].getSingleVote(cache[this.geocode].guid,this.updateVote.bind(this));
-				if (Geocaching.settings['spoiler']) this.checkSpoilers(this.geocode);
 			}.bind(this),
 			this.saveLogs.bind(this),
 			function(message) {
