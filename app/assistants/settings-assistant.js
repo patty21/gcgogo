@@ -264,7 +264,6 @@ SettingsAssistant.prototype.setup = function() {
 	Mojo.Event.listen(this.controller.get('toggle-fieldnotes'), Mojo.Event.propertyChange, this.actionSave);
 	Mojo.Event.listen(this.controller.get('toggle-autoclean'), Mojo.Event.propertyChange, this.actionSave);
 	Mojo.Event.listen(this.controller.get('toggle-recalculatedistance'), Mojo.Event.propertyChange, this.actionSave);
-	Mojo.Event.listen(this.controller.get('toggle-go4cache'), Mojo.Event.propertyChange, this.actionSave);
 	Mojo.Event.listen(this.controller.get('toggle-debug'), Mojo.Event.propertyChange, this.actionSave);
 
 	if( gcGogo.isTouchpad() ){
@@ -311,7 +310,6 @@ SettingsAssistant.prototype.cleanup = function(event) {
 	Mojo.Event.stopListening(this.controller.get('toggle-fieldnotes'), Mojo.Event.propertyChange, this.actionSave);
 	Mojo.Event.stopListening(this.controller.get('toggle-autoclean'), Mojo.Event.propertyChange, this.actionSave);
 	Mojo.Event.stopListening(this.controller.get('toggle-recalculatedistance'), Mojo.Event.propertyChange, this.actionSave);
-	Mojo.Event.stopListening(this.controller.get('toggle-go4cache'), Mojo.Event.propertyChange, this.actionSave);
 	Mojo.Event.stopListening(this.controller.get('toggle-debug'), Mojo.Event.propertyChange, this.actionSave);
 }
 
@@ -331,7 +329,6 @@ SettingsAssistant.prototype.actionSave = function(event) {
 	Geocaching.settings['recalculatedistance'] = this.modelRecalculateDistance.value;
 	Geocaching.settings['logcount'] = this.modelLogCount.value;
 	Geocaching.settings['minimalaccuracy'] = this.modelMinimalAccuracy.value;
-	Geocaching.settings['go4cache'] = this.modelGo4Cache.value;
 	Geocaching.settings['debug'] = this.modelDebug.value;
 	Geocaching.saveSettings();
 
