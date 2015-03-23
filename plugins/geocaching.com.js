@@ -1291,14 +1291,14 @@ GeocachingCom.prototype.loadImages = function(params, success, failure)
 			// gallery images
 			cache[geocode].galleryImages = new Array();
 			try {
-				tmp = reply.match(/<a href='([^']+)' data-title='[^']+' class="imageLink" rel="gallery">\s*<img\s+src='(http:\/\/imgcdn.geocaching.com)?\/cache\/log\/thumb\/([^']+)' alt='[^']+' \/><\/a><br \/>\s*<small><strong>\s*([^<]*)<\/strong><\/small>/ig);
+				tmp = reply.match(/<a href='([^']+)' data-title='[^']+' class="imageLink" rel="gallery">\s*<img\s+src='(http:\/\/img.geocaching.com)?\/cache\/log\/thumb\/([^']+)' alt='[^']+' \/><\/a><br \/>\s*<small><strong>\s*([^<]*)<\/strong><\/small>/ig);
 				if(tmp.length>0) {
 					var len = tmp.length, imgTmp, img;
 					for(var z=0; z<len; z++) {
-						imgTmp = tmp[z].match(/<a href='([^']+)' data-title='[^']+' class="imageLink" rel="gallery">\s*<img\s+src='(http:\/\/imgcdn.geocaching.com)?\/cache\/log\/thumb\/([^']+)' alt='[^']+' \/><\/a><br \/>\s*<small><strong>\s*([^<]*)<\/strong><\/small>/i);
+						imgTmp = tmp[z].match(/<a href='([^']+)' data-title='[^']+' class="imageLink" rel="gallery">\s*<img\s+src='(http:\/\/img.geocaching.com)?\/cache\/log\/thumb\/([^']+)' alt='[^']+' \/><\/a><br \/>\s*<small><strong>\s*([^<]*)<\/strong><\/small>/i);
 						img = {
 							'name': imgTmp[4],
-							'url': 'http:\/\/imgcdn.geocaching.com\/cache\/log\/' + imgTmp[3]
+							'url': 'http:\/\/img.geocaching.com\/cache\/log\/' + imgTmp[3]
 						}
 						cache[geocode].galleryImages.push(Object.clone(img));
 					}
