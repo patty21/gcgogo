@@ -87,7 +87,7 @@ GeocachingCom.prototype.getUID = function(success)
 
 GeocachingCom.prototype.checkLogin = function(page)
 {
-	if(-1 != page.search('<a href="/my/default.aspx"')) {
+	if(-1 != page.search('<a class="SignedInProfileLink" href="/my/default.aspx"')) {
 		return true;
 	}
 	if(-1 != page.search('href="../my/default.aspx">')) {
