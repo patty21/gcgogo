@@ -79,7 +79,7 @@ PostlogAssistant.prototype.setup = function() {
 		},
 		this.trackablesListModel = {
 			'listTitle': $L("Trackables"),
-			'items' : null
+			'items' : []
 		}
 	);
 	// Change radio
