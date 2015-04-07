@@ -275,6 +275,17 @@ MainAssistant.prototype.setup = function() {
 		}
 	);
 
+	/* Field Notes */
+	if( Geocaching.settings['fieldnotes'] ){
+		this.controller.setupWidget('action-button-fieldnotes', {},
+			{
+				'label': $L("Field Notes"),
+				'buttonClass': "palm-button primary",
+				'disabled': false
+			}
+		);
+	}
+
 	/* Trackable by code/number */
 	this.controller.setupWidget('action-tbcode',
 		this.attributesActionTBCode = {
@@ -408,6 +419,11 @@ MainAssistant.prototype.setup = function() {
 	/* Import */
 	this.actionImportClicked = this.actionImportClicked.bind(this);
 	Mojo.Event.listen(this.controller.get('action-button-import'), Mojo.Event.tap, this.actionImportClicked);
+	/* Field Notes */
+	if( Geocaching.settings['fieldnotes'] ){
+		this.actionFieldNotesClicked = this.actionFieldNotesClicked.bind(this);
+		Mojo.Event.listen(this.controller.get('action-button-fieldnotes'), Mojo.Event.tap, this.actionFieldNotesClicked);
+	}
 	/* Trackable by TB Code */
 	this.actionTBCodeClicked = this.actionTBCodeClicked.bind(this);
 	Mojo.Event.listen(this.controller.get('action-button-tbcode'), Mojo.Event.tap, this.actionTBCodeClicked);
@@ -491,6 +507,11 @@ MainAssistant.prototype.setup = function() {
 			}
 			if(typeof(response['tutorials'].mappingtool)!='undefined') {
 				Geocaching.settings['tutorials'].mappingtool = response['tutorials'].mappingtool;
+			}
+			
+			// Field Notes
+			if(typeof(response['notes'])!='undefined') {
+				Geocaching.settings['notes'] = response['notes'];
 			}
 		}
 		// Changelog
@@ -682,6 +703,9 @@ MainAssistant.prototype.cleanup = function(event) {
 	Mojo.Event.stopListening(this.controller.get('action-button-quickdecode'), Mojo.Event.tap, this.actionQuickDecodeClicked);
 	Mojo.Event.stopListening(this.controller.get('action-button-favourite'), Mojo.Event.tap, this.actionFavouriteClicked);
 	Mojo.Event.stopListening(this.controller.get('action-button-import'), Mojo.Event.tap, this.actionImportClicked);
+	if( Geocaching.settings['fieldnotes'] ){
+		Mojo.Event.stopListening(this.controller.get('action-button-fieldnotes'), Mojo.Event.tap, this.actionFieldNotesClicked);
+	}
 	Mojo.Event.stopListening(this.controller.get('action-button-tbcode'), Mojo.Event.tap, this.actionTBCodeClicked);
 	Mojo.Event.stopListening(this.controller.get('action-button-trackables-keyword'), Mojo.Event.tap, this.actionTrackableSearchClicked);
 	Mojo.Event.stopListening(this.controller.get('action-button-trackable-favourites'), Mojo.Event.tap, this.actionTrackableFavouritesClicked);
@@ -1056,6 +1080,10 @@ MainAssistant.prototype.actionFavouriteClicked = function(event) {
 
 MainAssistant.prototype.actionImportClicked = function(event) {
 	this.controller.stageController.pushScene('import');
+}
+
+MainAssistant.prototype.actionFieldNotesClicked = function(event) {
+	this.controller.stageController.pushScene('list', 'fieldnotes', {'page': 1});
 }
 
 MainAssistant.prototype.actionTBCodeClicked = function(event) {

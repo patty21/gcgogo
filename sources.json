@@ -3,6 +3,7 @@
     {"source": "plugins/geocaching.com.js"},
     {"source": "plugins/gcvote.js"},
     {"source": "app/assistants/geocaching.js"},
+    {"source": "app/assistants/fieldnotes.js"},
     {"source": "app/assistants/app-assistant.js"},
     {"source": "app/assistants/stage-assistant.js"},
     {"source": "app/assistants/main-addresses-assistant.js"},

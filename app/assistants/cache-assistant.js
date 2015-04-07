@@ -184,6 +184,9 @@ CacheAssistant.prototype.activate = function(event) {
 	if(event == 'posted') {
 		this.reloadCache();
 	}
+	if(event == 'reload-db') {
+		this.showCacheDetail(this.geocode);
+	}
 	var wpCount = 0;
 	if( cache[this.geocode] ){
 		var wpCount = cache[this.geocode].waypoints.length;
@@ -494,18 +497,21 @@ CacheAssistant.prototype.handleCommand = function(event) {
 						'onChoose': function(choice) {
 							switch(choice) {
 								case 'postlog':
-									this.controller.stageController.pushScene('postlog', this.geocode);
+									this.controller.stageController.pushScene('postlog', this.geocode, false);
+									break;
+								case 'fieldnote':
+									this.controller.stageController.pushScene('postlog', this.geocode, true);
 									break;
 							}
 						}.bind(this),
 						'placeNear': event.originalEvent.target,
 						'items': [
 							{'label': $L("Post log"), 'command': 'postlog'},
-							{'label': $L("Fieldnote"),'disabled':true, 'command': 'fieldnote'}
+							{'label': $L("Fieldnote (offline)"), 'command': 'fieldnote'}
 						]
 					});
 				} else {
-					this.controller.stageController.pushScene('postlog', this.geocode);
+					this.controller.stageController.pushScene('postlog', this.geocode, false);
 				}
 			break;
 			case 'findnearby':
@@ -841,7 +847,6 @@ CacheAssistant.prototype.reloadCache = function() {
 			function() {
 				this.guid = cache[this.geocode].guid;
 				this.updateDB(item);
-
 			}.bind(this),
 			this.saveLogs.bind(this),
 			function(message) {

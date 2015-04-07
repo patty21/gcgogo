@@ -287,7 +287,8 @@ var Geocaching = {
 			'mappingtool': false,
 			'compass': false
 		},
-		'debug': true
+		'debug': true,
+		'notes': []
 	},
 	'storage': null,
 	'db': null, 

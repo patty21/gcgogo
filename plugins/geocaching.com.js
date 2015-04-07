@@ -2371,5 +2371,3 @@ GeocachingCom.prototype.ownedFinds = function(success, failure)
 		}
 	}.bind(this), timeout*1000, ajaxId, success, failure);
 };
-
-

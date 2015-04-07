@@ -30,7 +30,7 @@ ListAssistant.prototype.setup = function() {
 		}
 	);
 
-	var swipe =  this.searchMethod == 'favourite';
+	var swipe = (this.searchMethod == 'favourite' || this.searchMethod == 'fieldnotes');
 	if(swipe == false) {
 		try {
 			swipe = this.searchParameters['url'].match(/^\-/);
@@ -70,7 +70,11 @@ ListAssistant.prototype.setup = function() {
 				((this.searchMethod == 'coords' || this.searchMethod == 'favourite')?
 				{'items': [
 					{'label': $L("Show on map"), 'iconPath': defaultnavigationIcons['mappingtool'], 'command': 'mappingtool'}
-				]} : {})
+				]} : ( this.searchMethod == 'fieldnotes'
+					? {'items': [
+						{'label': $L("Export"), 'icon': 'send', 'command': 'export'}
+					]}
+					: {}))
 			]}
 	);
 	
@@ -93,6 +97,18 @@ ListAssistant.prototype.setup = function() {
 			if(tmp = this.searchParameters['url'].match(/^\-favourites\-(\d+)$/)) {
 				// Favourites - next page
 				this.loadFavourites({
+						'page': Number(tmp[1]) +1
+					},
+					this.buildList.bind(this),
+					function(message) {
+						this.controller.get('loading-spinner').hide();
+						this.showPopup(null, $L("Problem"), message, function() { Mojo.Controller.stageController.popScene(); });
+						return false;
+					}.bind(this)
+				);
+			} else if(tmp = this.searchParameters['url'].match(/^\-fieldnotes\-(\d+)$/)) {
+				// Field Notes - next page
+				this.loadFieldNotes({
 						'page': Number(tmp[1]) +1
 					},
 					this.buildList.bind(this),
@@ -178,6 +194,19 @@ ListAssistant.prototype.setup = function() {
 		case 'favourite':
 			this.sceneTitle = $L("Favourites");
 			this.loadFavourites({
+					'page': this.searchParameters['page']
+				},
+				this.buildList.bind(this),
+				function(message) {
+					this.controller.get('loading-spinner').hide();
+					this.showPopup(null, $L("Problem"), message, function() { Mojo.Controller.stageController.popScene(); });
+					return false;
+				}.bind(this)
+			);
+		break;
+		case 'fieldnotes':
+			this.sceneTitle = $L("Field Notes");
+			this.loadFieldNotes({
 					'page': this.searchParameters['page']
 				},
 				this.buildList.bind(this),
@@ -396,6 +425,9 @@ ListAssistant.prototype.handleCommand = function(event) {
 					}
 				);
 			break;
+			case 'export':
+				FieldNotes.exportToFile();
+				break;
 			case 'goback':
 				this.controller.stageController.popScene();
 			break;
@@ -510,20 +542,26 @@ ListAssistant.prototype.handleNextPage = function(event) {
 
 ListAssistant.prototype.handleDeleteItem = function(event) {
 	if(event.item['gccode']) {
-		// Set item as non-favourite
-		Geocaching.db.transaction( 
-			(function (transaction) {
-				transaction.executeSql('UPDATE "caches" SET "favourite"=0 WHERE "gccode"="'+ escape(event.item['gccode']) +'";', []);
-			}).bind(this)
-		);
-		// Remove item from cacheList (for recalculate distance)
-		this.searchResult.cacheList.splice(this.cacheListModel.items.indexOf(event.item), 1);
-		// Reenable distance recalculating
-		if(Geocaching.settings['recalculatedistance']) {
-			try {
-				window.clearTimeout(this.recalculateDistanceTimeout);
-			} catch(e) { }
-			this.recalculateDistance();
+		if (this.searchMethod == "favourites" || (this.searchMethod == "nextpage" && this.searchParameters['url'].match(/^\-favourites\-(\d+)$/))){
+			// Set item as non-favourite
+			Geocaching.db.transaction( 
+				(function (transaction) {
+					transaction.executeSql('UPDATE "caches" SET "favourite"=0 WHERE "gccode"="'+ escape(event.item['gccode']) +'";', []);
+				}).bind(this)
+			);
+			// Remove item from cacheList (for recalculate distance)
+			this.searchResult.cacheList.splice(this.cacheListModel.items.indexOf(event.item), 1);
+			// Reenable distance recalculating
+			if(Geocaching.settings['recalculatedistance']) {
+				try {
+					window.clearTimeout(this.recalculateDistanceTimeout);
+				} catch(e) { }
+				this.recalculateDistance();
+			}
+		} else { // field notes removes only note, not the cache from database
+			FieldNotes.removeNote(event.index);
+			this.searchResult.cacheList.splice(this.cacheListModel.items.indexOf(event.item), 1);
+			// we don't have recalculateDistance here
 		}
 	}
 }
@@ -578,14 +616,15 @@ ListAssistant.prototype.buildList = function(searchResult) {
 			'longitude': cacheList[z]['longitude'],	
 			'distance': (typeof(cacheList[z]['distance'])!='undefined'?cacheList[z]['distance']:''),
 			'direction': (typeof(cacheList[z]['direction'])!='undefined'?'<img src="images/compass_'+ cacheList[z]['direction'] +'.gif" />':''),
-			'ddattrs':(cacheList[z]['ddattr']?'<img src="http://www.geocaching.com/ImgGen/seek/CacheDir.ashx?k='+cacheList[z]['ddattr']+'" />':''),
+//			'ddattrs':(cacheList[z]['ddattr']?'<img src="http://www.geocaching.com/ImgGen/seek/CacheDir.ashx?k='+cacheList[z]['ddattr']+'" />':''),
 			'disabled': (cacheList[z]['archived']?' gc-archived':(cacheList[z]['disabled']?' gc-disabled':'')),
 			'found': (cacheList[z]['found']?' <img src="images/found.png" />':''),
 			'own': (cacheList[z]['own']?' <img src="images/star.png" />':''),
 			'maintenance': (cacheList[z]['maintenance']?' <img src="images/needsmaint.gif" />':''),
 			'trackables': trackables,
 			'members': (cacheList[z]['members']?' <img src="images/members_small.gif" />':''),
-			'floppy': (Geocaching.gcids[cacheList[z]['gccode']]?' <img src="images/floppy.png" />':'')
+			'floppy': (Geocaching.gcids[cacheList[z]['gccode']]?' <img src="images/floppy.png" />':''),
+			'log': (cacheList[z]['log']?cacheList[z]['log']:'')
 		});
 
 		if(typeof(cacheList[z]['latitude']) == 'undefined' || typeof(cacheList[z]['longitude']) == 'undefined') {
@@ -759,6 +798,113 @@ ListAssistant.prototype.loadFavourites = function(params, success, failure) {
 					}.bind(this),
 					function() {
 						failure($L("No favourites stored."));
+					}.bind(this)
+				);
+			}).bind(this)
+		);
+	} else {
+		Mojo.Log.error(Object.toJSON(e));
+		failure($L("No favourites stored."));
+	}
+}
+
+ListAssistant.prototype.loadFieldNotes = function(params, success, failure) {
+	var page = params['page'];
+	var notes = FieldNotes.getNotes();
+	Mojo.Log.info("Field notes: "+Object.toJSON(notes));
+	gccodes = [];
+	var notes_start = (page-1)*20;
+	var notes_end = Math.min(notes.length, notes_start+20);
+	for(var i = notes_start; i < notes_end; i++){
+		if( gccodes.indexOf(notes[i]['geocode']) == -1){
+			gccodes.push(notes[i]['geocode']);
+		}
+	}
+	Mojo.Log.info("Field notes geocodes: "+Object.toJSON(gccodes));
+	Mojo.Log.info("Executing SQL query: "+'select * from "caches" where "gccode" in ("'+gccodes.join('","')+'")');
+	if (Geocaching.db != null) {
+		Geocaching.db.transaction(
+			(function (transaction) {
+				transaction.executeSql('select * from "caches" where "gccode" in ("'+gccodes.join('","')+'")', [],
+					function(transaction, results) {
+						try {
+							var caches = results.rows.length;
+							if(caches == 0 ) {
+								throw("None");
+							}
+							var list = new Array();
+							for(var i = notes_start; i < notes_end; i++){
+								var item = null;
+								var found = false;
+								for (var j = 0; j < caches; j++) {
+									item = results.rows.item(j);
+									if (item['gccode'] == notes[i]['geocode']) {
+										found = true;
+										break;
+									}
+								}
+								var ts = new Date();
+								ts.setTime(notes[i]['ts'] *1000);
+								var icon = null;
+								switch(notes[i]['type']){
+									case "Found It":
+										icon = "images/log_found.gif";
+										break;
+									case "Didn't find it":
+										icon = "images/log_notfound.gif";
+										break;
+									case "Needs Maintenance":
+										icon = "images/log_needsmaint.gif";
+										break;
+									case "Attended":
+										icon = "images/log_attended.gif";
+										break;
+									case "Write note":
+									default:
+										icon = "images/log_note.gif";
+										break;
+								}
+								var log = '<img src="'+icon+'" /> '+notes[i]['type']+": "+Mojo.Format.formatDate(ts, 'medium');
+								if (found) {
+									var _cache = unescape(item['json']).evalJSON();
+									list.push({
+										'guid': _cache['guid'],
+										'name': _cache['name'],
+										'gccode': _cache['geocode'],
+										'type': _cache['type'],
+										'attribs': _cache['difficulty']+'/'+_cache['terrain'],
+										'disabled': _cache['disabled'],
+										'archived': _cache['archived'],
+										'latitude': item['latitude'],
+										'longitude': item['longitude'],
+										'log': log
+									});
+								} else {
+									list.push({
+										'gccode': notes[i]['geocode'],
+										'log': log
+									});
+								}
+							}
+							var searchResult = {
+								'url': '-fieldnotes-'+page,
+								'viewstate': '',
+								'cacheList': list,
+								'pageleft': Math.max(caches - page*20,0),
+								'nextPage': (caches < page*20?false:true),
+								'offset': undefined,
+								'limit': undefined
+							}
+
+							success(searchResult);
+						} catch(e) {
+							Mojo.Log.error(Object.toJSON(e));
+							failure($L("No Field Notes stored."));
+						}
+					}.bind(this),
+					function(transaction, error) {
+						Mojo.Log.error("Error in sql: " + Object.toJSON(error));
+						failure($L("No Field Notes stored."));
 					}.bind(this)
 				);
 			}).bind(this)
