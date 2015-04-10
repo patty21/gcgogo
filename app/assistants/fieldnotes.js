@@ -23,7 +23,7 @@ FieldNotes.getNotes = function()
 	return Geocaching.settings['notes'];
 }
 
-FieldNotes.export = function()
+FieldNotes.toString = function()
 {
 	var output = "";
 	var ts = new Date();

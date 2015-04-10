@@ -426,7 +426,7 @@ ListAssistant.prototype.handleCommand = function(event) {
 				);
 			break;
 			case 'export':
-				var data = FieldNotes.export();
+				var data = FieldNotes.toString();
 				this.showPopup(null, "Warning", "Posting to geocaching.com not yet working. Result is in error log.");
 				break; // temporary disable geocaching posting, since it is not yet working properly
 				Geocaching.accounts['geocaching.com'].postFieldNotes(data,
@@ -885,8 +885,6 @@ ListAssistant.prototype.loadFieldNotes = function(params, success, failure) {
 										'attribs': _cache['difficulty']+'/'+_cache['terrain'],
 										'disabled': _cache['disabled'],
 										'archived': _cache['archived'],
-										'latitude': item['latitude'],
-										'longitude': item['longitude'],
 										'log': log
 									});
 								} else {
