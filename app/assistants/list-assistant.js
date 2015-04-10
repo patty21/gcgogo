@@ -426,7 +426,17 @@ ListAssistant.prototype.handleCommand = function(event) {
 				);
 			break;
 			case 'export':
-				FieldNotes.exportToFile();
+				var data = FieldNotes.export();
+				this.showPopup(null, "Warning", "Posting to geocaching.com not yet working. Result is in error log.");
+				break; // temporary disable geocaching posting, since it is not yet working properly
+				Geocaching.accounts['geocaching.com'].postFieldNotes(data,
+					function(){
+						this.showPopup(null, "Done", "Field Notes successfully uploaded");
+					}.bind(this),
+					function(message){
+						this.showPopup(null, "Error", message);
+					}.bind(this)
+				);
 				break;
 			case 'goback':
 				this.controller.stageController.popScene();

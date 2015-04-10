@@ -23,15 +23,15 @@ FieldNotes.getNotes = function()
 	return Geocaching.settings['notes'];
 }
 
-FieldNotes.exportToFile = function()
+FieldNotes.export = function()
 {
 	var output = "";
 	var ts = new Date();
 	for(var i = 0; i < Geocaching.settings['notes'].length; i++){
 		var n = Geocaching.settings['notes'][i];
 		ts.setTime(n['ts'] *1000);
-		output += n['geocode']+","+ts.toISOString()+","+n['type']+',"'+n['text'].replace('"', '\"')+'"\n';
+		output += n['geocode']+","+ts.toISOString()+","+n['type']+',"'+n['text'].replace('"', '\"')+'"\r\n';
 	}
 	Mojo.Log.error(output);
-	//todo send to server
+	return output;
 }

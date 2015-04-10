@@ -2371,3 +2371,103 @@ GeocachingCom.prototype.ownedFinds = function(success, failure)
 		}
 	}.bind(this), timeout*1000, ajaxId, success, failure);
 };
+
+GeocachingCom.prototype.postFieldNotes = function(data, success, failure)
+{
+	var timeout = Geocaching.settings['secondTimeout'];
+	var url = "http://www.geocaching.com/my/uploadfieldnotes.aspx";
+	var ajaxId = 'post-fieldnotes-'+ Math.round(new Date().getTime());
+	Geocaching.ajaxRequests[ajaxId] = new Ajax.Request(url, {
+		'method': 'get',
+		'onSuccess': function(r){
+			Geocaching.lastAjaxId = null;
+			delete(Geocaching.ajaxRequests[ajaxId]);
+
+			var reply = r.responseText.replace(/\n/g, " ").replace(/\r/g, "").replace(/\t/g," ");
+
+			if(!this.checkLogin(reply)) {
+				this.doLogin(
+					Geocaching.login['username'],
+					Geocaching.login['password'],
+					function() {
+						this.postFieldNotes(data, success, failure);
+					}.bind(this),
+					failure
+				);
+				return false;
+			}
+
+			if(-1 != reply.search('An Error Has Occurred')) {
+				//Geocaching.sendReport('PostFieldNotes_'+url, reply,"");
+				failure($L("Error occured while posting Field Notes."));
+				return false;
+			}
+			var ajaxId = 'post-fieldnotes2-'+ Math.round(new Date().getTime());
+			var parameters = {
+				'__EVENTTARGET': '',
+				'__EVENTARGUMENT': '',
+				'__VIEWSTATEFIELDCOUNT':'2',
+				'__VIEWSTATE': reply.match(/id="__VIEWSTATE"\s+value="(.+?)"/)[1],
+				'__VIEWSTATEGENERATOR': reply.match(/id="__VIEWSTATEGENERATOR"\s+value="(.+?)"/)[1],
+				'ctl00$ContentBody$FieldNoteLoader': {"name":"geocache_visits.txt", "content-type":"text/plain", "content":data},
+//				'ctl00$ContentBody$chkSuppressDate': "on",
+				'ctl00$ContentBody$btnUpload': "Upload Field Note"
+			}
+			var boundary = "---------------------------"+Math.round(new Date().getTime());
+			var body = Ajax.formatMultipart(parameters, boundary);
+
+			Geocaching.ajaxRequests[ajaxId] = new Ajax.Request(url, {
+				'method': 'post',
+				'postBody': body,
+				'requestHeaders': {'Content-type':"multipart\/form-data; boundary=" + boundary},
+				'onSuccess': function(r){
+					Geocaching.lastAjaxId = null;
+					delete(Geocaching.ajaxRequests[ajaxId]);
+
+					var reply = r.responseText.replace(/\n/g, " ").replace(/\r/g, "").replace(/\t/g," ");
+
+					if(-1 != reply.search('An Error Has Occurred')) {
+						failure($L("Error occured while posting Field Notes"));
+						return false;
+					}
+					Mojo.Log.error(reply);
+					success();
+				}.bind(this),
+				'onFailure': function(r){
+					Mojo.Log.error("failure with second ajax");
+					Mojo.Log.error(Object.toJSON(r));
+					failure($L("Error occured while posting Field Notes"));
+				},
+				'onException': function(r, exception){
+					Mojo.Log.error("exception with second ajax");
+					Mojo.Log.error(Object.toJSON(r));
+					Mojo.Log.error(Object.toJSON(exception));
+					failure($L("Error occured while posting Field Notes"));
+				}
+
+			});
+		}.bind(this),
+		'onFailure': function(r){
+			Mojo.Log.error("failure with first ajax");
+			Mojo.Log.error(Object.toJSON(r));
+			failure($L("Error occured while posting Field Notes."));
+		},
+		'onException': function(r, exception){
+			Mojo.Log.error("exception with first ajax");
+			Mojo.Log.error(Object.toJSON(r));
+			Mojo.Log.error(Object.toJSON(exception));
+			failure($L("Error occured while posting Field Notes."));
+		}
+
+	});
+	Geocaching.lastAjaxId = ajaxId;
+
+	window.setTimeout(function(ajaxId, success, failure) {
+		if(Ajax.activeRequestCount > 0 && ajaxId == Geocaching.lastAjaxId) {
+			Geocaching.ajaxRequests[ajaxId].abort();
+			delete(Geocaching.ajaxRequests[ajaxId]);
+
+			failure($L("Operation timeout"));
+		}
+	}.bind(this), timeout*1000, ajaxId, success, failure);
+};
