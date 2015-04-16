@@ -282,6 +282,7 @@ PostlogAssistant.prototype.submitClicked = function(event) {
 		if( this.modelLogType['value'] == "2" ){ // found sets cache as found
 			cache[this.geocode].found = 1;
 			Geocaching.db.transaction((function (transaction) { 
+				caches[this.geocode].found = 1;
 				transaction.executeSql('UPDATE "caches" SET "found"=? WHERE "gccode"= ?', [1, this.geocode],
 					function() {},function() {});
 			}).bind(this));

@@ -30,8 +30,21 @@ FieldNotes.toString = function()
 	for(var i = 0; i < Geocaching.settings['notes'].length; i++){
 		var n = Geocaching.settings['notes'][i];
 		ts.setTime(n['ts'] *1000);
-		output += n['geocode']+","+ts.toISOString()+","+n['type']+',"'+n['text'].replace('"', '\"')+'"\r\n';
+		output += n['geocode']+","+ts.toISOString()+","+n['type']+',"'+n['text'].replace('"', '\"')+"\"\r\n";
 	}
 	Mojo.Log.error(output);
 	return output;
+}
+FieldNotes.sendByEmail = function(context)
+{
+	context.controller.serviceRequest('palm://com.palm.applicationManager', {
+			method: 'launch',
+			parameters: {
+				id: 'com.palm.app.email',
+				params: {
+						   "summary":"Field notes",
+						   "text":this.toString()
+					 }
+			}
+	});
 }
