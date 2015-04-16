@@ -35,16 +35,3 @@ FieldNotes.toString = function()
 	Mojo.Log.error(output);
 	return output;
 }
-FieldNotes.sendByEmail = function(context)
-{
-	context.controller.serviceRequest('palm://com.palm.applicationManager', {
-			method: 'launch',
-			parameters: {
-				id: 'com.palm.app.email',
-				params: {
-						   "summary":"Field notes",
-						   "text":this.toString()
-					 }
-			}
-	});
-}

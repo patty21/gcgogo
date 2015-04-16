@@ -426,9 +426,19 @@ ListAssistant.prototype.handleCommand = function(event) {
 				);
 			break;
 			case 'export':
-				var data = FieldNotes.toString();
-				this.showPopup(null, "Warning", "Posting to geocaching.com not yet working. Result is in error log.");
+				this.controller.serviceRequest('palm://com.palm.applicationManager', {
+						method: 'launch',
+						parameters: {
+							id: 'com.palm.app.email',
+							params: {
+									   "summary":"Field notes",
+									   "text":FieldNotes.toString().replace(/\r\n/g,"<br>\n")
+								 }
+						}
+				});
 				break; // temporary disable geocaching posting, since it is not yet working properly
+				//this.showPopup(null, "Warning", "Posting to geocaching.com not yet working. Result is in error log.");
+				var data = FieldNotes.toString();
 				Geocaching.accounts['geocaching.com'].postFieldNotes(data,
 					function(){
 						this.showPopup(null, "Done", "Field Notes successfully uploaded");
