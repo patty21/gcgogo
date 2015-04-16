@@ -898,8 +898,8 @@ ListAssistant.prototype.loadFieldNotes = function(params, success, failure) {
 								'url': '-fieldnotes-'+page,
 								'viewstate': '',
 								'cacheList': list,
-								'pageleft': Math.max(caches - page*20,0),
-								'nextPage': (caches < page*20?false:true),
+								'pageleft': Math.max(notes.length - page*20,0),
+								'nextPage': (notes.length < page*20?false:true),
 								'offset': undefined,
 								'limit': undefined
 							}
