@@ -70,8 +70,9 @@ ListAssistant.prototype.setup = function() {
 				((this.searchMethod == 'coords' || this.searchMethod == 'favourite')?
 				{'items': [
 					{'label': $L("Show on map"), 'iconPath': defaultnavigationIcons['mappingtool'], 'command': 'mappingtool'}
-				]} : ( this.searchMethod == 'fieldnotes'
+				]} : ( this.searchMethod == 'fieldnotes' || this.searchParameters['url'].match(/^\-fieldnotes\-(\d+)$/)
 					? {'items': [
+						{'label': $L("Clear All"), 'icon': 'delete', 'command': 'clearAll'},
 						{'label': $L("Export"), 'icon': 'send', 'command': 'export'}
 					]}
 					: {}))
@@ -448,6 +449,9 @@ ListAssistant.prototype.handleCommand = function(event) {
 					}.bind(this)
 				);
 				break;
+			case 'clearAll':
+				this.showPopup(null, "Confirm", "Do you really want to remove all your stored Field Notes?", FieldNotes.clearAll);
+				break;
 			case 'goback':
 				this.controller.stageController.popScene();
 			break;
@@ -562,7 +566,7 @@ ListAssistant.prototype.handleNextPage = function(event) {
 
 ListAssistant.prototype.handleDeleteItem = function(event) {
 	if(event.item['gccode']) {
-		if (this.searchMethod == "favourites" || (this.searchMethod == "nextpage" && this.searchParameters['url'].match(/^\-favourites\-(\d+)$/))){
+		if (this.searchMethod == "favourite" || (this.searchMethod == "nextpage" && this.searchParameters['url'].match(/^\-favourites\-(\d+)$/))){
 			// Set item as non-favourite
 			Geocaching.db.transaction( 
 				(function (transaction) {
@@ -849,9 +853,6 @@ ListAssistant.prototype.loadFieldNotes = function(params, success, failure) {
 					function(transaction, results) {
 						try {
 							var caches = results.rows.length;
-							if(caches == 0 ) {
-								throw("None");
-							}
 							var list = new Array();
 							for(var i = notes_start; i < notes_end; i++){
 								var item = null;

@@ -35,3 +35,8 @@ FieldNotes.toString = function()
 	Mojo.Log.error(output);
 	return output;
 }
+FieldNotes.clearAll = function()
+{
+	Geocaching.settings['notes'] = [];
+	Geocaching.saveSettings();
+}
