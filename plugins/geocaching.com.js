@@ -4,21 +4,21 @@ GeocachingCom  = function() {
 GeocachingCom.prototype.doLogin = function(username, password, success, failure)
 {
 	/* Load login page to check inputs */
-	var url = "http://www.geocaching.com/login/default.aspx?RESET=Y";
+	var url = "https://www.geocaching.com/login/default.aspx?RESET=Y";
 	var checkAjax = new Ajax.Request(url, {
 		'method': 'get',
 		'onSuccess': function(r){
 			var reply = r.responseText;
 			var viewstate = reply.match(/id="__VIEWSTATE"\s+value="([^"]+)"/)[1]
-			var posturl = 'http://www.geocaching.com/login/default.aspx?RESETCOMPLETE=Y';
+			var posturl = 'https://www.geocaching.com/login/default.aspx?RESETCOMPLETE=Y';
 			var postdata = {
 				'__EVENTTARGET': "",
 				'__EVENTARGUMENT': "",
 				'__VIEWSTATE': viewstate,
 				'ctl00$ContentBody$tbUsername': username,
 				'ctl00$ContentBody$tbPassword': password,
-				'ctl00_ContentBody_cbRememberMe': "on",
-				'ctl00$ContentBody$btnSignIn': "Login",
+				'ctl00$ContentBody$cbRememberMe': "on",
+				'ctl00$ContentBody$btnSignIn': "Sign In",
 			};
 
 			try {
@@ -87,10 +87,10 @@ GeocachingCom.prototype.getUID = function(success)
 
 GeocachingCom.prototype.checkLogin = function(page)
 {
-	if(-1 != page.search('<a class="SignedInProfileLink" href="/my/default.aspx"')) {
+	if(-1 != page.search('class="li-user-info">')) {
 		return true;
 	}
-	if(-1 != page.search('href="../my/default.aspx">')) {
+	if(-1 != page.search('href="/my/default.aspx"')) {
 		return true;
 	}
 	return false;
