@@ -22,7 +22,7 @@ UsercoordsAssistant.prototype.setup = function(widget) {
 
 	this.controller.setupWidget('latitude',
 		this.attributesLatitude = {
-			'modifierState': Mojo.Widget.numLock
+			'modifierState': gcGogo.numlock()
 		},
 		this.modelLatitude = {
 			'value': this.defaultLatitude,
@@ -32,7 +32,7 @@ UsercoordsAssistant.prototype.setup = function(widget) {
 
 	this.controller.setupWidget('longitude',
 		this.attributesLongitude = {
-			'modifierState': Mojo.Widget.numLock
+			'modifierState': gcGogo.numlock()
 		},
 		this.modelLongitude = {
 			'value': this.defaultLongitude,

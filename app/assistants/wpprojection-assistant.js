@@ -51,7 +51,7 @@ WpprojectionAssistant.prototype.setup = function() {
 	);
 	this.controller.setupWidget('angle',
 		this.attributesAngle = {
-			'modifierState': Mojo.Widget.numLock
+			'modifierState': gcGogo.numlock()
 		},
 		this.modelAngle = {
 			'value': '',
@@ -60,7 +60,7 @@ WpprojectionAssistant.prototype.setup = function() {
 	);	
 	this.controller.setupWidget('distance',
 		this.attributesDistance = {
-			'modifierState': Mojo.Widget.numLock
+			'modifierState': gcGogo.numlock()
 		},
 		this.modelDistance = {
 			'value': '',

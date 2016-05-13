@@ -56,3 +56,8 @@ gcGogo.isTouchpad = function(){
 	if(Mojo.Environment.DeviceInfo.screenHeight==1024){ return true; }
 	return false;
 };
+
+gcGogo.numlock = function(){
+	if(Mojo.Environment.DeviceInfo.modelName=="Emulator") {return false;}
+	return Mojo.Widget.numLock;
+};

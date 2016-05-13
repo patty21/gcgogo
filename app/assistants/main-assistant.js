@@ -94,7 +94,7 @@ MainAssistant.prototype.setup = function() {
 			'multiline':              false,
 			'textReplacement': false,
 			'maxLength': 20,
-			'modifierState': Mojo.Widget.numLock
+			'modifierState': gcGogo.numlock()
 		},
 		this.modelActionByCoorsLat = {
 			'value' : '',
@@ -109,7 +109,7 @@ MainAssistant.prototype.setup = function() {
 			'multiline':              false,
 			'textReplacement': false,
 			'maxLength': 20,
-			'modifierState': Mojo.Widget.numLock
+			'modifierState': gcGogo.numlock()
 		},
 		this.modelActionByCoorsLon = {
 			'value' : '',

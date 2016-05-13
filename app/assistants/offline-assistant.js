@@ -24,7 +24,7 @@ OfflineAssistant.prototype.setup = function() {
 			'multiline':              false,
 			'textReplacement': false,
 			'maxLength': 20,
-			'modifierState': Mojo.Widget.numLock
+			'modifierState': gcGogo.numlock()
 		},
 		this.modelActionByCoorsLat = {
 			'value' : '',
@@ -39,7 +39,7 @@ OfflineAssistant.prototype.setup = function() {
 			'multiline':              false,
 			'textReplacement': false,
 			'maxLength': 20,
-			'modifierState': Mojo.Widget.numLock
+			'modifierState': gcGogo.numlock()
 		},
 		this.modelActionByCoorsLon = {
 			'value' : '',
@@ -53,7 +53,7 @@ OfflineAssistant.prototype.setup = function() {
 			'multiline':              false,
 			'textReplacement': false,
 			'maxLength': 4,
-			'modifierState': Mojo.Widget.numLock
+			'modifierState': gcGogo.numlock()
 		},
 		this.modelActionByCoordsNum = {
 			'value' : '',
