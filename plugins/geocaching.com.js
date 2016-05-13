@@ -87,7 +87,7 @@ GeocachingCom.prototype.getUID = function(success)
 
 GeocachingCom.prototype.checkLogin = function(page)
 {
-	if(-1 != page.search('class="li-user-info">')) {
+	if(-1 != page.search('href="../my/default.aspx"')) {
 		return true;
 	}
 	if(-1 != page.search('href="/my/default.aspx"')) {
@@ -705,7 +705,7 @@ GeocachingCom.prototype.loadCache = function(params, success, logsuccess, failur
 				failure($L("This cache has not yet been published."));
 				return false;
 			}
-			if(-1 != reply.search('<p class="TopSpacing PMOWarning">')) {
+			if(-1 != reply.search('<section class="pmo-banner">')) {
 				failure($L("This cache is for premium members only."));
 				return false;
 			}
@@ -1291,11 +1291,11 @@ GeocachingCom.prototype.loadImages = function(params, success, failure)
 			// gallery images
 			cache[geocode].galleryImages = new Array();
 			try {
-				tmp = reply.match(/<a href='([^']+)' data-title='[^']+' class="imageLink" rel="gallery">\s*<img\s+src='(http:\/\/img.geocaching.com)?\/cache\/log\/thumb\/([^']+)' alt='[^']+' \/><\/a><br \/>\s*<small><strong>\s*([^<]*)<\/strong><\/small>/ig);
+				tmp = reply.match(/<a href='([^']+)' data-title='[^']+' class="imageLink" rel="gallery">\s*<img\s+src='(https:\/\/img.geocaching.com)?\/cache\/log\/thumb\/([^']+)' alt='[^']+' \/><\/a>\s*<span>\s*([^<]*)<\/span>/ig);
 				if(tmp.length>0) {
 					var len = tmp.length, imgTmp, img;
 					for(var z=0; z<len; z++) {
-						imgTmp = tmp[z].match(/<a href='([^']+)' data-title='[^']+' class="imageLink" rel="gallery">\s*<img\s+src='(http:\/\/img.geocaching.com)?\/cache\/log\/thumb\/([^']+)' alt='[^']+' \/><\/a><br \/>\s*<small><strong>\s*([^<]*)<\/strong><\/small>/i);
+						imgTmp = tmp[z].match(/<a href='([^']+)' data-title='[^']+' class="imageLink" rel="gallery">\s*<img\s+src='(https:\/\/img.geocaching.com)?\/cache\/log\/thumb\/([^']+)' alt='[^']+' \/><\/a>\s*<span>\s*([^<]*)<\/span>/i);
 						img = {
 							'name': imgTmp[4],
 							'url': 'http:\/\/img.geocaching.com\/cache\/log\/' + imgTmp[3]
