@@ -4,27 +4,26 @@ GeocachingCom  = function() {
 GeocachingCom.prototype.doLogin = function(username, password, success, failure)
 {
 	/* Load login page to check inputs */
-	var url = "https://www.geocaching.com/login/default.aspx?RESET=Y";
+	Mojo.Log.error('Login!');
+	var url = "https://www.geocaching.com/account/login";
 	var checkAjax = new Ajax.Request(url, {
 		'method': 'get',
 		'onSuccess': function(r){
 			var reply = r.responseText;
-			var viewstate = reply.match(/id="__VIEWSTATE"\s+value="([^"]+)"/)[1]
-			var posturl = 'https://www.geocaching.com/login/default.aspx?RESETCOMPLETE=Y';
+			if(this.checkLogin(reply)) {
+				this.doLogout(
+					failure
+				);
+				return false;
+			}
+			var token = reply.match(/name="__RequestVerificationToken"\s+type="hidden"\s+value="([^"]+)"/)[1];
+//			Mojo.Log.error('Login token:'+token);
+			var posturl = 'https://www.geocaching.com/account/login';
 			var postdata = {
-				'__EVENTTARGET': "",
-				'__EVENTARGUMENT': "",
-				'__VIEWSTATE': viewstate,
-				'ctl00$ContentBody$tbUsername': username,
-				'ctl00$ContentBody$tbPassword': password,
-				'ctl00$ContentBody$cbRememberMe': "on",
-				'ctl00$ContentBody$btnSignIn': "Sign In",
+				'__RequestVerificationToken': token,
+				'Username': username,
+				'Password': password,
 			};
-
-			try {
-				var eventvalidation = reply.match(/id="__EVENTVALIDATION"\s+value="([^"]+)"/)[1]
-				postdata['__EVENTVALIDATION'] = eventvalidation;
-			} catch(e) { /* None */ }
 			
 			var loginAjax = new Ajax.Request(posturl, {
 				'method': 'post',
@@ -59,6 +58,22 @@ GeocachingCom.prototype.doLogin = function(username, password, success, failure)
 		onFailure: function(r){
 			failure($L("Error occured on loging in."));
 		}
+	});
+}
+
+GeocachingCom.prototype.doLogout = function(failure)
+{
+	Mojo.Log.error('Logout!');
+	var posturl = 'https://www.geocaching.com/account/logout';
+	var logoutAjax = new Ajax.Request(posturl, {
+		'method': 'post',
+		'contentType': 'application/x-www-form-urlencoded',
+		'onSuccess': function(r){
+			failure($L("Logout, please try again!"));
+		}.bind(this),
+		'onFailure': function(r){
+			failure($L("Error logging out!"));
+		}.bind(this),
 	});
 }
 
@@ -160,7 +175,7 @@ GeocachingCom.prototype.parseSearch = function(url, reply, list)
 		}
 
 		// Cache type
-		listRow['type'] = row.match(/<img src="(http:\/\/([\-0-9\.a-z\/]*)?www\.geocaching\.com)?\/images\/wpttypes\/(\w+)\.gif" alt="([^"]+)" title="([^"]+)" class="SearchResultsWptType"/i)[3];
+		listRow['type'] = row.match(/<img src="(https?:\/\/([\-0-9\.a-z\/]*)?www\.geocaching\.com)?\/images\/wpttypes\/(\w+)\.gif" alt="([^"]+)" title="([^"]+)" class="SearchResultsWptType"/i)[3];
 		if (listRow['type']=='earthcache') listRow['type']=137;
 		
 		// Direction and distance (not in all lists)
@@ -1046,7 +1061,7 @@ GeocachingCom.prototype.loadCache = function(params, success, logsuccess, failur
 					wpBegin = reply.search(/\s+initalLogs = \{/)-3;
 				}
 				wpList = reply.substr(wpBegin);
-				wpEnd = wpList.search(';//]]>');
+				wpEnd = wpList.search('//]]>');
 				wpList = wpList.substr(0, wpEnd);
 				tmp = wpList.match(/\s+initalLogs = (\{.+\});\s+[^}]*$/i)[1];
 				tmp = tmp.evalJSON();
